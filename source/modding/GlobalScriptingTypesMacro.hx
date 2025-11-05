@@ -19,7 +19,7 @@ class GlobalScriptingTypesMacro
 
 		var fieldsToAdd:Array<Field> = [];
 
-		trace("Applying scripting types to " + cls.name);
+		//trace("Applying scripting types to " + cls.name);
 
 		fieldsToAdd.push({
 			name: "boyfriend",
