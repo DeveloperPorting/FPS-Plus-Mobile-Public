@@ -7,7 +7,7 @@ import flixel.FlxG;
 import openfl.Assets;
 import flixel.util.FlxColor;
 
-#if desktop
+#if (desktop || mobile)
 import hxvlc.openfl.Video;
 #elseif web
 import openfl.media.SoundTransform;
@@ -51,7 +51,7 @@ class VideoHandler extends FlxSprite
 	public var onStart:FlxSignal = new FlxSignal();
 	public var onEnd:FlxSignal = new FlxSignal();
 
-	#if desktop
+	#if (desktop || mobile)
 	var bitmap:Video;
 	#elseif web
 	var video:Video;
@@ -71,7 +71,7 @@ class VideoHandler extends FlxSprite
 	**/
 	public function playMP4(videoPath:String, callback:Void->Void, ?repeat:Bool = false){
 
-		#if desktop
+		#if (desktop || mobile)
 		playDesktopMP4(videoPath, callback, repeat);
 		#end
 
@@ -83,7 +83,7 @@ class VideoHandler extends FlxSprite
 
 	//===========================================================================================================//
 
-	#if desktop
+	#if (desktop || mobile)
 	/**
 		Plays MP4s using VLC Bitmaps as the source.
 		Only works on desktop builds.
@@ -258,7 +258,7 @@ class VideoHandler extends FlxSprite
 
 		super.update(elapsed);
 
-		#if desktop
+		#if (desktop || mobile)
 		if(bitmap != null){
 
 			if(FlxG.sound.muted || __muted){
@@ -329,7 +329,7 @@ class VideoHandler extends FlxSprite
 			FlxG.signals.focusGained.remove(resume);
 		}
 
-		#if desktop
+		#if (desktop || mobile)
 		if(!completed){
 			vlcClean();
 		}
@@ -350,7 +350,7 @@ class VideoHandler extends FlxSprite
 	**/
 	public function pause(){
 
-		#if desktop
+		#if (desktop || mobile)
 		if(bitmap != null && !paused){
 			bitmap.pause();
 		}
@@ -370,7 +370,7 @@ class VideoHandler extends FlxSprite
 	**/
 	public function resume(){
 
-		#if desktop
+		#if (desktop || mobile)
 		if(bitmap != null && paused){ 
 			bitmap.resume();
 		}
@@ -387,7 +387,7 @@ class VideoHandler extends FlxSprite
 
 	public function skip(){
 
-		#if desktop
+		#if (desktop || mobile)
 		onVLCComplete();
 		#end
 		#if web
@@ -413,7 +413,7 @@ class VideoHandler extends FlxSprite
 	
 
 	function get_length():Float {
-		#if desktop
+		#if (desktop || mobile)
 		return Int64s.toFloat(bitmap.length) / 1000000;
 		#end
 		#if web
