@@ -21,6 +21,7 @@ jobs:
          haxelib install hmm --quiet
          haxelib run hmm setup
          haxelib run hmm install
+         haxelib --global install hxvlc
          haxelib run lime rebuild hxcpp
 
       - name: Configure Android
