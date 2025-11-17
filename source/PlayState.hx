@@ -732,6 +732,8 @@ class PlayState extends MusicBeatState
 		add(hudLayer);
 		hudLayer.cameras = [camHUD];
 
+		#if mobile addMobileControls(false); #end
+
 		//Get and run cutscene stuff
 		if(Utils.exists("assets/data/songs/" + SONG.song.toLowerCase() + "/cutscene.json") && !fromChartEditor){
 			trace("song has cutscene info");
@@ -892,6 +894,7 @@ class PlayState extends MusicBeatState
 	public function startCountdown():Void {
 		inCutscene = false;
 
+		#if mobile mobileControls.visible = true; #end
 		healthBar.visible = true;
 		healthBarBG.visible = true;
 		iconP1.visible = true;
