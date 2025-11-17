@@ -9,6 +9,7 @@ import mobile.flixel.FlxButton;
 import mobile.flixel.input.FlxMobileInputManager;
 import mobile.flixel.input.FlxMobileInputID;
 import haxe.ds.Map;
+import config.Config;
 
 /**
  * A zone with 4 hint's (A hitbox).
