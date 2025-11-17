@@ -9,7 +9,7 @@ import flixel.util.FlxColor;
 
 #if desktop
 import hxvlc.openfl.Video;
-#elseif web
+#elseif (web || mobile)
 import openfl.media.SoundTransform;
 import openfl.media.Video;
 import openfl.net.NetConnection;
@@ -53,7 +53,7 @@ class VideoHandler extends FlxSprite
 
 	#if desktop
 	var bitmap:Video;
-	#elseif web
+	#elseif (web || mobile)
 	var video:Video;
 	var netStream:NetStream;
 	var netPath:String;
@@ -75,7 +75,7 @@ class VideoHandler extends FlxSprite
 		playDesktopMP4(videoPath, callback, repeat);
 		#end
 
-		#if web
+		#if (web || mobile)
 		playWebMP4(videoPath, callback, repeat);
 		#end
 
@@ -149,7 +149,7 @@ class VideoHandler extends FlxSprite
 
 	//===========================================================================================================//
 
-	#if web
+	#if (web || mobile)
 	/**
 		Plays MP4s using OpenFL NetStreams and Videos as the source.
 		Only works on web builds.
@@ -291,7 +291,7 @@ class VideoHandler extends FlxSprite
 		}
 		#end
 
-		#if web
+		#if (web || mobile)
 		if(FlxG.keys.justPressed.MINUS || FlxG.keys.justPressed.PLUS){
 			setSoundTransform(__muted);
 		}
@@ -335,7 +335,7 @@ class VideoHandler extends FlxSprite
 		}
 		#end
 
-		#if web
+		#if (web || mobile)
 		if(!completed){
 			netClean();
 		}
@@ -356,7 +356,7 @@ class VideoHandler extends FlxSprite
 		}
 		#end
 
-		#if web
+		#if (web || mobile)
 		if(netStream != null && !paused){
 			netStream.pause();
 		}
@@ -376,7 +376,7 @@ class VideoHandler extends FlxSprite
 		}
 		#end
 
-		#if web
+		#if (web || mobile)
 		if(netStream != null && paused){ 
 			netStream.resume();
 		}
@@ -390,7 +390,7 @@ class VideoHandler extends FlxSprite
 		#if desktop
 		onVLCComplete();
 		#end
-		#if web
+		#if (web || mobile)
 		finishVideo();
 		#end
 
@@ -402,7 +402,7 @@ class VideoHandler extends FlxSprite
 
 	private function set_muted(value:Bool):Bool{
 
-		#if web
+		#if (web || mobile)
 		if(startDrawing){
 			setSoundTransform(value);
 		}
@@ -416,10 +416,10 @@ class VideoHandler extends FlxSprite
 		#if desktop 
 		return Int64s.toFloat(bitmap.length) / 1000000;
 		#end
-		#if mobile
+		/*#if mobile
 		return 0;
-		#end
-		#if web
+		#end*/
+		#if (web || mobile)
 		@:privateAccess
 		return netStream.__video.duration;
 		#end
