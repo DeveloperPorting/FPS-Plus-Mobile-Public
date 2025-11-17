@@ -448,7 +448,7 @@ class Binds
 
 	inline public static function justReleasedMobileCOnly(input:String):Bool{
 		var r:Bool = false;
-		if (requested.mobileControls != null && gameplayRequest != null)
+		if (requested.mobileControls != null && gameplayRequest != null){
 		 for(x in binds.get(input).mobileBinds){
 			r = gameplayRequest.anyJustReleased(x);
 			if(r){ break; }
