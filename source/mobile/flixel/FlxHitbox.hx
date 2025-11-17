@@ -6,7 +6,9 @@ import flixel.util.FlxDestroyUtil;
 import openfl.display.BitmapData;
 import openfl.display.Shape;
 import mobile.flixel.FlxButton;
-import config.Config;
+import mobile.flixel.input.FlxMobileInputManager;
+import mobile.flixel.input.FlxMobileInputID;
+import haxe.ds.Map;
 
 /**
  * A zone with 4 hint's (A hitbox).
@@ -14,7 +16,7 @@ import config.Config;
  *
  * @author Mihai Alexandru (M.A. Jigsaw)
  */
-class FlxHitbox extends FlxSpriteGroup
+class FlxHitbox extends FlxMobileInputManager
 {
 	public var buttonLeft:FlxButton = new FlxButton(0, 0, [FlxMobileInputID.hitboxLEFT, FlxMobileInputID.noteLEFT]);
 	public var buttonDown:FlxButton = new FlxButton(0, 0, [FlxMobileInputID.hitboxDOWN, FlxMobileInputID.noteDOWN]);
@@ -22,6 +24,7 @@ class FlxHitbox extends FlxSpriteGroup
 	public var buttonRight:FlxButton = new FlxButton(0, 0, [FlxMobileInputID.hitboxRIGHT, FlxMobileInputID.noteRIGHT]);
 
 	var AlphaThing:Float = 0.2;
+	var storedButtonsIDs:Map<String, Array<FlxMobileInputID>> = new Map<String, Array<FlxMobileInputID>>();
 
 	/**
 	 * Create the zone.
@@ -31,13 +34,24 @@ class FlxHitbox extends FlxSpriteGroup
 		super();
 
 		AlphaThing = Config.hitboxalpha;
+		for (button in Reflect.fields(this))
+		{
+			if (Std.isOfType(Reflect.field(this, button), FlxButton))
+				storedButtonsIDs.set(button, Reflect.getProperty(Reflect.field(this, button), 'IDs'));
+		}
 
-		add(buttonLeft = createHint(0, 0, Std.int(FlxG.width / 4), FlxG.height, 0xFF00FF));
-		add(buttonDown = createHint(FlxG.width / 4, 0, Std.int(FlxG.width / 4), FlxG.height, 0x00FFFF));
-		add(buttonUp = createHint(FlxG.width / 2, 0, Std.int(FlxG.width / 4), FlxG.height, 0x00FF00));
-		add(buttonRight = createHint((FlxG.width / 2) + (FlxG.width / 4), 0, Std.int(FlxG.width / 4), FlxG.height, 0xFF0000));
-
+			add(buttonLeft = createHint(0, 0, Std.int(FlxG.width / 4), FlxG.height, 0xFF00FF));
+			add(buttonDown = createHint(FlxG.width / 4, 0, Std.int(FlxG.width / 4), FlxG.height, 0x00FFFF));
+			add(buttonUp = createHint(FlxG.width / 2, 0, Std.int(FlxG.width / 4), FlxG.height, 0x00FF00));
+			add(buttonRight = createHint((FlxG.width / 2) + (FlxG.width / 4), 0, Std.int(FlxG.width / 4), FlxG.height, 0xFF0000));
+		
+		for (button in Reflect.fields(this))
+		{
+			if (Std.isOfType(Reflect.field(this, button), FlxButton))
+				Reflect.setProperty(Reflect.getProperty(this, button), 'IDs', storedButtonsIDs.get(button));
+		}
 		scrollFactor.set();
+		updateTrackedButtons();
 	}
 
 	/**
