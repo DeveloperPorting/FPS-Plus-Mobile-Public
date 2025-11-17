@@ -11,9 +11,10 @@ import flixel.input.FlxPointer;
 import flixel.input.IFlxInput;
 import flixel.input.touch.FlxTouch;
 import flixel.math.FlxPoint;
-import flixel.system.FlxSound;
+import flixel.sound.FlxSound;
 import flixel.text.FlxText;
 import flixel.util.FlxDestroyUtil;
+import mobile.flixel.input.FlxMobileInputID;
 
 /**
  * A simple button class that calls a function when clicked by the touch.
@@ -40,6 +41,8 @@ class FlxButton extends FlxTypedButton<FlxText>
 	 */
 	public var text(get, set):String;
 
+	public var IDs:Array<FlxMobileInputID> = [];
+
 	/**
 	 * Creates a new `FlxButton` object with a gray background
 	 * and a callback function on the UI thread.
@@ -49,7 +52,7 @@ class FlxButton extends FlxTypedButton<FlxText>
 	 * @param   Text      The text that you want to appear on the button.
 	 * @param   OnClick   The function to call whenever the button is clicked.
 	 */
-	public function new(X:Float = 0, Y:Float = 0, ?Text:String, ?OnClick:Void->Void)
+	public function new(X:Float = 0, Y:Float = 0, ?IDs:Array<FlxMobileInputID>, ?Text:String, ?OnClick:Void->Void)
 	{
 		super(X, Y, OnClick);
 
@@ -57,6 +60,7 @@ class FlxButton extends FlxTypedButton<FlxText>
 			point.set(point.x - 1, point.y + 3);
 
 		initLabel(Text);
+		if(IDs != null) this.IDs = IDs;
 	}
 
 	/**
@@ -234,7 +238,7 @@ class FlxTypedButton<T:FlxSprite> extends FlxSprite implements IFlxInput
 	function setupAnimation(animationName:String, frameIndex:Int):Void
 	{
 		// make sure the animation doesn't contain an invalid frame
-		frameIndex = Std.int(Math.min(frameIndex, animation.frames - 1));
+		frameIndex = Std.int(Math.min(frameIndex, animation.numFrames - 1));
 		animation.add(animationName, [frameIndex]);
 	}
 
