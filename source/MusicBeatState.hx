@@ -6,6 +6,7 @@ import flixel.FlxCamera;
 import mobile.MobileControls;
 import mobile.flixel.FlxVirtualPad;
 import flixel.util.FlxDestroyUtil;
+import flixel.FlxG;
 
 class MusicBeatState extends FlxUIStateExt
 {
