@@ -10,6 +10,12 @@ import flixel.FlxG;
 
 class MusicBeatState extends FlxUIStateExt
 {
+	public static var instance:MusicBeatState = null;
+	public function new()
+	{
+		instance = this;
+		super();
+	}
 	private var curStep:Int = 0;
 	private var curBeat:Int = 0;
 
@@ -23,7 +29,6 @@ class MusicBeatState extends FlxUIStateExt
 
 	private var stateConductorOffset:Float = 0;
 
-	public static var instance:MusicBeatState;
 	public var mobileControls:MobileControls;
 	public var virtualPad:FlxVirtualPad;
 
@@ -94,7 +99,6 @@ class MusicBeatState extends FlxUIStateExt
 	}
 
 	override function create(){
-		instance = this;
 		super.create();
 	}
 
