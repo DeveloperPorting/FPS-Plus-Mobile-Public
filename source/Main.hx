@@ -10,6 +10,11 @@ import flixel.FlxSprite;
 import openfl.display.Sprite;
 import openfl.display.InteractiveObject;
 
+#if mobile
+import funkin.mobile.utils.*;
+//import funkin.mobile.input.*;
+#end
+
 class Main extends Sprite
 {
 
