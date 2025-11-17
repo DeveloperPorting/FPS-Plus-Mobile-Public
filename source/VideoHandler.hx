@@ -7,9 +7,9 @@ import flixel.FlxG;
 import openfl.Assets;
 import flixel.util.FlxColor;
 
-#if desktop
+#if (desktop || mobile)
 import hxvlc.openfl.Video;
-#elseif (web || mobile)
+#elseif web
 import openfl.media.SoundTransform;
 import openfl.media.Video;
 import openfl.net.NetConnection;
@@ -51,9 +51,9 @@ class VideoHandler extends FlxSprite
 	public var onStart:FlxSignal = new FlxSignal();
 	public var onEnd:FlxSignal = new FlxSignal();
 
-	#if desktop
+	#if (desktop || mobile)
 	var bitmap:Video;
-	#elseif (web || mobile)
+	#elseif web
 	var video:Video;
 	var netStream:NetStream;
 	var netPath:String;
@@ -71,11 +71,11 @@ class VideoHandler extends FlxSprite
 	**/
 	public function playMP4(videoPath:String, callback:Void->Void, ?repeat:Bool = false){
 
-		#if desktop
+		#if (desktop || mobile)
 		playDesktopMP4(videoPath, callback, repeat);
 		#end
 
-		#if (web || mobile)
+		#if web
 		playWebMP4(videoPath, callback, repeat);
 		#end
 
@@ -83,7 +83,7 @@ class VideoHandler extends FlxSprite
 
 	//===========================================================================================================//
 
-	#if desktop
+	#if (desktop || mobile)
 	/**
 		Plays MP4s using VLC Bitmaps as the source.
 		Only works on desktop builds.
@@ -149,7 +149,7 @@ class VideoHandler extends FlxSprite
 
 	//===========================================================================================================//
 
-	#if (web || mobile)
+	#if web
 	/**
 		Plays MP4s using OpenFL NetStreams and Videos as the source.
 		Only works on web builds.
@@ -258,7 +258,7 @@ class VideoHandler extends FlxSprite
 
 		super.update(elapsed);
 
-		#if desktop
+		#if (desktop || mobile)
 		if(bitmap != null){
 
 			if(FlxG.sound.muted || __muted){
@@ -291,7 +291,7 @@ class VideoHandler extends FlxSprite
 		}
 		#end
 
-		#if (web || mobile)
+		#if web
 		if(FlxG.keys.justPressed.MINUS || FlxG.keys.justPressed.PLUS){
 			setSoundTransform(__muted);
 		}
@@ -329,13 +329,13 @@ class VideoHandler extends FlxSprite
 			FlxG.signals.focusGained.remove(resume);
 		}
 
-		#if desktop
+		#if (desktop || mobile)
 		if(!completed){
 			vlcClean();
 		}
 		#end
 
-		#if (web || mobile)
+		#if web
 		if(!completed){
 			netClean();
 		}
@@ -350,13 +350,13 @@ class VideoHandler extends FlxSprite
 	**/
 	public function pause(){
 
-		#if desktop
+		#if (desktop || mobile)
 		if(bitmap != null && !paused){
 			bitmap.pause();
 		}
 		#end
 
-		#if (web || mobile)
+		#if web
 		if(netStream != null && !paused){
 			netStream.pause();
 		}
@@ -370,13 +370,13 @@ class VideoHandler extends FlxSprite
 	**/
 	public function resume(){
 
-		#if desktop
+		#if (desktop || mobile)
 		if(bitmap != null && paused){ 
 			bitmap.resume();
 		}
 		#end
 
-		#if (web || mobile)
+		#if web
 		if(netStream != null && paused){ 
 			netStream.resume();
 		}
@@ -387,10 +387,10 @@ class VideoHandler extends FlxSprite
 
 	public function skip(){
 
-		#if desktop
+		#if (desktop || mobile)
 		onVLCComplete();
 		#end
-		#if (web || mobile)
+		#if web
 		finishVideo();
 		#end
 
@@ -402,7 +402,7 @@ class VideoHandler extends FlxSprite
 
 	private function set_muted(value:Bool):Bool{
 
-		#if (web || mobile)
+		#if web
 		if(startDrawing){
 			setSoundTransform(value);
 		}
@@ -413,13 +413,13 @@ class VideoHandler extends FlxSprite
 	
 
 	function get_length():Float {
-		#if desktop 
+		#if (desktop || mobile) 
 		return Int64s.toFloat(bitmap.length) / 1000000;
 		#end
 		/*#if mobile
 		return 0;
 		#end*/
-		#if (web || mobile)
+		#if web
 		@:privateAccess
 		return netStream.__video.duration;
 		#end
