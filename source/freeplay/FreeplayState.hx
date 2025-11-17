@@ -216,6 +216,11 @@ class FreeplayState extends MusicBeatState
 			setCurSelectedToBeginingOfList();
 		}
 
+		#if mobile
+		addVirtualPad(RIGHT_FULL, A_B);
+		addVirtualPadCamera();
+		#end
+
 		super.create();
 	} 
 
