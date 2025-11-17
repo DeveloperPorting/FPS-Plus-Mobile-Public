@@ -165,6 +165,7 @@ class Binds
 			category: "Menu",
 			binds: [Q],
 			controllerBinds: [LEFT_SHOULDER],
+			mobileBinds: [],
 			local: false
 		};
 		r.set("menuCycleLeft", k);
@@ -174,6 +175,7 @@ class Binds
 			category: "Menu",
 			binds: [E],
 			controllerBinds: [RIGHT_SHOULDER],
+			mobileBinds: [],
 			local: false
 		};
 		r.set("menuCycleRight", k);
@@ -193,6 +195,7 @@ class Binds
 			category: "Menu",
 			binds: [R],
 			controllerBinds: [BACK],
+			mobileBinds: [],
 			local: false
 		};
 		r.set("menuResetScore", k);
