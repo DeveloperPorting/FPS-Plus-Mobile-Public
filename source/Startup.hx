@@ -99,6 +99,8 @@ class Startup extends FlxUIStateExt
 			}
 		});
 
+		#if android FlxG.android.preventDefaultKeys = [BACK]; #end
+
 		FlxUIStateExt.defaultTransIn = ScreenWipeIn;
 		FlxUIStateExt.defaultTransInArgs = [0.6];
 		FlxUIStateExt.defaultTransOut = ScreenWipeOut;
