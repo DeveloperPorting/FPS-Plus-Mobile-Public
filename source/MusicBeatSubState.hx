@@ -10,6 +10,14 @@ import flixel.FlxG;
 
 class MusicBeatSubState extends FlxSubState
 {
+	public static var instance:MusicBeatSubstate;
+	public function new()
+	{
+		instance = this;
+		Binds.isInSubstate = true;
+		super();
+	}
+	
 	private var curStep:Int = 0;
 	private var curBeat:Int = 0;
 
@@ -77,7 +85,7 @@ class MusicBeatSubState extends FlxSubState
 	override function destroy()
 	{
 
-		//controls.isInSubstate = false;
+		Binds.isInSubstate = false;
 		
 		if (virtualPad != null)
 		{
