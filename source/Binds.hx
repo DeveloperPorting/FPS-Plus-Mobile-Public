@@ -461,7 +461,7 @@ class Binds
 	private static function get_requested():Dynamic
 			{
 				if (isInSubstate)
-					return MusicBeatSubstate.instance;
+					return MusicBeatSubState.instance;
 				else
 					return MusicBeatState.instance;
 			}
@@ -470,7 +470,7 @@ class Binds
 	private static function get_gameplayRequest():Dynamic
 			{
 				if (isInSubstate)
-					return MusicBeatSubstate.instance.mobileControls.current.target;
+					return MusicBeatSubState.instance.mobileControls.current.target;
 				else
 					return MusicBeatState.instance.mobileControls.current.target;
 			}
