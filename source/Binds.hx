@@ -6,6 +6,7 @@ import flixel.input.gamepad.FlxGamepadInputID;
 import openfl.events.Event;
 import flixel.FlxG;
 import flixel.input.keyboard.FlxKey;
+import mobile.flixel.input.FlxMobileInputID;
 
 class Binds
 {
@@ -333,15 +334,15 @@ class Binds
 	}
 
 	inline public static function pressed(input:String):Bool{
-		return pressedKeyboardOnly(input) || pressedControllerOnly(input);
+		return pressedKeyboardOnly(input) || pressedControllerOnly(input) || pressedVirtualPadOnly(input) || pressedMobileCOnly(input);
 	}
 
 	inline public static function justPressed(input:String):Bool{
-		return justPressedKeyboardOnly(input) || justPressedControllerOnly(input);
+		return justPressedKeyboardOnly(input) || justPressedControllerOnly(input) || justPressedVirtualPadOnly(input) || justPressedMobileCOnly(input);
 	}
 
 	inline public static function justReleased(input:String):Bool{
-		return justReleasedKeyboardOnly(input) || justReleasedControllerOnly(input);
+		return justReleasedKeyboardOnly(input) || justReleasedControllerOnly(input) || justReleasedVirtualPadOnly(input) || justReleasedMobileCOnly(input);
 	}
 
 	inline public static function pressedKeyboardOnly(input:String):Bool{
@@ -384,7 +385,7 @@ class Binds
 		return r;
 	}
 
-public var isInSubstate:Bool = false; // don't worry about this it becomes true and false on it's own in MusicBeatSubstate
+    public var isInSubstate:Bool = false; // don't worry about this it becomes true and false on it's own in MusicBeatSubstate
 	public var requested(get, default):Dynamic; // is set to MusicBeatState or MusicBeatSubstate when the constructor is called
 	public var gameplayRequest(get, default):Dynamic; // for PlayState and EditorPlayState (hitbox and virtualPad)
 	
@@ -399,7 +400,7 @@ public var isInSubstate:Bool = false; // don't worry about this it becomes true 
 
 	inline public static function justPressedVirtualPadOnly(input:String):Bool{
 		var r:Bool = false;
-		for(x in binds.get(input).controllerBinds){
+		for(x in binds.get(input).mobileBinds){
 	   	    r = requested.virtualPad.anyJustPressed(x);
 	 	    if(r){
 				break; }
@@ -407,32 +408,60 @@ public var isInSubstate:Bool = false; // don't worry about this it becomes true 
 		return r;
 	}
 
-	inline public static function justReleasedMobileOnly(input:String):Bool{
+	inline public static function justReleasedVirtualPadOnly(input:String):Bool{
 		var r:Bool = false;
-		for(x in binds.get(input).controllerBinds){
+		for(x in binds.get(input).mobileBinds){
 			r = requested.virtualPad.anyJustReleased(x);
 			if(r){ break; }
 		}
 	    return r;
 	}
 
+	inline public static function pressedMobileCOnly(input:String):Bool{
+		var r:Bool = false;
+		for(x in binds.get(input).mobileBinds){
+			r = gameplayRequest.anyPressed(x);
+			if(r){ break; }
+		}
+		return r;
+	}
+
+	inline public static function justPressedMobileCOnly(input:String):Bool{
+		var r:Bool = false;
+		for(x in binds.get(input).mobileBinds){
+	   	    r = gameplayRequest.anyJustPressed(x);
+	 	    if(r){
+				break; }
+		}
+		return r;
+	}
+
+	inline public static function justReleasedMobileCOnly(input:String):Bool{
+		var r:Bool = false;
+		for(x in binds.get(input).mobileBinds){
+			r = gameplayRequest.anyJustReleased(x);
+			if(r){ break; }
+		}
+	    return r;
+	}
+
 	@:noCompletion
-			private function get_requested():Dynamic
-					{
-						if (isInSubstate)
-							return MusicBeatSubstate.instance;
-						else
-							return MusicBeatState.instance;
-					}
+	private function get_requested():Dynamic
+			{
+				if (isInSubstate)
+					return MusicBeatSubstate.instance;
+				else
+					return MusicBeatState.instance;
+			}
 						
 	@:noCompletion
-			private function get_gameplayRequest():Dynamic
-					{
-						if (isInSubstate)
-							return MusicBeatSubstate.instance.mobileControls.current.target;
-						else
-							return MusicBeatState.instance.mobileControls.current.target;
-					}
+	private function get_gameplayRequest():Dynamic
+			{
+				if (isInSubstate)
+					return MusicBeatSubstate.instance.mobileControls.current.target;
+				else
+					return MusicBeatState.instance.mobileControls.current.target;
+			}
 	
 }
 
