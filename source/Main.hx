@@ -25,6 +25,13 @@ class Main extends Sprite
 		PolymodHandler.init();
 		FlxSprite.defaultAntialiasing = true;
 
+		#if android
+		Sys.setCwd(Path.addTrailingSlash(MobileUtil.getDirectory()));
+		MobileUtil.getPermissions();
+	    #elseif ios
+		Sys.setCwd(lime.system.System.documentsDirectory);
+		#end
+
 		#if !debug
 		LogStyle.ERROR.openConsole = false;
 		LogStyle.ERROR.errorSound = null;
