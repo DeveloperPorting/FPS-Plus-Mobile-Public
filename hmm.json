@@ -116,6 +116,11 @@
 			"dir": null,
 			"ref": "bdb191fe7cf745c02a980749906dbf22719e200b",
 			"url": "https://github.com/fponticelli/thx.semver"
+		},
+		{
+            "name": "extension-androidtools",
+            "type": "haxelib",
+            "version": "2.2.2"
 		}
 	]
 }
