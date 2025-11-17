@@ -41,6 +41,7 @@ class Binds
 			category: "Gameplay",
 			binds: [LEFT, A],
 			controllerBinds: [DPAD_LEFT, X],
+			mobileBinds: [noteLEFT, LEFT2],
 			local: false
 		};
 		r.set("gameplayLeft", k);
@@ -50,6 +51,7 @@ class Binds
 			category: "Gameplay",
 			binds: [DOWN, S],
 			controllerBinds: [DPAD_DOWN, A],
+			mobileBinds: [noteDOWN, DOWN2],
 			local: false
 		};
 		r.set("gameplayDown", k);
@@ -59,6 +61,7 @@ class Binds
 			category: "Gameplay",
 			binds: [UP, W],
 			controllerBinds: [DPAD_UP, Y],
+			mobileBinds: [noteUP, UP2],
 			local: false
 		};
 		r.set("gameplayUp", k);
@@ -68,6 +71,7 @@ class Binds
 			category: "Gameplay",
 			binds: [RIGHT, D],
 			controllerBinds: [DPAD_RIGHT, B],
+			mobileBinds: [noteRIGHT, RIGHT2],
 			local: false
 		};
 		r.set("gameplayRight", k);
@@ -77,6 +81,7 @@ class Binds
 			category: "Gameplay",
 			binds: [ESCAPE, ENTER],
 			controllerBinds: [START],
+			mobileBinds: [],
 			local: false
 		};
 		r.set("pause", k);
@@ -86,6 +91,7 @@ class Binds
 			category: "Gameplay",
 			binds: [R],
 			controllerBinds: [BACK],
+			mobileBinds: [],
 			local: false
 		};
 		r.set("killbind", k);
@@ -98,6 +104,7 @@ class Binds
 			category: "Menu",
 			binds: [UP, W],
 			controllerBinds: [DPAD_UP, LEFT_STICK_DIGITAL_UP],
+			mobileBinds: [UP, noteUP],
 			local: false
 		};
 		r.set("menuUp", k);
@@ -107,6 +114,7 @@ class Binds
 			category: "Menu",
 			binds: [DOWN, S],
 			controllerBinds: [DPAD_DOWN, LEFT_STICK_DIGITAL_DOWN],
+			mobileBinds: [DOWN, noteDOWN],
 			local: false
 		};
 		r.set("menuDown", k);
@@ -116,6 +124,7 @@ class Binds
 			category: "Menu",
 			binds: [LEFT, A],
 			controllerBinds: [DPAD_LEFT, LEFT_STICK_DIGITAL_LEFT],
+			mobileBinds: [LEFT, noteLEFT],
 			local: false
 		};
 		r.set("menuLeft", k);
@@ -125,6 +134,7 @@ class Binds
 			category: "Menu",
 			binds: [RIGHT, D],
 			controllerBinds: [DPAD_RIGHT, LEFT_STICK_DIGITAL_RIGHT],
+			mobileBinds: [RIGHT, noteRIGHT],
 			local: false
 		};
 		r.set("menuRight", k);
@@ -134,6 +144,7 @@ class Binds
 			category: "Menu",
 			binds: [ENTER, SPACE],
 			controllerBinds: [A, START],
+			mobileBinds: [A],
 			local: false
 		};
 		r.set("menuAccept", k);
@@ -143,6 +154,7 @@ class Binds
 			category: "Menu",
 			binds: [ESCAPE, BACKSPACE],
 			controllerBinds: [B],
+			mobileBinds: [B],
 			local: false
 		};
 		r.set("menuBack", k);
@@ -170,6 +182,7 @@ class Binds
 			category: "Menu",
 			binds: [TAB],
 			controllerBinds: [Y],
+			mobileBinds: [C],
 			local: false
 		};
 		r.set("menuChangeCharacter", k);
@@ -188,6 +201,7 @@ class Binds
 			category: "Menu",
 			binds: [F11],
 			controllerBinds: [],
+			mobileBinds: [],
 			local: false
 		};
 		r.set("fullscreen", k);
@@ -200,6 +214,7 @@ class Binds
 			category: "Developement",
 			binds: [SEVEN],
 			controllerBinds: [],
+			mobileBinds: [],
 			local: true
 		};
 		r.set("chartEditor", k);
@@ -209,6 +224,7 @@ class Binds
 			category: "Developement",
 			binds: [EIGHT],
 			controllerBinds: [],
+			mobileBinds: [],
 			local: true
 		};
 		r.set("offsetEditor", k);
@@ -218,6 +234,7 @@ class Binds
 			category: "Developement",
 			binds: [F5],
 			controllerBinds: [],
+			mobileBinds: [],
 			local: true
 		};
 		r.set("polymodReload", k);
@@ -300,6 +317,7 @@ class Binds
 					category: r.get(x).category,
 					binds: binds.get(x).binds,
 					controllerBinds: binds.get(x).controllerBinds,
+					mobileBinds: binds.get(x).mobileBinds,
 					local: r.get(x).local
 				};
 				r.set(x, k);
@@ -365,6 +383,56 @@ class Binds
 		}
 		return r;
 	}
+
+public var isInSubstate:Bool = false; // don't worry about this it becomes true and false on it's own in MusicBeatSubstate
+	public var requested(get, default):Dynamic; // is set to MusicBeatState or MusicBeatSubstate when the constructor is called
+	public var gameplayRequest(get, default):Dynamic; // for PlayState and EditorPlayState (hitbox and virtualPad)
+	
+	inline public static function pressedVirtualPadOnly(input:String):Bool{
+		var r:Bool = false;
+		for(x in binds.get(input).mobileBinds){
+			r = requested.virtualPad.anyPressed(x);
+			if(r){ break; }
+		}
+		return r;
+	}
+
+	inline public static function justPressedVirtualPadOnly(input:String):Bool{
+		var r:Bool = false;
+		for(x in binds.get(input).controllerBinds){
+	   	    r = requested.virtualPad.anyJustPressed(x);
+	 	    if(r){
+				break; }
+		}
+		return r;
+	}
+
+	inline public static function justReleasedMobileOnly(input:String):Bool{
+		var r:Bool = false;
+		for(x in binds.get(input).controllerBinds){
+			r = requested.virtualPad.anyJustReleased(x);
+			if(r){ break; }
+		}
+	    return r;
+	}
+
+	@:noCompletion
+			private function get_requested():Dynamic
+					{
+						if (isInSubstate)
+							return MusicBeatSubstate.instance;
+						else
+							return MusicBeatState.instance;
+					}
+						
+	@:noCompletion
+			private function get_gameplayRequest():Dynamic
+					{
+						if (isInSubstate)
+							return MusicBeatSubstate.instance.mobileControls.current.target;
+						else
+							return MusicBeatState.instance.mobileControls.current.target;
+					}
 	
 }
 
@@ -426,5 +494,6 @@ typedef Keybind = {
 	var category:String;							//The category of the input in the config menu.
 	var binds:Array<FlxKey>;						//The default keyboard keys of input.
 	var controllerBinds:Array<FlxGamepadInputID>;	//The default controller buttons of input.
+	var mobileBinds:Array<FlxMobileInputID>;        //The default mobile buttons of input.
 	var local:Bool;									//Whether the input is global (false) or mod specific (true). If you need to add extra keys that are only for a mod, make this true.
 }
