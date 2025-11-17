@@ -10,7 +10,7 @@ import flixel.FlxG;
 
 class MusicBeatSubState extends FlxSubState
 {
-	public static var instance:MusicBeatSubstate;
+	public static var instance:MusicBeatSubState;
 	public function new()
 	{
 		instance = this;
