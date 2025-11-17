@@ -131,6 +131,7 @@
 	    <config:android permission="android.permission.CAPTURE_AUDIO_OUTPUT" />
 		<android target-sdk-version="34" />
 		<android min-sdk-version="19" />
+		<certificate path="keystore.keystore" password="fpspeak" alias="fpspeak" alias-password="fpspeak" if="android" unless="debug" />
 	</section>
 
 	<!-- <haxedef name="SKIP_TO_PLAYSTATE" if="debug" /> -->
