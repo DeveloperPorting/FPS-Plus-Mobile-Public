@@ -417,7 +417,7 @@ class VideoHandler extends FlxSprite
 		return Int64s.toFloat(bitmap.length) / 1000000;
 		#end
 		#if mobile
-		return null;
+		return 0;
 		#end
 		#if web
 		@:privateAccess
