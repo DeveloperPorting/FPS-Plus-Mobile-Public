@@ -30,7 +30,7 @@
 	<window if="desktop" orientation="landscape" fullscreen="false" resizable="true" allow-high-dpi="true" />
 
 	<!--Mobile-specific-->
-	<window if="mobile" orientation="landscape" fullscreen="true" />
+	<window if="mobile" orientation="landscape" fullscreen="true" resizable="false"/>
 
 	<!-- _____________________________ Path Settings ____________________________ -->
 
