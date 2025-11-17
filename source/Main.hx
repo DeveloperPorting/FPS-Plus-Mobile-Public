@@ -9,9 +9,10 @@ import flixel.FlxGame;
 import flixel.FlxSprite;
 import openfl.display.Sprite;
 import openfl.display.InteractiveObject;
+import haxe.io.Path;
 
 #if mobile
-import funkin.mobile.utils.*;
+import mobile.utils.*;
 //import funkin.mobile.input.*;
 #end
 
