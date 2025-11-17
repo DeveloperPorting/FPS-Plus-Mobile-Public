@@ -394,69 +394,57 @@ class Binds
 	
 	inline public static function pressedVirtualPadOnly(input:String):Bool{
 		var r:Bool = false;
-	    if (requested.virtualPad != null){
 		 for(x in binds.get(input).mobileBinds){
 			r = requested.virtualPad.anyPressed(x);
 			if(r){ break; }
 	 	 }
-    	}
 		return r;
 	}
 
 	inline public static function justPressedVirtualPadOnly(input:String):Bool{
 		var r:Bool = false;
-		if (requested.virtualPad != null){
 		 for(x in binds.get(input).mobileBinds){
 	   	    r = requested.virtualPad.anyJustPressed(x);
 	 	    if(r){
 				break; }
 		 }
-		}
 		return r;
 	}
 
 	inline public static function justReleasedVirtualPadOnly(input:String):Bool{
 		var r:Bool = false;
-		if (requested.virtualPad != null){
 		 for(x in binds.get(input).mobileBinds){
 			r = requested.virtualPad.anyJustReleased(x);
 			if(r){ break; }
 		 }
-		}
 	    return r;
 	}
 
 	inline public static function pressedMobileCOnly(input:String):Bool{
 		var r:Bool = false;
-		if (requested.mobileControls != null && gameplayRequest != null){
 		 for(x in binds.get(input).mobileBinds){
 			r = gameplayRequest.anyPressed(x);
 			if(r){ break; }
 		 }
-		}
 		return r;
 	}
 
 	inline public static function justPressedMobileCOnly(input:String):Bool{
 		var r:Bool = false;
-		if (requested.mobileControls != null && gameplayRequest != null){
 		 for(x in binds.get(input).mobileBinds){
 	   	    r = gameplayRequest.anyJustPressed(x);
 	 	    if(r){
 				break; }
 		 }
-		}
 		return r;
 	}
 
 	inline public static function justReleasedMobileCOnly(input:String):Bool{
 		var r:Bool = false;
-		if (requested.mobileControls != null && gameplayRequest != null){
 		 for(x in binds.get(input).mobileBinds){
 			r = gameplayRequest.anyJustReleased(x);
 			if(r){ break; }
 		 }
-	    }
 	    return r;
 	}
 
