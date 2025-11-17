@@ -240,7 +240,7 @@ class Startup extends FlxUIStateExt
 	}
 
 	function openPreloadSettings(){
-		#if desktop
+		#if (desktop || mobile)
 		FlxG.sound.play(Paths.sound('cancelMenu'));
 		CacheSettings.noFunMode = true;
 		customTransOut = new FadeOut(0.3);
