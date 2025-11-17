@@ -457,8 +457,8 @@ class Binds
 	    return r;
 	}
 
-	@:noCompletion
-	private function get_requested():Dynamic
+	//@:noCompletion
+	inline public function get_requested():Dynamic
 			{
 				if (isInSubstate)
 					return MusicBeatSubstate.instance;
@@ -466,8 +466,8 @@ class Binds
 					return MusicBeatState.instance;
 			}
 						
-	@:noCompletion
-	private function get_gameplayRequest():Dynamic
+	//@:noCompletion
+	inline public function get_gameplayRequest():Dynamic
 			{
 				if (isInSubstate)
 					return MusicBeatSubstate.instance.mobileControls.current.target;
