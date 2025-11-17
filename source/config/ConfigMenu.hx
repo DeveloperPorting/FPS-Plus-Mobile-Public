@@ -779,9 +779,9 @@ class ConfigMenu extends FlxUIStateExt
 			framerateValue = allowedFramerates.length - 1;
 		}
 
-		var fpsCap = new ConfigOption("FRAMERATE", #if desktop (allowedFramerates[framerateValue] == 999 ? "uncapped" : ""+allowedFramerates[framerateValue]) #else "disabled" #end, #if desktop "Uncaps the framerate during gameplay.\n(Some menus will limit framerate but gameplay will always be at the specified framerate.)" #else "Disabled on Web builds." #end);
+		var fpsCap = new ConfigOption("FRAMERATE", #if (desktop || mobile) (allowedFramerates[framerateValue] == 999 ? "uncapped" : ""+allowedFramerates[framerateValue]) #else "disabled" #end, #if (desktop || mobile) "Uncaps the framerate during gameplay.\n(Some menus will limit framerate but gameplay will always be at the specified framerate.)" #else "Disabled on Web builds." #end);
 		fpsCap.optionUpdate = function(){
-			#if desktop
+			#if (desktop || mobile)
 			if (pressRight) {
 				FlxG.sound.play(Paths.sound('scrollMenu'));
 				framerateValue++;
@@ -1183,7 +1183,7 @@ class ConfigMenu extends FlxUIStateExt
 		var cacheSettings = new ConfigOption("[CACHE SETTINGS]", "", "Press ENTER to change what assets the game keeps cached.");
 		cacheSettings.optionUpdate = function(){
 			if (pressAccept) {
-				#if desktop
+				#if (desktop || mobile)
 				FlxG.sound.play(Paths.sound('scrollMenu'));
 				state = "transitioning";
 				saveMenuPosition();
