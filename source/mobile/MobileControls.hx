@@ -7,7 +7,7 @@ import mobile.flixel.FlxHitbox;
 import mobile.flixel.FlxVirtualPad;
 import mobile.flixel.input.FlxMobileInputManager;
 import mobile.flixel.FlxButton;
-import flixel.group.FlxTypedSpriteGroup
+import flixel.group.FlxTypedSpriteGroup;
 
 /**
  * @author Mihai Alexandru (M.A. Jigsaw)
