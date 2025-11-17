@@ -23,6 +23,7 @@ class MusicBeatState extends FlxUIStateExt
 
 	private var stateConductorOffset:Float = 0;
 
+	public static var instance:MusicBeatState;
 	public var mobileControls:MobileControls;
 	public var virtualPad:FlxVirtualPad;
 
@@ -93,6 +94,7 @@ class MusicBeatState extends FlxUIStateExt
 	}
 
 	override function create(){
+		instance = this;
 		super.create();
 	}
 
