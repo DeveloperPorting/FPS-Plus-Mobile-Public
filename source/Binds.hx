@@ -385,7 +385,7 @@ class Binds
 		return r;
 	}
 
-    public var isInSubstate:Bool = false; // don't worry about this it becomes true and false on it's own in MusicBeatSubstate
+    public static var isInSubstate:Bool = false; // don't worry about this it becomes true and false on it's own in MusicBeatSubstate
 	public static var requested(get, default):Dynamic; // is set to MusicBeatState or MusicBeatSubstate when the constructor is called
 	public static var gameplayRequest(get, default):Dynamic; // for PlayState and EditorPlayState (hitbox and virtualPad)
 	
@@ -458,7 +458,7 @@ class Binds
 	}
 
 	@:noCompletion
-	private function get_requested():Dynamic
+	private static function get_requested():Dynamic
 			{
 				if (isInSubstate)
 					return MusicBeatSubstate.instance;
@@ -467,7 +467,7 @@ class Binds
 			}
 						
 	@:noCompletion
-	private function get_gameplayRequest():Dynamic
+	private static function get_gameplayRequest():Dynamic
 			{
 				if (isInSubstate)
 					return MusicBeatSubstate.instance.mobileControls.current.target;
