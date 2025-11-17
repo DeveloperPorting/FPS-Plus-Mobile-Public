@@ -1,22 +1,24 @@
 package mobile;
 
 import flixel.FlxG;
-import flixel.group.FlxSpriteGroup;
 import flixel.math.FlxPoint;
 import flixel.util.FlxDestroyUtil;
 import mobile.flixel.FlxHitbox;
 import mobile.flixel.FlxVirtualPad;
+import mobile.flixel.input.FlxMobileInputManager;
+import mobile.flixel.FlxButton;
 
 /**
  * @author Mihai Alexandru (M.A. Jigsaw)
  */
-class MobileControls extends FlxSpriteGroup
+class MobileControls extends FlxTypedSpriteGroup<FlxMobileInputManager>
 {
 	public static var customVirtualPad(get, set):FlxVirtualPad;
 	public static var mode(get, set):String;
-
 	public var virtualPad:FlxVirtualPad;
 	public var hitbox:FlxHitbox;
+	// YOU CAN'T CHANGE PROPERTIES USING THIS EXCEPT WHEN IN RUNTIME!!
+	public var current:CurrentManager;
 
 	public function new()
 	{
@@ -41,6 +43,7 @@ class MobileControls extends FlxSpriteGroup
 				add(hitbox);
 			case 'Keyboard': // do nothing
 		}
+		current = new CurrentManager(this);
 	}
 
 	override public function destroy():Void
@@ -58,7 +61,7 @@ class MobileControls extends FlxSpriteGroup
 	{
 		if (FlxG.save.data.controlsMode == null)
 		{
-			FlxG.save.data.controlsMode = 'Pad-Right';
+			FlxG.save.data.controlsMode = 'Hitbox';
 			FlxG.save.flush();
 		}
 
@@ -113,5 +116,34 @@ class MobileControls extends FlxSpriteGroup
 		}
 
 		return virtualPad;
+	}
+}
+
+class CurrentManager
+{
+	public var buttonLeft:FlxButton;
+	public var buttonDown:FlxButton;
+	public var buttonUp:FlxButton;
+	public var buttonRight:FlxButton;
+	public var target:FlxMobileInputManager;
+
+	public function new(control:MobileControls)
+	{
+		if (MobileControls.mode == 'Hitbox')
+		{
+			target = control.hitbox;
+			buttonLeft = control.hitbox.buttonLeft;
+			buttonDown = control.hitbox.buttonDown;
+			buttonUp = control.hitbox.buttonUp;
+			buttonRight = control.hitbox.buttonRight;
+		}
+		else
+		{
+			target = control.virtualPad;
+			buttonLeft = control.virtualPad.buttonLeft;
+			buttonDown = control.virtualPad.buttonDown;
+			buttonUp = control.virtualPad.buttonUp;
+			buttonRight = control.virtualPad.buttonRight;
+		}
 	}
 }
