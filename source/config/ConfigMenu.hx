@@ -24,7 +24,7 @@ import caching.*;
 
 using StringTools;
 
-class ConfigMenu extends FlxUIStateExt
+class ConfigMenu #if mobile extends MusicBeatState #else extends FlxUIStateExt #end
 {
 
 	public static final USE_LAYERED_MUSIC:Bool = true;	//If you're not using a layered options theme, set this to false.
