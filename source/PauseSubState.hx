@@ -122,6 +122,11 @@ class PauseSubState extends MusicBeatSubState
 
 		for(script in PlayState.instance.scripts){ script.pause(); }
 
+		#if mobile
+		addVirtualPad(UP_DOWN, A_B);
+		addVirtualPadCamera();
+		#end
+
 		super.create();
 
 		Utils.gc();
@@ -132,21 +137,21 @@ class PauseSubState extends MusicBeatSubState
 		super.update(elapsed);
 
 		if(!becomeUseless){
-			if (Binds.justPressed("menuUp")){
+			if (Binds.justPressed("menuUp") || virtualPad.buttonUp.justPressed){
 				changeSelection(-1);
 				FlxG.sound.play(Paths.sound("scrollMenu"), 0.8);
 			}
-			if (Binds.justPressed("menuDown")){
+			if (Binds.justPressed("menuDown") || virtualPad.buttonDown.justPressed){
 				changeSelection(1);
 				FlxG.sound.play(Paths.sound("scrollMenu"), 0.8);
 			}
 	
-			if (Binds.justPressed("menuBack")){
+			if (Binds.justPressed("menuBack") || virtualPad.buttonB.justPressed){
 				PlayState.instance.tweenManager.active = true;
 				unpause();
 			}
 	
-			if (!allowControllerPress ? Binds.justPressedKeyboardOnly("menuAccept") : Binds.justPressed("menuAccept")){
+			if (!allowControllerPress ? Binds.justPressedKeyboardOnly("menuAccept") : Binds.justPressed("menuAccept") || virtualPad.buttonA.justPressed){
 	
 				PlayState.instance.tweenManager.active = true;
 	
