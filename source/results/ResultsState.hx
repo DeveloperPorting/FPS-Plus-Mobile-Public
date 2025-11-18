@@ -462,6 +462,16 @@ class ResultsState extends FlxUIStateExt
 			returnToMenu();
 		}
 
+		#if mobile
+		for (touch in FlxG.touches.list)
+		{
+			if (touch.justPressed)
+			{
+				returnToMenu();
+			}
+		}
+		#end
+
 		if(enableDebugControls){
 			if(FlxG.keys.anyJustPressed([TAB])){
 				var newResultsState:ResultsState;
