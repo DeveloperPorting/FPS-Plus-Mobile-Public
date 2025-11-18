@@ -54,6 +54,16 @@ class TitleVideo extends FlxState
 			video.skip();
 		}
 
+		#if mobile
+		for (touch in FlxG.touches.list)
+		{
+			if (touch.justPressed)
+			{
+				video.skip();
+			}
+		}
+		#end
+
 	}
 
 	function next():Void{
