@@ -221,7 +221,7 @@ class MainMenuState extends MusicBeatState
 
 		Conductor.songPosition = FlxG.sound.music.time;
 
-		if(canCancelWarning && (Binds.justPressed("menuUp") || Binds.justPressed("menuDown")) || Binds.justPressed("menuAccept")){
+		if(canCancelWarning && (Binds.justPressed("menuUp") || Binds.justPressed("menuDown")) || Binds.justPressed("menuAccept") || (vPad.buttonUp.justPressed || vPad.buttonDown.justPressed || vPad.buttonA.justPressed)){
 			canCancelWarning = false;
 			FlxTween.cancelTweensOf(versionText);
 			FlxTween.cancelTweensOf(keyWarning);
@@ -229,11 +229,11 @@ class MainMenuState extends MusicBeatState
 		}
 	
 		if (!selectedSomething){
-			if (Binds.justPressed("menuUp")){
+			if (Binds.justPressed("menuUp") || vPad.buttonUp.justPressed){
 				FlxG.sound.play(Paths.sound("scrollMenu"));
 				changeItem(-1);
 			}
-			else if (Binds.justPressed("menuDown")){
+			else if (Binds.justPressed("menuDown") || vPad.buttonDown.justPressed){
 				FlxG.sound.play(Paths.sound("scrollMenu"));
 				changeItem(1);
 			}
@@ -242,13 +242,13 @@ class MainMenuState extends MusicBeatState
 				Binds.resetToDefaultControls();
 				FlxG.sound.play(Paths.sound("cancelMenu"));
 			}
-			else if (Binds.justPressed("menuBack") && !FlxG.keys.pressed.CONTROL){
+			else if (Binds.justPressed("menuBack") || vPad.buttonB.justPressed && !FlxG.keys.pressed.CONTROL){
 				selectedSomething = true;
 				switchState(new TitleScreen());
 				FlxG.sound.play(Paths.sound("cancelMenu"));
 			}
 
-			if (Binds.justPressed("menuAccept")){
+			if (Binds.justPressed("menuAccept") || vPad.buttonA.justPressed){
 				selectedSomething = true;
 				doButtonTransition(menuItems[curSelected]);
 			}
