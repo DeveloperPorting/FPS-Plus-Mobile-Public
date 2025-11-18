@@ -332,7 +332,7 @@ class ConfigMenu #if mobile extends MusicBeatState #else extends FlxUIStateExt #
 
 		pressUp = (Binds.justPressed("menuUp") || virtualPad.buttonUp.justPressed);
 		pressDown = (Binds.justPressed("menuDown") || virtualPad.buttonDown.justPressed);
-		pressLeft = (Binds.justPressed("menuLeft") || virtualPad.buttonleft.justPressed);
+		pressLeft = (Binds.justPressed("menuLeft") || virtualPad.buttonLeft.justPressed);
 		pressRight = (Binds.justPressed("menuRight") || virtualPad.buttonRight.justPressed);
 		pressAccept = (Binds.justPressed("menuAccept") || virtualPad.buttonA.justPressed);
 		pressBack = (Binds.justPressed("menuBack") || virtualPad.buttonB.justPressed);
