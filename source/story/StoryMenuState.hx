@@ -280,6 +280,11 @@ class StoryMenuState extends MusicBeatState
 		add(resetScoreYes);
 		add(resetScoreNo);
 
+		#if mobile
+		addVirtualPad(LEFT_FULL, A_B);
+		addVirtualPadCamera();
+		#end
+
 		super.create();
 	}
 
@@ -315,41 +320,41 @@ class StoryMenuState extends MusicBeatState
 			case "week":
 				if (!movedBack){
 					if (!selectedWeek){
-						if(Binds.justPressed("menuUp")){
+						if(Binds.justPressed("menuUp") || virtualPad.buttonUp.justPressed){
 							changeWeek(-1);
 							changeDifficulty(0, false);
 						}
-						else if(Binds.justPressed("menuDown")){
+						else if(Binds.justPressed("menuDown") || virtualPad.buttonDown.justPressed){
 							changeWeek(1);
 							changeDifficulty(0, false);
 						}
 		
-						if (Binds.pressed("menuRight")){
+						if (Binds.pressed("menuRight") || virtualPad.buttonRight.pressed){
 							rightArrow.animation.play('press');
 						}
 						else{
 							rightArrow.animation.play('idle');
 						}
 		
-						if(Binds.pressed("menuLeft")){
+						if(Binds.pressed("menuLeft") || virtualPad.buttonLeft.pressed){
 							leftArrow.animation.play('press');
 						}
 						else{
 							leftArrow.animation.play('idle');
 						}
 		
-						if(Binds.justPressed("menuRight")){
+						if(Binds.justPressed("menuRight") || virtualPad.buttonRight.justPressed){
 							changeDifficulty(1);
 							FlxG.sound.play(Paths.sound('scrollMenu'));
 						}
 		
-						if(Binds.justPressed("menuLeft")){
+						if(Binds.justPressed("menuLeft") || virtualPad.buttonLeft.justPressed){
 							changeDifficulty(-1);
 							FlxG.sound.play(Paths.sound('scrollMenu'));
 						}
 					}
 		
-					if (Binds.justPressed("menuAccept")){
+					if (Binds.justPressed("menuAccept") || virtualPad.buttonA.justPressed){
 						selectWeek();
 					}
 					else if(Binds.justPressed("menuResetScore")){
@@ -357,7 +362,7 @@ class StoryMenuState extends MusicBeatState
 					}
 				}
 		
-				if (Binds.justPressed("menuBack") && !movedBack && !selectedWeek)
+				if (Binds.justPressed("menuBack") || virtualPad.buttonB.justPressed && !movedBack && !selectedWeek)
 				{
 					FlxG.sound.play(Paths.sound('cancelMenu'));
 					movedBack = true;
@@ -365,7 +370,7 @@ class StoryMenuState extends MusicBeatState
 				}
 
 			case "resetScore":
-				if(Binds.justPressed("menuLeft") || Binds.justPressed("menuRight")){
+				if((Binds.justPressed("menuLeft") || Binds.justPressed("menuRight")) || (virtualPad.buttonLeft.justPressed || virtualPad.buttonRight.justPressed)){
 					resetScoreState = !resetScoreState;
 					FlxG.sound.play(Paths.sound('scrollMenu'));
 					if(resetScoreState){
@@ -389,7 +394,7 @@ class StoryMenuState extends MusicBeatState
 					resetScoreYes.color = 0xFF7F7F7F;
 				}
 
-				if(Binds.justPressed("menuAccept") && resetScoreState){
+				if(Binds.justPressed("menuAccept") || virtualPad.buttonA.justPressed && resetScoreState){
 					for(i in 0...3){
 						if(Highscore.getWeekScore(weekList[curWeek].id, i).score > 0){
 							Highscore.saveWeekScore(weekList[curWeek].id, 0, 0, i, none, true);
@@ -399,7 +404,7 @@ class StoryMenuState extends MusicBeatState
 					closeResetScorePopup();
 					FlxG.sound.play(Paths.sound('confirmMenu'));
 				}
-				else if(Binds.justPressed("menuBack") || (Binds.justPressed("menuAccept") && !resetScoreState)){
+				else if((Binds.justPressed("menuBack") || (Binds.justPressed("menuAccept") && !resetScoreState)) || (virtualPad.buttonB.justPressed || (virtualPad.buttonB.justPressed && !resetScoreState))){
 					closeResetScorePopup();
 					FlxG.sound.play(Paths.sound('cancelMenu'));
 				}
