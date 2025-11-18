@@ -20,7 +20,7 @@ import flixel.FlxSprite;
 import extensions.flixel.FlxUIStateExt;
 import caching.*;
 
-class ModManagerState extends FlxUIStateExt
+class ModManagerState #if mobile extends MusicBeatState #else extends FlxUIStateExt #end
 {
 
 	var curSelectedMod:Int = 0;
