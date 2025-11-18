@@ -217,7 +217,7 @@ class FreeplayState extends MusicBeatState
 		}
 
 		#if mobile
-		addVirtualPad(LEFT_FULL, A_B);
+		addVirtualPad(LEFT_FULL, A_B_C);
 		addVirtualPadCamera();
 		#end
 
@@ -330,10 +330,10 @@ class FreeplayState extends MusicBeatState
 						updateCapsulePosition(i);
 					}
 			
-					if(Binds.pressed("menuLeft") || vPad.buttonLeft.justPressed){ arrowLeft.scale.set(0.8, 0.8); }
+					if(Binds.pressed("menuLeft") || vPad.buttonLeft.pressed){ arrowLeft.scale.set(0.8, 0.8); }
 					else{ arrowLeft.scale.set(1, 1); }
 			
-					if(Binds.pressed("menuRight") || vPad.buttonRight.justPressed){ arrowRight.scale.set(0.8, 0.8); }
+					if(Binds.pressed("menuRight") || vPad.buttonRight.pressed){ arrowRight.scale.set(0.8, 0.8); }
 					else{ arrowRight.scale.set(1, 1); }
 		
 					if(Binds.pressed("menuCycleLeft")){ miniArrowLeft.scale.set(0.6, 0.6); }
@@ -356,7 +356,7 @@ class FreeplayState extends MusicBeatState
 						});
 					}
 		
-					if(Binds.justPressed("menuChangeCharacter")){
+					if(Binds.justPressed("menuChangeCharacter") || vPad.buttonC.justPressed){
 						transitionOver = false;
 						dj.toCharacterSelect();
 						customTransOut = new transition.data.ScreenWipeOutFlipped(dropTime, dropEase);
@@ -379,42 +379,42 @@ class FreeplayState extends MusicBeatState
 		
 					
 				case "variation":
-					if(Binds.justPressed("menuLeft")){
+					if(Binds.justPressed("menuLeft") || vPad.buttonLeft.justPressed){
 						changeVariation(-1);
 						FlxG.sound.play(Paths.sound('scrollMenu'));
 					}
-					else if(Binds.justPressed("menuRight")){
+					else if(Binds.justPressed("menuRight") || vPad.buttonRight.justPressed){
 						changeVariation(1);
 						FlxG.sound.play(Paths.sound('scrollMenu'));
 					}
 
-					if(Binds.justPressed("menuAccept")){
+					if(Binds.justPressed("menuAccept") || vPad.buttonA.justPressed){
 						PlayState.overrideInsturmental = categoryMap[categoryNames[curCategory]][curSelected].variations[curVariation];
 						closeVariationPopup();
 						songAccept();
 					}
-					else if(Binds.justPressed("menuBack")){
+					else if(Binds.justPressed("menuBack") || vPad.buttonB.justPressed){
 						closeVariationPopup();
 						FlxG.sound.play(Paths.sound('cancelMenu'));
 					}
 
-					if(Binds.pressed("menuLeft")){ variationArrowLeft.scale.set(1.6, 1.6); }
+					if(Binds.pressed("menuLeft") || vPad.buttonLeft.pressed){ variationArrowLeft.scale.set(1.6, 1.6); }
 					else{ variationArrowLeft.scale.set(2, 2); }
 			
-					if(Binds.pressed("menuRight")){ variationArrowRight.scale.set(1.6, 1.6); }
+					if(Binds.pressed("menuRight") || vPad.buttonRight.pressed){ variationArrowRight.scale.set(1.6, 1.6); }
 					else{ variationArrowRight.scale.set(2, 2); }
 					
 				case "variationRandom":
-					if(Binds.justPressed("menuLeft")){
+					if(Binds.justPressed("menuLeft") || vPad.buttonLeft.justPressed){
 						changeVariationRandom(-1);
 						FlxG.sound.play(Paths.sound('scrollMenu'));
 					}
-					else if(Binds.justPressed("menuRight")){
+					else if(Binds.justPressed("menuRight") || vPad.buttonRight.justPressed){
 						changeVariationRandom(1);
 						FlxG.sound.play(Paths.sound('scrollMenu'));
 					}
 
-					if(Binds.justPressed("menuAccept")){
+					if(Binds.justPressed("menuAccept") || vPad.buttonA.justPressed){
 						curSelected = randomSongSelection;
 						changeSelected(0);
 
@@ -432,15 +432,15 @@ class FreeplayState extends MusicBeatState
 
 						curSelected = 0;
 					}
-					else if(Binds.justPressed("menuBack")){
+					else if(Binds.justPressed("menuBack") || vPad.buttonB.justPressed){
 						closeVariationPopup();
 						FlxG.sound.play(Paths.sound('cancelMenu'));
 					}
 
-					if(Binds.pressed("menuLeft")){ variationArrowLeft.scale.set(1.6, 1.6); }
+					if(Binds.pressed("menuLeft") || vPad.buttonLeft.pressed){ variationArrowLeft.scale.set(1.6, 1.6); }
 					else{ variationArrowLeft.scale.set(2, 2); }
 			
-					if(Binds.pressed("menuRight")){ variationArrowRight.scale.set(1.6, 1.6); }
+					if(Binds.pressed("menuRight") || vPad.buttonRight.pressed){ variationArrowRight.scale.set(1.6, 1.6); }
 					else{ variationArrowRight.scale.set(2, 2); }
 
 				case "resetScore":
