@@ -1613,7 +1613,7 @@ class PlayState extends MusicBeatState
 		stage.updateTheUpdateGroup(elapsed);
 		for(script in scripts){ script.update(elapsed); }
 
-		if (Binds.justPressed("pause") && startedCountdown && canPause){
+		if (Binds.justPressed("pause") || FlxG.android.justReleased.BACK && startedCountdown && canPause){
 			paused = true;
 			openSubState(new PauseSubState());
 		}
