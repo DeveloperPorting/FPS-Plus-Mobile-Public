@@ -53,6 +53,7 @@ import modding.PolymodHandler;
 import openfl.filters.ShaderFilter;
 import story.StoryMenuState;
 import caching.*;
+import mobile.MobileControls;
 
 using StringTools;
 
@@ -2224,10 +2225,17 @@ class PlayState extends MusicBeatState
 
 	private function keyCheck():Void{
 
-		upTime = Binds.pressed("gameplayUp") ? upTime + 1 : 0;
+     if (MobileControls.mode != 'Keyboard') {
+		upTime = mobileControls.hitbox.buttonUp.pressed ? upTime + 1 : 0;
+		downTime = mobileControls.hitbox.buttonDown.pressed ? downTime + 1 : 0;
+		leftTime = mobileControls.hitbox.buttonLeft.pressed ? leftTime + 1 : 0;
+		rightTime = mobileControls.hitbox.buttonRight.pressed ? rightTime + 1 : 0;
+	 } else {
+	    upTime = Binds.pressed("gameplayUp") ? upTime + 1 : 0;
 		downTime = Binds.pressed("gameplayDown") ? downTime + 1 : 0;
 		leftTime = Binds.pressed("gameplayLeft") ? leftTime + 1 : 0;
 		rightTime = Binds.pressed("gameplayRight") ? rightTime + 1 : 0;
+ 	}
 
 		upPress = upTime == 1;
 		downPress = downTime == 1;
