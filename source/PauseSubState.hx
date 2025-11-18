@@ -151,7 +151,7 @@ class PauseSubState extends MusicBeatSubState
 				unpause();
 			}
 	
-			if (!allowControllerPress ? Binds.justPressedKeyboardOnly("menuAccept") : Binds.justPressed("menuAccept") || virtualPad.buttonA.justPressed){
+			if (!allowControllerPress ? Binds.justPressedKeyboardOnly("menuAccept") || virtualPad.buttonA.justPressed : Binds.justPressed("menuAccept")){
 	
 				PlayState.instance.tweenManager.active = true;
 	
