@@ -267,6 +267,11 @@ class ModManagerState extends FlxUIStateExt
 			add(button);
 		}
 
+		#if mobile
+		addVirtualPad(LEFT_FULL, A_B);
+		addVirtualPadCamera();
+		#end
+
 		buildShownModList();
 
 		changeModSelection(0, false);
@@ -282,28 +287,28 @@ class ModManagerState extends FlxUIStateExt
 		if(canDoThings){
 			switch(state){
 				case "selecting":
-					if(Binds.justPressed("menuUp") && hasMods){
+					if(Binds.justPressed("menuUp") || virtualPad.buttonUp.justPressed && hasMods){
 						changeModSelection(-1);
 						FlxG.sound.play(Paths.sound("scrollMenu"));
 					}
-					else if(Binds.justPressed("menuDown") && hasMods){
+					else if(Binds.justPressed("menuDown") || virtualPad.buttonDown.justPressed && hasMods){
 						changeModSelection(1);
 						FlxG.sound.play(Paths.sound("scrollMenu"));
 					}
 			
-					if(Binds.justPressed("menuLeft")){
+					if(Binds.justPressed("menuLeft") || virtualPad.buttonLeft.justPressed){
 						changeButtonSelection(-1);
 						FlxG.sound.play(Paths.sound("scrollMenu"));
 					}
-					else if(Binds.justPressed("menuRight")){
+					else if(Binds.justPressed("menuRight") || virtualPad.buttonRight.justPressed){
 						changeButtonSelection(1);
 						FlxG.sound.play(Paths.sound("scrollMenu"));
 					}
-					if(Binds.justPressed("menuAccept")){
+					if(Binds.justPressed("menuAccept") || virtualPad.buttonA.justPressed){
 						menuButtons[curSelectedButton].press();
 					}
 			
-					if(Binds.justPressed("menuBack")){
+					if(Binds.justPressed("menuBack") || virtualPad.buttonB.justPressed){
 						ImageCache.forceClearOnTransition = true;
 						FlxG.sound.play(Paths.sound("cancelMenu"));
 						canDoThings = false;
@@ -321,11 +326,11 @@ class ModManagerState extends FlxUIStateExt
 					}
 
 				case "config":
-					if(Binds.justPressed("menuBack")){
+					if(Binds.justPressed("menuBack") || virtualPad.buttonB.justPressed){
 						FlxG.sound.play(Paths.sound("cancelMenu"));
 						switchToSelecting();
 					}
-					else if(Binds.justPressed("menuDown")){
+					else if(Binds.justPressed("menuDown") || virtualPad.buttonDown.justPressed){
 						if(curListStartOffset + curListPosition < modList[curSelectedMod].config.length-1){
 							if(curListPosition == 6){
 								curListStartOffset++;
@@ -339,7 +344,7 @@ class ModManagerState extends FlxUIStateExt
 							textUpdate();
 						}
 					}
-					else if(Binds.justPressed("menuUp")){
+					else if(Binds.justPressed("menuUp") || virtualPad.buttonUp.justPressed){
 						if(curListStartOffset + curListPosition > 0){
 							if(curListPosition == 0){
 								curListStartOffset--;
@@ -358,7 +363,7 @@ class ModManagerState extends FlxUIStateExt
 						modList[curSelectedMod].config[curListStartOffset + curListPosition].optionUpdate();
 					}
 
-					if(Binds.justPressed("menuLeft") || Binds.justPressed("menuRight")){
+					if((Binds.justPressed("menuLeft") || Binds.justPressed("menuRight")) || (virtualPad.buttonLeft.justPressed || virtualPad.buttonRight.justPressed)){
 						textUpdate();
 					}
 			}
