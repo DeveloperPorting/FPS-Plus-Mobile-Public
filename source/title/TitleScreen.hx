@@ -155,6 +155,16 @@ class TitleScreen extends MusicBeatState
 
 		var pressedEnter:Bool = (!allowControllerPress ? Binds.justPressedKeyboardOnly("menuAccept") : Binds.justPressed("menuAccept"));
 
+		#if mobile
+		for (touch in FlxG.touches.list)
+		{
+			if (touch.justPressed)
+			{
+				pressedEnter = true;
+			}
+		}
+		#end
+
 		if(!transitioning && Binds.justPressed("menuBack")){
 			Config.write();
 			System.exit(0);
