@@ -317,6 +317,11 @@ class ConfigMenu extends FlxUIStateExt
 			savedListOffset = -1;
 		}
 
+		#if mobile
+		addVirtualPad(LEFT_FULL, A_B);
+		addVirtualPadCamera();
+		#end
+
 		super.create();
 
 	}
@@ -325,16 +330,16 @@ class ConfigMenu extends FlxUIStateExt
 
 		super.update(elapsed);
 
-		pressUp = Binds.justPressed("menuUp");
-		pressDown = Binds.justPressed("menuDown");
-		pressLeft = Binds.justPressed("menuLeft");
-		pressRight = Binds.justPressed("menuRight");
-		pressAccept = Binds.justPressed("menuAccept");
-		pressBack = Binds.justPressed("menuBack");
-		holdUp = Binds.pressed("menuUp");
-		holdDown = Binds.pressed("menuDown");
-		holdLeft = Binds.pressed("menuLeft");
-		holdRight = Binds.pressed("menuRight");
+		pressUp = (Binds.justPressed("menuUp") || virtualPad.buttonUp.justPressed);
+		pressDown = (Binds.justPressed("menuDown") || virtualPad.buttonDown.justPressed);
+		pressLeft = (Binds.justPressed("menuLeft") || virtualPad.buttonleft.justPressed);
+		pressRight = (Binds.justPressed("menuRight") || virtualPad.buttonRight.justPressed);
+		pressAccept = (Binds.justPressed("menuAccept") || virtualPad.buttonA.justPressed);
+		pressBack = (Binds.justPressed("menuBack") || virtualPad.buttonB.justPressed);
+		holdUp = (Binds.pressed("menuUp") || virtualPad.buttonUp.pressed);
+		holdDown = (Binds.pressed("menuDown") || virtualPad.buttonDown.pressed);
+		holdLeft = (Binds.pressed("menuLeft") || virtualPad.buttonLeft.pressed);
+		holdRight = (Binds.pressed("menuRight") || virtualPad.buttonRight.pressed);
 
 		if(USE_LAYERED_MUSIC){
 			if (!exiting && (Math.abs(songLayer.time - (FlxG.sound.music.time)) > 20)){
