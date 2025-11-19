@@ -247,7 +247,9 @@ class DialogueBox extends FlxSpriteGroup
 	override function update(elapsed:Float){
 		super.update(elapsed);
 
-		if((FlxG.keys.justPressed.ANY || FlxG.gamepads.anyJustPressed(ANY)) && !(FlxG.keys.anyJustPressed(FlxG.sound.volumeDownKeys) || FlxG.keys.anyJustPressed(FlxG.sound.volumeUpKeys)) && !finishedDialogue){
+	 for (touch in FlxG.touches.list)
+	 {
+		if((FlxG.keys.justPressed.ANY || FlxG.gamepads.anyJustPressed(ANY) || touch.justPressed) && !(FlxG.keys.anyJustPressed(FlxG.sound.volumeDownKeys) || FlxG.keys.anyJustPressed(FlxG.sound.volumeUpKeys)) && !finishedDialogue){
 			//if dialogue are still playing, skip it
 			if(!finishedLine){
 				dialogueText.skip();
@@ -267,6 +269,7 @@ class DialogueBox extends FlxSpriteGroup
 					finishedDialogue = true;
 					finishDialogue();
 				}
+		 	  }
 			}
 		}
 	}
