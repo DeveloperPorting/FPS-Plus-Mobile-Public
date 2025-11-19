@@ -217,7 +217,7 @@ class FreeplayState extends MusicBeatState
 		}
 
 		#if mobile
-		addVirtualPad(LEFT_FULL, A_B_C);
+		addVirtualPad(LEFT_FULL, FREE_PLAY);
 		addVirtualPadCamera();
 		#end
 
@@ -266,11 +266,11 @@ class FreeplayState extends MusicBeatState
 					}
 		
 					if(categoryLockOutSoItStopsBreaking > 0.25){
-						if(Binds.justPressed("menuCycleLeft")){
+						if(Binds.justPressed("menuCycleLeft") || virtualPad.buttonLeft2.justPressed){
 							changeCategory(-1);
 							FlxG.sound.play(Paths.sound('scrollMenu'));
 						}
-						else if(Binds.justPressed("menuCycleRight")){
+						else if(Binds.justPressed("menuCycleRight") || virtualPad.buttonRight2.justPressed){
 							changeCategory(1);
 							FlxG.sound.play(Paths.sound('scrollMenu'));
 						}
@@ -336,10 +336,10 @@ class FreeplayState extends MusicBeatState
 					if(Binds.pressed("menuRight") || virtualPad.buttonRight.pressed){ arrowRight.scale.set(0.8, 0.8); }
 					else{ arrowRight.scale.set(1, 1); }
 		
-					if(Binds.pressed("menuCycleLeft")){ miniArrowLeft.scale.set(0.6, 0.6); }
+					if(Binds.pressed("menuCycleLeft") || virtualPad.buttonLeft2.pressed){ miniArrowLeft.scale.set(0.6, 0.6); }
 					else{ miniArrowLeft.scale.set(1, 1); }
 			
-					if(Binds.pressed("menuCycleRight")){ miniArrowRight.scale.set(0.6, 0.6); }
+					if(Binds.pressed("menuCycleRight") || virtualPad.buttonRight2.pressed){ miniArrowRight.scale.set(0.6, 0.6); }
 					else{ miniArrowRight.scale.set(1, 1); }
 			
 					if(Binds.justPressed("menuBack") || virtualPad.buttonB.justPressed){
@@ -490,7 +490,7 @@ class FreeplayState extends MusicBeatState
 		}
 
 		//big if
-		if(Binds.justPressed("menuUp")||Binds.justPressed("menuDown")||Binds.justPressed("menuLeft")||Binds.justPressed("menuRight")||Binds.justPressed("menuCycleLeft")||Binds.justPressed("menuCycleRight")){
+		if((Binds.justPressed("menuUp")||Binds.justPressed("menuDown")||Binds.justPressed("menuLeft")||Binds.justPressed("menuRight")||Binds.justPressed("menuCycleLeft")||Binds.justPressed("menuCycleRight")) || (virtualPad.buttonUp.justPressed||virtualPad.buttonDown.justPressed||virtualPad.buttonLeft.justPressed||virtualPad.buttonRight.justPressed||virtualPad.buttonLeft2.justPressed||virtualPad.buttonRight2.justPressed)){
 			pressedAnything();
 		}
 
