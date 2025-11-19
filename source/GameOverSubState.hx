@@ -72,16 +72,21 @@ class GameOverSubState extends MusicBeatSubState
 		}
 		
 		for(script in PlayState.instance.scripts){ script.gameOverStart(); }
+
+		#if mobile
+		addVirtualPad(NONE, A_B);
+		addVirtualPadCamera();
+		#end
 	}
 
 	override function update(elapsed:Float){
 		super.update(elapsed);
 
-		if(Binds.justPressed("menuAccept") && !isEnding){
+		if(Binds.justPressed("menuAccept") || virtualPad.buttonA.justPressed && !isEnding){
 			endBullshit();
 		}
 
-		if (Binds.justPressed("menuBack") && !isEnding){
+		if (Binds.justPressed("menuBack") || virtualPad.buttonB.justPressed && !isEnding){
 			FlxG.sound.music.stop();
 			isEnding = true;
 			FlxG.sound.play(Paths.sound('cancelMenu'));
