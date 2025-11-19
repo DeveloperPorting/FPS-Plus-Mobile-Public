@@ -524,7 +524,7 @@ class UpdateCheck
 
 		if(Config.checkForUpdates && !MainMenuState.SHOW_BUILD_INFO){ //Only check if the user wants to and you aren't running a dev build.
 			if(chachedResult == null){
-				var http = new Http("https://raw.githubusercontent.com/ThatRozebudDude/FPS-Plus-Public/master/latest");
+				var http = new Http("https://raw.githubusercontent.com/Unofficial-FNF-Port-Team/FPS-Plus-Mobile-Public/master/latest");
 				http.onData = function(data:String) {
 					v = data.split("\n")[0].trim();
 					r = (MainMenuState.VERSION != v) ? 1 : 0;
@@ -557,9 +557,9 @@ class UpdateCheck
 
 	inline public static function openGithubReleases():Void{
 		#if linux
-		Sys.command('/usr/bin/xdg-open', ["https://github.com/ThatRozebudDude/FPS-Plus-Public/releases"]);
+		Sys.command('/usr/bin/xdg-open', ["https://github.com/Unofficial-FNF-Port-Team/FPS-Plus-Mobile-Public/releases"]);
 		#else
-		FlxG.openURL("https://github.com/ThatRozebudDude/FPS-Plus-Public/releases");
+		FlxG.openURL("https://github.com/Unofficial-FNF-Port-Team/FPS-Plus-Mobile-Public/releases");
 		#end
 	}
 
