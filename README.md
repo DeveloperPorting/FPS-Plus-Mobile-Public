@@ -1,6 +1,6 @@
 ![](/art/logo.png)
 
-# Friday Night Funkin' FPS Plus
+# Friday Night Funkin' FPS Plus Mobile
 Friday Night Funkin' FPS Plus is an engine mod of Friday Night Funkin' that aims to improve gameplay and add quality of life features.
 
 *You can find the original game here:* **[Newgrounds](https://www.newgrounds.com/portal/view/770371) - [itch.io](https://ninja-muffin24.itch.io/funkin) - [GitHub](https://github.com/ninjamuffin99/Funkin)**
@@ -45,6 +45,9 @@ Run `lime test PLATFORM` or `lime build PLATFORM` to compile the game.
 - [Elikapika](https://twitter.com/elikapika) - *Options Icon Art & Additional Sticker Art*
 - [River Music](https://twitter.com/rivermusic_) - *Additional Sticker Art*
 - [Everyone else who has contributed to the engine.](https://github.com/ThatRozebudDude/FPS-Plus-Public/graphs/contributors)
+
+### FPS Plus Mobile
+- [Cream.BR](https://youtube.com/@creambroficial?si=Ixws9MIHHssPPQgR) - *I literally did everything in Port*
 
 ### Shoutouts
 - [Fabs](https://twitter.com/fabsthefabs) - Coding buddy.
