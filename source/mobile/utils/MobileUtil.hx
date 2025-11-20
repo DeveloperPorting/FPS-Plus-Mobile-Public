@@ -83,7 +83,7 @@ public static function getDirectory():String {
             }
 
             try {
-                Permissions.requestPermissions(['READ_EXTERNAL_STORAGE', 'WRITE_EXTERNALc_STORAGE']);
+                Permissions.requestPermissions(['READ_EXTERNAL_STORAGE', 'WRITE_EXTERNAL_STORAGE']);
             } catch (e2:Dynamic) {
                 trace('Fallback 2 failed: $e2');
             }
