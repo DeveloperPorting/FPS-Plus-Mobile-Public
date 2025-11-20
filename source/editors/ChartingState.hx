@@ -60,7 +60,6 @@ import openfl.media.Sound;
 import openfl.net.FileReference;
 #if mobile
 import sys.io.File;
-import mobile.utils.MobileUtil;
 #end
 import openfl.utils.ByteArray;
 
@@ -1960,7 +1959,7 @@ class ChartingState extends MusicBeatState
 
 		if ((data != null) && (data.length > 0)){
 		  #if mobile
-			File.saveContent(MobileUtil.getDirectory() + "saves/" + _song.song.toLowerCase() + diffDropFinal + ".json", data.trim());
+			File.saveContent("saves/" + _song.song.toLowerCase() + diffDropFinal + ".json", data.trim());
 		  #else
 			_file = new FileReference();
 			_file.addEventListener(Event.COMPLETE, onSaveComplete);
