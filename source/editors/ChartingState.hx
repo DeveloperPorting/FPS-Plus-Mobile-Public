@@ -402,6 +402,11 @@ class ChartingState extends MusicBeatState
 			removeDuplicates(i);
 		}
 
+		#if mobile
+		addVirtualPad(UP_DOWN, A_B);
+		addVirtualPadCamera();
+		#end
+
 		super.create();
 
 		if(startSection > 0){
@@ -983,6 +988,7 @@ class ChartingState extends MusicBeatState
 		for(x in textBoxArray){
 			if(x.hasFocus){
 				anyTextHasFocus = true;
+				#if mobile FlxG.stage.window.textInputEnabled = true; #end
 			}
 		}
 
@@ -1212,7 +1218,7 @@ class ChartingState extends MusicBeatState
 				}
 			}
 		
-			if (FlxG.keys.justPressed.ENTER){
+			if (FlxG.keys.justPressed.ENTER || virtualPad.buttonA.justPressed){
 				PlayState.SONG = _song;
 				PlayState.EVENTS = _events;
 				FlxG.sound.music.stop();
@@ -1313,7 +1319,7 @@ class ChartingState extends MusicBeatState
 
 		justChanged = false;
 
-		if(Startup.hasEe2 && FlxG.keys.justPressed.B && FlxG.keys.pressed.SHIFT){
+		if(Startup.hasEe2 && (FlxG.keys.justPressed.B || virtualPad.buttonB.justPressed) && FlxG.keys.pressed.SHIFT){
 			ee2Check = false;
 			//FlxG.save.bind("data", "Rozebud/FPSPlus");
 			Config.ee2 = false;
