@@ -58,6 +58,10 @@ import openfl.events.Event;
 import openfl.events.IOErrorEvent;
 import openfl.media.Sound;
 import openfl.net.FileReference;
+#if mobile
+import sys.io.File;
+import mobile.utils.MobileUtil;
+#end
 import openfl.utils.ByteArray;
 
 using StringTools;
@@ -1319,7 +1323,7 @@ class ChartingState extends MusicBeatState
 
 		justChanged = false;
 
-		if(Startup.hasEe2 && (FlxG.keys.justPressed.B || virtualPad.buttonB.justPressed) && FlxG.keys.pressed.SHIFT){
+		if(Startup.hasEe2 && FlxG.keys.justPressed.B && FlxG.keys.pressed.SHIFT){
 			ee2Check = false;
 			//FlxG.save.bind("data", "Rozebud/FPSPlus");
 			Config.ee2 = false;
@@ -1955,11 +1959,15 @@ class ChartingState extends MusicBeatState
 		var data:String = Json.stringify(json, null, "\t");
 
 		if ((data != null) && (data.length > 0)){
+		  #if mobile
+			File.saveContent(MobileUtil.getDirectory() + "saves/" + _song.song.toLowerCase() + diffDropFinal + ".json", data.trim())
+		  #else
 			_file = new FileReference();
 			_file.addEventListener(Event.COMPLETE, onSaveComplete);
 			_file.addEventListener(Event.CANCEL, onSaveCancel);
 			_file.addEventListener(IOErrorEvent.IO_ERROR, onSaveError);
 			_file.save(data.trim(), _song.song.toLowerCase() + diffDropFinal + ".json");
+		  #end
 		}
 	}
 	
