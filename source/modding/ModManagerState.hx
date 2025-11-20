@@ -19,6 +19,9 @@ import flixel.math.FlxPoint;
 import flixel.FlxSprite;
 import extensions.flixel.FlxUIStateExt;
 import caching.*;
+#if mobile
+import mobile.utils.MobileUtil;
+#end
 
 class ModManagerState #if mobile extends MusicBeatState #else extends FlxUIStateExt #end
 {
@@ -532,7 +535,7 @@ class ModManagerState #if mobile extends MusicBeatState #else extends FlxUIState
 
 	function getModIcon(mod:String):BitmapData{
 		if(FileSystem.exists("mods/" + mod + "/icon.png")){
-			return BitmapData.fromFile("mods/" + mod + "/icon.png");
+			return BitmapData.fromFile(MobileUtil.getDirectory() + "mods/" + mod + "/icon.png");
 		}
 		return BitmapData.fromFile(Paths.image("menu/modMenu/defaultModIcon", true));
 	}
