@@ -54,8 +54,6 @@ class TitleVideo extends FlxState
 			video.skip();
 		}
 
-<<<<<<< HEAD
-=======
 		#if mobile
 		for (touch in FlxG.touches.list)
 		{
@@ -66,7 +64,6 @@ class TitleVideo extends FlxState
 		}
 		#end
 
->>>>>>> 28779341 (tentando recuperar)
 	}
 
 	function next():Void{
