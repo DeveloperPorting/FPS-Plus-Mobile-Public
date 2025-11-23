@@ -76,8 +76,6 @@ class MusicBeatSubState extends FlxSubState
 
 	override function destroy()
 	{
-
-		Binds.isInSubstate = false;
 		
 		if (virtualPad != null)
 		{
