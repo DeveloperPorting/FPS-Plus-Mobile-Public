@@ -2,11 +2,6 @@ package;
 
 import Conductor.BPMChangeEvent;
 import extensions.flixel.FlxUIStateExt;
-<<<<<<< HEAD
-
-class MusicBeatState extends FlxUIStateExt
-{
-=======
 import flixel.FlxCamera;
 import mobile.MobileControls;
 import mobile.flixel.FlxVirtualPad;
@@ -15,13 +10,6 @@ import flixel.FlxG;
 
 class MusicBeatState extends FlxUIStateExt
 {
-	public static var instance:MusicBeatState = null;
-	public function new()
-	{
-		instance = this;
-		super();
-	}
->>>>>>> 28779341 (tentando recuperar)
 	private var curStep:Int = 0;
 	private var curBeat:Int = 0;
 
@@ -35,8 +23,6 @@ class MusicBeatState extends FlxUIStateExt
 
 	private var stateConductorOffset:Float = 0;
 
-<<<<<<< HEAD
-=======
 	public var mobileControls:MobileControls;
 	public var virtualPad:FlxVirtualPad;
 
@@ -106,7 +92,6 @@ class MusicBeatState extends FlxUIStateExt
 		}
 	}
 
->>>>>>> 28779341 (tentando recuperar)
 	override function create(){
 		super.create();
 	}
@@ -153,8 +138,4 @@ class MusicBeatState extends FlxUIStateExt
 
 	public function beatHit():Void{}
 	
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> 28779341 (tentando recuperar)
