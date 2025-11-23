@@ -67,6 +67,7 @@ class FlxVirtualPad extends FlxMobileInputManager
 	public var buttonC:FlxButton = new FlxButton(0, 0, [FlxMobileInputID.C]);
 	public var buttonD:FlxButton = new FlxButton(0, 0, [FlxMobileInputID.D]);
 	public var buttonE:FlxButton = new FlxButton(0, 0, [FlxMobileInputID.E]);
+	public var buttonR:FlxButton = new FlxButton(0, 0, [FlxMobileInputID.R]);
 	public var buttonV:FlxButton = new FlxButton(0, 0, [FlxMobileInputID.V]);
 	public var buttonX:FlxButton = new FlxButton(0, 0, [FlxMobileInputID.X]);
 	public var buttonY:FlxButton = new FlxButton(0, 0, [FlxMobileInputID.Y]);
@@ -154,6 +155,7 @@ class FlxVirtualPad extends FlxMobileInputManager
 			case FREE_PLAY:
 				add(buttonLeft2 = createButton(FlxG.width - 86 * 3, FlxG.height - 85 * 3, 'left', 0xFF00FF));
 				add(buttonRight2 = createButton(FlxG.width - 44 * 3, FlxG.height - 85 * 3, 'right', 0xFF0000));
+				add(buttonR = createButton(FlxG.width - 44 * 6, FlxG.height - 85 * 3, 'right', 0xFF0000));
 				add(buttonC = createButton(FlxG.width - 384, FlxG.height - 135, 'c', 0x44FF00));
 				add(buttonB = createButton(FlxG.width - 258, FlxG.height - 135, 'b', 0xFFCB00));
 				add(buttonA = createButton(FlxG.width - 132, FlxG.height - 135, 'a', 0xFF0000));
@@ -220,6 +222,7 @@ class FlxVirtualPad extends FlxMobileInputManager
 		buttonC = FlxDestroyUtil.destroy(buttonC);
 		buttonD = FlxDestroyUtil.destroy(buttonD);
 		buttonE = FlxDestroyUtil.destroy(buttonE);
+		buttonR = FlxDestroyUtil.destroy(buttonR);
 		buttonV = FlxDestroyUtil.destroy(buttonV);
 		buttonX = FlxDestroyUtil.destroy(buttonX);
 		buttonY = FlxDestroyUtil.destroy(buttonY);
