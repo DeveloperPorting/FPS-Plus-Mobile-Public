@@ -32,6 +32,7 @@ enum FlxActionMode
 	B;
 	X;
 	A_B;
+	CONFIG_MENU;
 	A_B_C;
 	FREE_PLAY;
 	A_B_E;
@@ -139,6 +140,11 @@ class FlxVirtualPad extends FlxMobileInputManager
 		    case X:
 				add(buttonX = createButton(FlxG.width - 132, FlxG.height - 135, 'x', 0x99062D));
 			case A_B:
+				add(buttonB = createButton(FlxG.width - 258, FlxG.height - 135, 'b', 0xFFCB00));
+				add(buttonA = createButton(FlxG.width - 132, FlxG.height - 135, 'a', 0xFF0000));
+			case CONFIG_MENU:
+				add(buttonLeft2 = createButton(FlxG.width - 86 * 3, FlxG.height - 85 * 3, 'left', 0xFF00FF));
+				add(buttonRight2 = createButton(FlxG.width - 44 * 3, FlxG.height - 85 * 3, 'right', 0xFF0000));
 				add(buttonB = createButton(FlxG.width - 258, FlxG.height - 135, 'b', 0xFFCB00));
 				add(buttonA = createButton(FlxG.width - 132, FlxG.height - 135, 'a', 0xFF0000));
 			case A_B_C:
