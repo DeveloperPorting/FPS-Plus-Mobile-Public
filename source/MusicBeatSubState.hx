@@ -2,11 +2,6 @@ package;
 
 import Conductor.BPMChangeEvent;
 import flixel.FlxSubState;
-<<<<<<< HEAD
-
-class MusicBeatSubState extends FlxSubState
-{
-=======
 import flixel.FlxCamera;
 import mobile.MobileControls;
 import mobile.flixel.FlxVirtualPad;
@@ -15,15 +10,6 @@ import flixel.FlxG;
 
 class MusicBeatSubState extends FlxSubState
 {
-	public static var instance:MusicBeatSubState = null;
-	public function new()
-	{
-		instance = this;
-		Binds.isInSubstate = true;
-		super();
-	}
-	
->>>>>>> 28779341 (tentando recuperar)
 	private var curStep:Int = 0;
 	private var curBeat:Int = 0;
 
@@ -35,8 +21,6 @@ class MusicBeatSubState extends FlxSubState
 
 	private var countSteps:Bool = true;
 
-<<<<<<< HEAD
-=======
 	public var mobileControls:MobileControls;
 	public var virtualPad:FlxVirtualPad;
 
@@ -109,8 +93,6 @@ class MusicBeatSubState extends FlxSubState
 		
 		super.destroy();
 	}
-
->>>>>>> 28779341 (tentando recuperar)
 	override function create(){
 		super.create();
 	}
@@ -157,8 +139,4 @@ class MusicBeatSubState extends FlxSubState
 
 	public function beatHit():Void{}
 
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> 28779341 (tentando recuperar)
