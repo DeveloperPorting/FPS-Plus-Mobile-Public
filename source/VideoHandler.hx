@@ -7,11 +7,7 @@ import flixel.FlxG;
 import openfl.Assets;
 import flixel.util.FlxColor;
 
-<<<<<<< HEAD
-#if desktop
-=======
 #if (desktop || mobile)
->>>>>>> 28779341 (tentando recuperar)
 import hxvlc.openfl.Video;
 #elseif web
 import openfl.media.SoundTransform;
@@ -55,11 +51,7 @@ class VideoHandler extends FlxSprite
 	public var onStart:FlxSignal = new FlxSignal();
 	public var onEnd:FlxSignal = new FlxSignal();
 
-<<<<<<< HEAD
-	#if desktop
-=======
 	#if (desktop || mobile)
->>>>>>> 28779341 (tentando recuperar)
 	var bitmap:Video;
 	#elseif web
 	var video:Video;
@@ -95,11 +87,7 @@ class VideoHandler extends FlxSprite
 
 	//===========================================================================================================//
 
-<<<<<<< HEAD
-	#if desktop
-=======
 	#if (desktop || mobile)
->>>>>>> 28779341 (tentando recuperar)
 	/**
 		Plays MP4s using VLC Bitmaps as the source.
 		Only works on desktop builds.
@@ -274,11 +262,7 @@ class VideoHandler extends FlxSprite
 
 		super.update(elapsed);
 
-<<<<<<< HEAD
-		#if desktop
-=======
 		#if (desktop || mobile)
->>>>>>> 28779341 (tentando recuperar)
 		if(bitmap != null){
 
 			if(FlxG.sound.muted || __muted){
@@ -349,11 +333,7 @@ class VideoHandler extends FlxSprite
 			FlxG.signals.focusGained.remove(resume);
 		}
 
-<<<<<<< HEAD
-		#if desktop
-=======
 		#if (desktop || mobile)
->>>>>>> 28779341 (tentando recuperar)
 		if(!completed){
 			vlcClean();
 		}
@@ -374,11 +354,7 @@ class VideoHandler extends FlxSprite
 	**/
 	public function pause(){
 
-<<<<<<< HEAD
-		#if desktop
-=======
 		#if (desktop || mobile)
->>>>>>> 28779341 (tentando recuperar)
 		if(bitmap != null && !paused){
 			bitmap.pause();
 		}
@@ -398,11 +374,7 @@ class VideoHandler extends FlxSprite
 	**/
 	public function resume(){
 
-<<<<<<< HEAD
-		#if desktop
-=======
 		#if (desktop || mobile)
->>>>>>> 28779341 (tentando recuperar)
 		if(bitmap != null && paused){ 
 			bitmap.resume();
 		}
@@ -419,11 +391,7 @@ class VideoHandler extends FlxSprite
 
 	public function skip(){
 
-<<<<<<< HEAD
-		#if desktop
-=======
 		#if (desktop || mobile)
->>>>>>> 28779341 (tentando recuperar)
 		onVLCComplete();
 		#end
 		#if web
@@ -449,18 +417,9 @@ class VideoHandler extends FlxSprite
 	
 
 	function get_length():Float {
-<<<<<<< HEAD
-		#if desktop
-		return Int64s.toFloat(bitmap.length) / 1000000;
-		#end
-=======
 		#if (desktop || mobile) 
 		return Int64s.toFloat(bitmap.length) / 1000000;
 		#end
-		/*#if mobile
-		return 0;
-		#end*/
->>>>>>> 28779341 (tentando recuperar)
 		#if web
 		@:privateAccess
 		return netStream.__video.duration;
