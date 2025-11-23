@@ -18,26 +18,27 @@ enum abstract FlxMobileInputID(Int) from Int to Int {
 	var C = 2;
 	var D = 3;
 	var E = 4;
-	var V = 5;
-	var X = 6;
-	var Y = 7;
-	var Z = 8;
-	var UP = 9;
-	var UP2 = 10;
-	var DOWN = 11;
-	var DOWN2 = 12;
-	var LEFT = 13;
-	var LEFT2 = 14;
-	var RIGHT = 15;
-	var RIGHT2 = 16;
-	var hitboxUP = 17;
-	var hitboxDOWN = 18;
-	var hitboxLEFT = 19;
-	var hitboxRIGHT = 20;
-	var noteUP = 21;
-	var noteDOWN = 22;
-	var noteLEFT = 23;
-	var noteRIGHT = 24;
+	var R = 5;
+	var V = 6;
+	var X = 7;
+	var Y = 8;
+	var Z = 9;
+	var UP = 10;
+	var UP2 = 11;
+	var DOWN = 12;
+	var DOWN2 = 13;
+	var LEFT = 14;
+	var LEFT2 = 15;
+	var RIGHT = 16;
+	var RIGHT2 = 17;
+	var hitboxUP = 18;
+	var hitboxDOWN = 19;
+	var hitboxLEFT = 20;
+	var hitboxRIGHT = 21;
+	var noteUP = 22;
+	var noteDOWN = 23;
+	var noteLEFT = 24;
+	var noteRIGHT = 25;
 
 	@:from
 	public static inline function fromString(s:String) {
