@@ -53,10 +53,7 @@ import modding.PolymodHandler;
 import openfl.filters.ShaderFilter;
 import story.StoryMenuState;
 import caching.*;
-<<<<<<< HEAD
-=======
 import mobile.MobileControls;
->>>>>>> 28779341 (tentando recuperar)
 
 using StringTools;
 
@@ -736,11 +733,8 @@ class PlayState extends MusicBeatState
 		add(hudLayer);
 		hudLayer.cameras = [camHUD];
 
-<<<<<<< HEAD
-=======
 		#if mobile addMobileControls(false); #end
 
->>>>>>> 28779341 (tentando recuperar)
 		//Get and run cutscene stuff
 		if(Utils.exists("assets/data/songs/" + SONG.song.toLowerCase() + "/cutscene.json") && !fromChartEditor){
 			trace("song has cutscene info");
@@ -901,10 +895,7 @@ class PlayState extends MusicBeatState
 	public function startCountdown():Void {
 		inCutscene = false;
 
-<<<<<<< HEAD
-=======
 		#if mobile mobileControls.visible = true; #end
->>>>>>> 28779341 (tentando recuperar)
 		healthBar.visible = true;
 		healthBarBG.visible = true;
 		iconP1.visible = true;
@@ -1622,11 +1613,7 @@ class PlayState extends MusicBeatState
 		stage.updateTheUpdateGroup(elapsed);
 		for(script in scripts){ script.update(elapsed); }
 
-<<<<<<< HEAD
-		if (Binds.justPressed("pause") && startedCountdown && canPause){
-=======
 		if (Binds.justPressed("pause") || FlxG.android.justReleased.BACK && startedCountdown && canPause){
->>>>>>> 28779341 (tentando recuperar)
 			paused = true;
 			openSubState(new PauseSubState());
 		}
@@ -2237,19 +2224,11 @@ class PlayState extends MusicBeatState
 	}
 
 	private function keyCheck():Void{
-<<<<<<< HEAD
-
-		upTime = Binds.pressed("gameplayUp") ? upTime + 1 : 0;
-		downTime = Binds.pressed("gameplayDown") ? downTime + 1 : 0;
-		leftTime = Binds.pressed("gameplayLeft") ? leftTime + 1 : 0;
-		rightTime = Binds.pressed("gameplayRight") ? rightTime + 1 : 0;
-=======
 		
 	    upTime = (Binds.pressed("gameplayUp") || mobileControls.hitbox.buttonUp.pressed) ? upTime + 1 : 0;
 		downTime = (Binds.pressed("gameplayDown") || mobileControls.hitbox.buttonDown.pressed) ? downTime + 1 : 0;
 		leftTime = (Binds.pressed("gameplayLeft") || mobileControls.hitbox.buttonLeft.pressed) ? leftTime + 1 : 0;
 		rightTime = (Binds.pressed("gameplayRight") || mobileControls.hitbox.buttonRight.pressed) ? rightTime + 1 : 0;
->>>>>>> 28779341 (tentando recuperar)
 
 		upPress = upTime == 1;
 		downPress = downTime == 1;
@@ -3236,8 +3215,4 @@ typedef ScoreStats = {
 	susCount:Int,
 	missCount:Int,
 	comboBreakCount:Int,
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> 28779341 (tentando recuperar)

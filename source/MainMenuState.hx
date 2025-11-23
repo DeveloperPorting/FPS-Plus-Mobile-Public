@@ -207,14 +207,11 @@ class MainMenuState extends MusicBeatState
 
 		changeItem();
 
-<<<<<<< HEAD
-=======
 		#if mobile
 		addVirtualPad(UP_DOWN, A_B);
 		addVirtualPadCamera();
 		#end
 
->>>>>>> 28779341 (tentando recuperar)
 		super.create();
 	}
 
@@ -224,11 +221,7 @@ class MainMenuState extends MusicBeatState
 
 		Conductor.songPosition = FlxG.sound.music.time;
 
-<<<<<<< HEAD
-		if(canCancelWarning && (Binds.justPressed("menuUp") || Binds.justPressed("menuDown")) || Binds.justPressed("menuAccept")){
-=======
 		if(canCancelWarning && (Binds.justPressed("menuUp") || Binds.justPressed("menuDown")) || Binds.justPressed("menuAccept") || (virtualPad.buttonUp.justPressed || virtualPad.buttonDown.justPressed || virtualPad.buttonA.justPressed)){
->>>>>>> 28779341 (tentando recuperar)
 			canCancelWarning = false;
 			FlxTween.cancelTweensOf(versionText);
 			FlxTween.cancelTweensOf(keyWarning);
@@ -236,19 +229,11 @@ class MainMenuState extends MusicBeatState
 		}
 	
 		if (!selectedSomething){
-<<<<<<< HEAD
-			if (Binds.justPressed("menuUp")){
-				FlxG.sound.play(Paths.sound("scrollMenu"));
-				changeItem(-1);
-			}
-			else if (Binds.justPressed("menuDown")){
-=======
 			if (Binds.justPressed("menuUp") || virtualPad.buttonUp.justPressed){
 				FlxG.sound.play(Paths.sound("scrollMenu"));
 				changeItem(-1);
 			}
 			else if (Binds.justPressed("menuDown") || virtualPad.buttonDown.justPressed){
->>>>>>> 28779341 (tentando recuperar)
 				FlxG.sound.play(Paths.sound("scrollMenu"));
 				changeItem(1);
 			}
@@ -257,21 +242,13 @@ class MainMenuState extends MusicBeatState
 				Binds.resetToDefaultControls();
 				FlxG.sound.play(Paths.sound("cancelMenu"));
 			}
-<<<<<<< HEAD
-			else if (Binds.justPressed("menuBack") && !FlxG.keys.pressed.CONTROL){
-=======
 			else if (Binds.justPressed("menuBack") || virtualPad.buttonB.justPressed && !FlxG.keys.pressed.CONTROL){
->>>>>>> 28779341 (tentando recuperar)
 				selectedSomething = true;
 				switchState(new TitleScreen());
 				FlxG.sound.play(Paths.sound("cancelMenu"));
 			}
 
-<<<<<<< HEAD
-			if (Binds.justPressed("menuAccept")){
-=======
 			if (Binds.justPressed("menuAccept") || virtualPad.buttonA.justPressed){
->>>>>>> 28779341 (tentando recuperar)
 				selectedSomething = true;
 				doButtonTransition(menuItems[curSelected]);
 			}
@@ -547,11 +524,7 @@ class UpdateCheck
 
 		if(Config.checkForUpdates && !MainMenuState.SHOW_BUILD_INFO){ //Only check if the user wants to and you aren't running a dev build.
 			if(chachedResult == null){
-<<<<<<< HEAD
-				var http = new Http("https://raw.githubusercontent.com/ThatRozebudDude/FPS-Plus-Public/master/latest");
-=======
 				var http = new Http("https://raw.githubusercontent.com/Unofficial-FNF-Port-Team/FPS-Plus-Mobile-Public/master/latest");
->>>>>>> 28779341 (tentando recuperar)
 				http.onData = function(data:String) {
 					v = data.split("\n")[0].trim();
 					r = (MainMenuState.VERSION != v) ? 1 : 0;
@@ -584,15 +557,6 @@ class UpdateCheck
 
 	inline public static function openGithubReleases():Void{
 		#if linux
-<<<<<<< HEAD
-		Sys.command('/usr/bin/xdg-open', ["https://github.com/ThatRozebudDude/FPS-Plus-Public/releases"]);
-		#else
-		FlxG.openURL("https://github.com/ThatRozebudDude/FPS-Plus-Public/releases");
-		#end
-	}
-
-}
-=======
 		Sys.command('/usr/bin/xdg-open', ["https://github.com/Unofficial-FNF-Port-Team/FPS-Plus-Mobile-Public/releases"]);
 		#else
 		FlxG.openURL("https://github.com/Unofficial-FNF-Port-Team/FPS-Plus-Mobile-Public/releases");
@@ -600,4 +564,3 @@ class UpdateCheck
 	}
 
 }
->>>>>>> 28779341 (tentando recuperar)
