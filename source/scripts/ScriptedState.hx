@@ -7,8 +7,6 @@ import modding.PolymodHandler;
 import extensions.flixel.FlxUIStateExt;
 import restricted.RestrictedUtils;
 
-<<<<<<< HEAD
-=======
 #if mobile
 import flixel.FlxCamera;
 import mobile.MobileControls;
@@ -17,7 +15,6 @@ import flixel.util.FlxDestroyUtil;
 import flixel.FlxG;
 #end
 
->>>>>>> 28779341 (tentando recuperar)
 //Basically just FlxUIStateExt with polymodReload
 class ScriptedState extends FlxUIStateExt
 {
@@ -38,9 +35,6 @@ class ScriptedState extends FlxUIStateExt
 		Reflect.setProperty(r, "_stateName", stateString);
 		return r;
 	}
-<<<<<<< HEAD
-}
-=======
 
 	#if mobile
 	public var mobileControls:MobileControls;
@@ -113,4 +107,3 @@ class ScriptedState extends FlxUIStateExt
 	}
 	#end
 }
->>>>>>> 28779341 (tentando recuperar)
