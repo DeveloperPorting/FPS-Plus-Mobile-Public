@@ -71,11 +71,7 @@ class VideoHandler extends FlxSprite
 	**/
 	public function playMP4(videoPath:String, callback:Void->Void, ?repeat:Bool = false){
 
-<<<<<<< HEAD
-		#if desktop
-=======
 		#if (desktop || mobile)
->>>>>>> 28779341 (tentando recuperar)
 		playDesktopMP4(videoPath, callback, repeat);
 		#end
 
