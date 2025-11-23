@@ -2,7 +2,11 @@
 <project>
 	<!-- _________________________ Application Settings _________________________ -->
 
+<<<<<<< HEAD
 	<app title="Friday Night Funkin' FPS Plus" file="FunkinFPSPlus" main="Main" version="FNF: v0.2.7 | FPS Plus: v6.0" company="Rozebud" />
+=======
+	<app title="Friday Night Funkin' FPS Plus" file="FunkinFPSPlus" packageName="com.rozebud.funkinfpsplus" package="com.rozebud.funkinfpsplus" main="Main" version="FNF: v0.2.7 | FPS Plus: v6.0" company="Rozebud" />
+>>>>>>> 28779341 (tentando recuperar)
 
 	<!--Minimum without FLX_NO_GAMEPAD: 11.8, without FLX_NO_NATIVE_CURSOR: 11.2-->
 	<set name="SWF_VERSION" value="11.8" />
@@ -30,7 +34,11 @@
 	<window if="desktop" orientation="landscape" fullscreen="false" resizable="true" allow-high-dpi="true" />
 
 	<!--Mobile-specific-->
+<<<<<<< HEAD
 	<window if="mobile" orientation="landscape" fullscreen="true" width="0" height="0" />
+=======
+	<window if="mobile" orientation="landscape" fullscreen="true" resizable="false" allow-shaders="true" require-shaders="true" allow-high-dpi="true"/>
+>>>>>>> 28779341 (tentando recuperar)
 
 	<!-- _____________________________ Path Settings ____________________________ -->
 
@@ -42,6 +50,10 @@
 	<classpath name="source" />
 
 	<assets path="assets/images" />
+<<<<<<< HEAD
+=======
+	<assets path="assets/mobile" />
+>>>>>>> 28779341 (tentando recuperar)
 	<assets path="assets/data" />
 	<assets path="assets/videos" />
 
@@ -71,10 +83,18 @@
 	<haxelib name="flixel-ui" />
 	<haxelib name="compiletime" />
 	<haxelib name="flxanimate" />
+<<<<<<< HEAD
 	<haxelib name="hxvlc" if="desktop" />
 	<haxelib name="funkin.vis" />
 	<haxelib name="grig.audio" />
 	<haxelib name="polymod" />
+=======
+	<haxelib name="hxvlc" if="desktop || mobile" />
+	<haxelib name="funkin.vis" />
+	<haxelib name="grig.audio" />
+	<haxelib name="polymod" />
+	<haxelib name="extension-androidtools" if="android"/>
+>>>>>>> 28779341 (tentando recuperar)
 
 	<!-- ______________________________ Haxedefines _____________________________ -->
 
@@ -85,8 +105,13 @@
 	<setenv name="HAXEPATH" value="./"/>
 
 	<!--Optimise inputs, be careful you will get null errors if you don't use conditionals in your game-->
+<<<<<<< HEAD
 	<haxedef name="FLX_NO_MOUSE" if="mobile" />
 	<haxedef name="FLX_NO_KEYBOARD" if="mobile" />
+=======
+	<!--haxedef name="FLX_NO_MOUSE" if="mobile" -->
+	<!--haxedef name="FLX_NO_KEYBOARD" if "mobile" -->
+>>>>>>> 28779341 (tentando recuperar)
 	<haxedef name="FLX_NO_TOUCH" if="desktop" />
 
 	<!--Disable the Flixel core focus lost screen-->
@@ -115,6 +140,27 @@
 	<icon path="art/icons/icon128.png" />
 	<icon path="art/icons/icon16.png" size='16' />
 
+<<<<<<< HEAD
+=======
+	<section if="android">
+		<config:android permission="android.permission.MANAGE_MEDIA"/> 
+		<config:android permission="android.permission.MANAGE_EXTERNAL_STORAGE"/>
+		<config:android permission="android.permission.WRITE_EXTERNAL_STORAGE" />
+		<config:android permission="android.permission.READ_EXTERNAL_STORAGE" />
+		<config:android permission="android.permission.READ_MEDIA_IMAGES"/>
+		<config:android permission="android.permission.READ_MEDIA_AUDIO"/>
+		<config:android permission="android.permission.READ_MEDIA_VIDEO"/>
+		<config:android permission="android.permission.VIBRATE" />
+		<config:android permission="android.permission.INTERNET" />
+		<config:android permission="android.permission.ACCESS_WIFI_STATE"/>
+		<config:android permission="android.permission.ACCESS_NETWORK_STATE" />
+	    <config:android permission="android.permission.CAPTURE_AUDIO_OUTPUT" />
+		<android target-sdk-version="34" />
+		<android min-sdk-version="19" />
+		<certificate path="keystore.keystore" password="fpspeak" alias="fpspeak" alias-password="fpspeak" if="android" unless="debug" />
+	</section>
+
+>>>>>>> 28779341 (tentando recuperar)
 	<!-- <haxedef name="SKIP_TO_PLAYSTATE" if="debug" /> -->
 
 	<!-- _________________________________ Polymod Stuff _______________________________ -->
@@ -125,4 +171,8 @@
 	<haxedef name="POLYMOD_MERGE_FOLDER" value="merge" />
 	<haxedef name="hscriptPos" />
 
+<<<<<<< HEAD
 </project>
+=======
+</project>
+>>>>>>> 28779341 (tentando recuperar)

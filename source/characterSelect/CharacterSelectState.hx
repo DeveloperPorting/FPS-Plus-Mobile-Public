@@ -285,6 +285,14 @@ class CharacterSelectState extends MusicBeatState
 			canAccept = true;
 		});
 
+<<<<<<< HEAD
+=======
+		#if mobile
+		addVirtualPad(LEFT_FULL, A_B);
+		addVirtualPadCamera();
+		#end
+
+>>>>>>> 28779341 (tentando recuperar)
 		super.create();
 	}
 
@@ -293,7 +301,11 @@ class CharacterSelectState extends MusicBeatState
 		Conductor.songPosition = FlxG.sound.music.time;
 
 		if(!blockingSelection){
+<<<<<<< HEAD
 			if(Binds.justPressed("menuUp")){
+=======
+			if(Binds.justPressed("menuUp") || virtualPad.buttonUp.justPressed){
+>>>>>>> 28779341 (tentando recuperar)
 				changeGridPos([0, -1]);
 				changeCharacter(getCharacterFromPosition(curGridPosition));
 				characterGrid.showNormalCursor();
@@ -302,7 +314,11 @@ class CharacterSelectState extends MusicBeatState
 				skipIdleCount = 0;
 				playCursorMoveSound();
 			}
+<<<<<<< HEAD
 			else if(Binds.justPressed("menuDown")){
+=======
+			else if(Binds.justPressed("menuDown") || virtualPad.buttonDown.justPressed){
+>>>>>>> 28779341 (tentando recuperar)
 				changeGridPos([0, 1]);
 				changeCharacter(getCharacterFromPosition(curGridPosition));
 				characterGrid.showNormalCursor();
@@ -311,7 +327,11 @@ class CharacterSelectState extends MusicBeatState
 				skipIdleCount = 0;
 				playCursorMoveSound();
 			}
+<<<<<<< HEAD
 			if(Binds.justPressed("menuLeft")){
+=======
+			if(Binds.justPressed("menuLeft") || virtualPad.buttonLeft.justPressed){
+>>>>>>> 28779341 (tentando recuperar)
 				changeGridPos([-1, 0]);
 				changeCharacter(getCharacterFromPosition(curGridPosition));
 				characterGrid.showNormalCursor();
@@ -320,7 +340,11 @@ class CharacterSelectState extends MusicBeatState
 				skipIdleCount = 0;
 				playCursorMoveSound();
 			}
+<<<<<<< HEAD
 			else if(Binds.justPressed("menuRight")){
+=======
+			else if(Binds.justPressed("menuRight") || virtualPad.buttonRight.justPressed){
+>>>>>>> 28779341 (tentando recuperar)
 				changeGridPos([1, 0]);
 				changeCharacter(getCharacterFromPosition(curGridPosition));
 				characterGrid.showNormalCursor();
@@ -331,10 +355,17 @@ class CharacterSelectState extends MusicBeatState
 			}
 		}
 
+<<<<<<< HEAD
 		if(Binds.justPressed("menuAccept") && characters.get(curCharacter).freeplayClass != null && !blockingSelection && canAccept){
 			acceptCharacter();
 		}
 		else if(Binds.justPressed("menuAccept") && characters.get(curCharacter).freeplayClass == null && !blockingSelection){
+=======
+		if(Binds.justPressed("menuAccept") || virtualPad.buttonA.justPressed && characters.get(curCharacter).freeplayClass != null && !blockingSelection && canAccept){
+			acceptCharacter();
+		}
+		else if(Binds.justPressed("menuAccept") || virtualPad.buttonA.justPressed && characters.get(curCharacter).freeplayClass == null && !blockingSelection){
+>>>>>>> 28779341 (tentando recuperar)
 			characterGrid.deny(curGridPosition);
 			FlxG.sound.play(Paths.sound("characterSelect/deny"));
 			denyCount++;
@@ -346,14 +377,22 @@ class CharacterSelectState extends MusicBeatState
 			});
 		}
 
+<<<<<<< HEAD
 		if(Binds.justPressed("menuBack") && !blockingSelection && !canReverse){
+=======
+		if(Binds.justPressed("menuBack") || virtualPad.buttonB.justPressed && !blockingSelection && !canReverse){
+>>>>>>> 28779341 (tentando recuperar)
 			curGridPosition = characters.get(persistentCharacter).position.copy();
 			changeGridPos([0, 0]);
 			changeCharacter(getCharacterFromPosition(curGridPosition));
 			characterGrid.select(curGridPosition, true);
 			acceptCharacter();
 		}
+<<<<<<< HEAD
 		else if(Binds.justPressed("menuBack") && canReverse){
+=======
+		else if(Binds.justPressed("menuBack") || virtualPad.buttonB.justPressed && canReverse){
+>>>>>>> 28779341 (tentando recuperar)
 			blockingSelection = false;
 			canReverse = false;
 			skipIdleCount = 1;
@@ -416,10 +455,17 @@ class CharacterSelectState extends MusicBeatState
 				repeatDelayY--;
 			}
 			else{
+<<<<<<< HEAD
 				if(Binds.pressed("menuUp")){
 					changeAmount[1]--;
 				}
 				if(Binds.pressed("menuDown")){
+=======
+				if(Binds.pressed("menuUp") || virtualPad.buttonUp.pressed){
+					changeAmount[1]--;
+				}
+				if(Binds.pressed("menuDown") || virtualPad.buttonDown.pressed){
+>>>>>>> 28779341 (tentando recuperar)
 					changeAmount[1]++;
 				}
 			}
@@ -428,16 +474,27 @@ class CharacterSelectState extends MusicBeatState
 				repeatDelayX--;
 			}
 			else{
+<<<<<<< HEAD
 				if(Binds.pressed("menuLeft")){
 					changeAmount[0]--;
 				}
 				if(Binds.pressed("menuRight")){
+=======
+				if(Binds.pressed("menuLeft") || virtualPad.buttonLeft.pressed){
+					changeAmount[0]--;
+				}
+				if(Binds.pressed("menuRight") || virtualPad.buttonRight.pressed){
+>>>>>>> 28779341 (tentando recuperar)
 					changeAmount[0]++;
 				}
 			}
 
 			if(changeAmount[0] != 0 || changeAmount[1] != 0){
+<<<<<<< HEAD
 				if(Binds.pressed("menuUp") || Binds.pressed("menuDown") || Binds.pressed("menuLeft") || Binds.pressed("menuRight")){
+=======
+				if((Binds.pressed("menuUp") || Binds.pressed("menuDown") || Binds.pressed("menuLeft") || Binds.pressed("menuRight")) || (virtualPad.buttonUp.pressed || virtualPad.buttonDown.pressed || virtualPad.buttonLeft.pressed || virtualPad.buttonRight.pressed)){
+>>>>>>> 28779341 (tentando recuperar)
 					changeGridPos(changeAmount);
 					changeCharacter(getCharacterFromPosition(curGridPosition));
 					characterGrid.showNormalCursor();
@@ -650,4 +707,8 @@ typedef CharacterSelectGroup = {
 	partner:CharacterSelectCharacter,
 	freeplayClass:String,
 	position:Array<Int>
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 28779341 (tentando recuperar)

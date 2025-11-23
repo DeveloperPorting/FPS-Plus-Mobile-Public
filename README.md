@@ -1,6 +1,10 @@
 ![](/art/logo.png)
 
+<<<<<<< HEAD
 # Friday Night Funkin' FPS Plus
+=======
+# Friday Night Funkin' FPS Plus Mobile
+>>>>>>> 28779341 (tentando recuperar)
 Friday Night Funkin' FPS Plus is an engine mod of Friday Night Funkin' that aims to improve gameplay and add quality of life features.
 
 *You can find the original game here:* **[Newgrounds](https://www.newgrounds.com/portal/view/770371) - [itch.io](https://ninja-muffin24.itch.io/funkin) - [GitHub](https://github.com/ninjamuffin99/Funkin)**
@@ -46,9 +50,19 @@ Run `lime test PLATFORM` or `lime build PLATFORM` to compile the game.
 - [River Music](https://twitter.com/rivermusic_) - *Additional Sticker Art*
 - [Everyone else who has contributed to the engine.](https://github.com/ThatRozebudDude/FPS-Plus-Public/graphs/contributors)
 
+<<<<<<< HEAD
+=======
+### FPS Plus Mobile
+- [Cream.BR](https://youtube.com/@creambroficial?si=Ixws9MIHHssPPQgR) - *I literally did everything in Port*
+
+>>>>>>> 28779341 (tentando recuperar)
 ### Shoutouts
 - [Fabs](https://twitter.com/fabsthefabs) - Coding buddy.
 - [Smokey](https://twitter.com/Smokey_5_) - Helped with coding a few systems.
 - [KadeDev](https://twitter.com/kade0912) - *Rest in Peace* (Engine not the guy lol)
 - [ShadowMario](https://twitter.com/Shadow_Mario_) - Showing support for FPS Plus on Twitter. (Also sometimes I adapt Psych code, *shhhh...*)
+<<<<<<< HEAD
 - [Ethab Taxi](https://twitter.com/EthabTaxi) - He's just sorta chillin'.
+=======
+- [Ethab Taxi](https://twitter.com/EthabTaxi) - He's just sorta chillin'.
+>>>>>>> 28779341 (tentando recuperar)

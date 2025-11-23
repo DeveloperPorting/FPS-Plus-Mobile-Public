@@ -9,6 +9,15 @@ import flixel.FlxGame;
 import flixel.FlxSprite;
 import openfl.display.Sprite;
 import openfl.display.InteractiveObject;
+<<<<<<< HEAD
+=======
+import haxe.io.Path;
+
+#if mobile
+import mobile.utils.*;
+//import funkin.mobile.input.*;
+#end
+>>>>>>> 28779341 (tentando recuperar)
 
 class Main extends Sprite
 {
@@ -22,6 +31,16 @@ class Main extends Sprite
 	{
 		super();
 
+<<<<<<< HEAD
+=======
+		#if android
+		Sys.setCwd(Path.addTrailingSlash(MobileUtil.getDirectory()));
+		MobileUtil.getPermissions();
+	    #elseif ios
+		Sys.setCwd(lime.system.System.documentsDirectory);
+		#end
+
+>>>>>>> 28779341 (tentando recuperar)
 		PolymodHandler.init();
 		FlxSprite.defaultAntialiasing = true;
 

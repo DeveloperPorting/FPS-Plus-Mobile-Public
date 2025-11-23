@@ -462,6 +462,19 @@ class ResultsState extends FlxUIStateExt
 			returnToMenu();
 		}
 
+<<<<<<< HEAD
+=======
+		#if mobile
+		for (touch in FlxG.touches.list)
+		{
+			if (touch.justPressed)
+			{
+				returnToMenu();
+			}
+		}
+		#end
+
+>>>>>>> 28779341 (tentando recuperar)
 		if(enableDebugControls){
 			if(FlxG.keys.anyJustPressed([TAB])){
 				var newResultsState:ResultsState;
@@ -716,4 +729,8 @@ typedef SaveInfo = {
 	song:String,
 	week:Null<String>,
 	diff:Int
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 28779341 (tentando recuperar)

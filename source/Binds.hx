@@ -6,6 +6,10 @@ import flixel.input.gamepad.FlxGamepadInputID;
 import openfl.events.Event;
 import flixel.FlxG;
 import flixel.input.keyboard.FlxKey;
+<<<<<<< HEAD
+=======
+import mobile.flixel.input.FlxMobileInputID;
+>>>>>>> 28779341 (tentando recuperar)
 
 class Binds
 {
@@ -41,6 +45,10 @@ class Binds
 			category: "Gameplay",
 			binds: [LEFT, A],
 			controllerBinds: [DPAD_LEFT, X],
+<<<<<<< HEAD
+=======
+			mobileBinds: [noteLEFT, LEFT2],
+>>>>>>> 28779341 (tentando recuperar)
 			local: false
 		};
 		r.set("gameplayLeft", k);
@@ -50,6 +58,10 @@ class Binds
 			category: "Gameplay",
 			binds: [DOWN, S],
 			controllerBinds: [DPAD_DOWN, A],
+<<<<<<< HEAD
+=======
+			mobileBinds: [noteDOWN, DOWN2],
+>>>>>>> 28779341 (tentando recuperar)
 			local: false
 		};
 		r.set("gameplayDown", k);
@@ -59,6 +71,10 @@ class Binds
 			category: "Gameplay",
 			binds: [UP, W],
 			controllerBinds: [DPAD_UP, Y],
+<<<<<<< HEAD
+=======
+			mobileBinds: [noteUP, UP2],
+>>>>>>> 28779341 (tentando recuperar)
 			local: false
 		};
 		r.set("gameplayUp", k);
@@ -68,6 +84,10 @@ class Binds
 			category: "Gameplay",
 			binds: [RIGHT, D],
 			controllerBinds: [DPAD_RIGHT, B],
+<<<<<<< HEAD
+=======
+			mobileBinds: [noteRIGHT, RIGHT2],
+>>>>>>> 28779341 (tentando recuperar)
 			local: false
 		};
 		r.set("gameplayRight", k);
@@ -77,6 +97,10 @@ class Binds
 			category: "Gameplay",
 			binds: [ESCAPE, ENTER],
 			controllerBinds: [START],
+<<<<<<< HEAD
+=======
+			mobileBinds: [],
+>>>>>>> 28779341 (tentando recuperar)
 			local: false
 		};
 		r.set("pause", k);
@@ -86,6 +110,10 @@ class Binds
 			category: "Gameplay",
 			binds: [R],
 			controllerBinds: [BACK],
+<<<<<<< HEAD
+=======
+			mobileBinds: [],
+>>>>>>> 28779341 (tentando recuperar)
 			local: false
 		};
 		r.set("killbind", k);
@@ -98,6 +126,10 @@ class Binds
 			category: "Menu",
 			binds: [UP, W],
 			controllerBinds: [DPAD_UP, LEFT_STICK_DIGITAL_UP],
+<<<<<<< HEAD
+=======
+			mobileBinds: [UP, noteUP],
+>>>>>>> 28779341 (tentando recuperar)
 			local: false
 		};
 		r.set("menuUp", k);
@@ -107,6 +139,10 @@ class Binds
 			category: "Menu",
 			binds: [DOWN, S],
 			controllerBinds: [DPAD_DOWN, LEFT_STICK_DIGITAL_DOWN],
+<<<<<<< HEAD
+=======
+			mobileBinds: [DOWN, noteDOWN],
+>>>>>>> 28779341 (tentando recuperar)
 			local: false
 		};
 		r.set("menuDown", k);
@@ -116,6 +152,10 @@ class Binds
 			category: "Menu",
 			binds: [LEFT, A],
 			controllerBinds: [DPAD_LEFT, LEFT_STICK_DIGITAL_LEFT],
+<<<<<<< HEAD
+=======
+			mobileBinds: [LEFT, noteLEFT],
+>>>>>>> 28779341 (tentando recuperar)
 			local: false
 		};
 		r.set("menuLeft", k);
@@ -125,6 +165,10 @@ class Binds
 			category: "Menu",
 			binds: [RIGHT, D],
 			controllerBinds: [DPAD_RIGHT, LEFT_STICK_DIGITAL_RIGHT],
+<<<<<<< HEAD
+=======
+			mobileBinds: [RIGHT, noteRIGHT],
+>>>>>>> 28779341 (tentando recuperar)
 			local: false
 		};
 		r.set("menuRight", k);
@@ -134,6 +178,10 @@ class Binds
 			category: "Menu",
 			binds: [ENTER, SPACE],
 			controllerBinds: [A, START],
+<<<<<<< HEAD
+=======
+			mobileBinds: [A],
+>>>>>>> 28779341 (tentando recuperar)
 			local: false
 		};
 		r.set("menuAccept", k);
@@ -143,6 +191,10 @@ class Binds
 			category: "Menu",
 			binds: [ESCAPE, BACKSPACE],
 			controllerBinds: [B],
+<<<<<<< HEAD
+=======
+			mobileBinds: [B],
+>>>>>>> 28779341 (tentando recuperar)
 			local: false
 		};
 		r.set("menuBack", k);
@@ -152,6 +204,10 @@ class Binds
 			category: "Menu",
 			binds: [Q],
 			controllerBinds: [LEFT_SHOULDER],
+<<<<<<< HEAD
+=======
+			mobileBinds: [],
+>>>>>>> 28779341 (tentando recuperar)
 			local: false
 		};
 		r.set("menuCycleLeft", k);
@@ -161,6 +217,10 @@ class Binds
 			category: "Menu",
 			binds: [E],
 			controllerBinds: [RIGHT_SHOULDER],
+<<<<<<< HEAD
+=======
+			mobileBinds: [],
+>>>>>>> 28779341 (tentando recuperar)
 			local: false
 		};
 		r.set("menuCycleRight", k);
@@ -170,6 +230,10 @@ class Binds
 			category: "Menu",
 			binds: [TAB],
 			controllerBinds: [Y],
+<<<<<<< HEAD
+=======
+			mobileBinds: [C],
+>>>>>>> 28779341 (tentando recuperar)
 			local: false
 		};
 		r.set("menuChangeCharacter", k);
@@ -179,6 +243,10 @@ class Binds
 			category: "Menu",
 			binds: [R],
 			controllerBinds: [BACK],
+<<<<<<< HEAD
+=======
+			mobileBinds: [],
+>>>>>>> 28779341 (tentando recuperar)
 			local: false
 		};
 		r.set("menuResetScore", k);
@@ -188,6 +256,10 @@ class Binds
 			category: "Menu",
 			binds: [F11],
 			controllerBinds: [],
+<<<<<<< HEAD
+=======
+			mobileBinds: [],
+>>>>>>> 28779341 (tentando recuperar)
 			local: false
 		};
 		r.set("fullscreen", k);
@@ -200,6 +272,10 @@ class Binds
 			category: "Developement",
 			binds: [SEVEN],
 			controllerBinds: [],
+<<<<<<< HEAD
+=======
+			mobileBinds: [],
+>>>>>>> 28779341 (tentando recuperar)
 			local: true
 		};
 		r.set("chartEditor", k);
@@ -209,6 +285,10 @@ class Binds
 			category: "Developement",
 			binds: [EIGHT],
 			controllerBinds: [],
+<<<<<<< HEAD
+=======
+			mobileBinds: [],
+>>>>>>> 28779341 (tentando recuperar)
 			local: true
 		};
 		r.set("offsetEditor", k);
@@ -218,6 +298,10 @@ class Binds
 			category: "Developement",
 			binds: [F5],
 			controllerBinds: [],
+<<<<<<< HEAD
+=======
+			mobileBinds: [],
+>>>>>>> 28779341 (tentando recuperar)
 			local: true
 		};
 		r.set("polymodReload", k);
@@ -300,6 +384,10 @@ class Binds
 					category: r.get(x).category,
 					binds: binds.get(x).binds,
 					controllerBinds: binds.get(x).controllerBinds,
+<<<<<<< HEAD
+=======
+					mobileBinds: binds.get(x).mobileBinds,
+>>>>>>> 28779341 (tentando recuperar)
 					local: r.get(x).local
 				};
 				r.set(x, k);
@@ -315,6 +403,7 @@ class Binds
 	}
 
 	inline public static function pressed(input:String):Bool{
+<<<<<<< HEAD
 		return pressedKeyboardOnly(input) || pressedControllerOnly(input);
 	}
 
@@ -324,6 +413,17 @@ class Binds
 
 	inline public static function justReleased(input:String):Bool{
 		return justReleasedKeyboardOnly(input) || justReleasedControllerOnly(input);
+=======
+		return pressedKeyboardOnly(input) || pressedControllerOnly(input) || pressedVirtualPadOnly(input) || pressedMobileCOnly(input);
+	}
+
+	inline public static function justPressed(input:String):Bool{
+		return justPressedKeyboardOnly(input) || justPressedControllerOnly(input) || justPressedVirtualPadOnly(input) || justPressedMobileCOnly(input);
+	}
+
+	inline public static function justReleased(input:String):Bool{
+		return justReleasedKeyboardOnly(input) || justReleasedControllerOnly(input) || justReleasedVirtualPadOnly(input) || justReleasedMobileCOnly(input);
+>>>>>>> 28779341 (tentando recuperar)
 	}
 
 	inline public static function pressedKeyboardOnly(input:String):Bool{
@@ -365,6 +465,99 @@ class Binds
 		}
 		return r;
 	}
+<<<<<<< HEAD
+=======
+
+    public static var isInSubstate:Bool = false; // don't worry about this it becomes true and false on it's own in MusicBeatSubstate
+	public static var requested(get, default):Dynamic; // is set to MusicBeatState or MusicBeatSubstate when the constructor is called
+	public static var gameplayRequest(get, default):Dynamic; // for PlayState and EditorPlayState (hitbox and virtualPad)
+	
+	inline public static function pressedVirtualPadOnly(input:String):Bool{
+		var r:Bool = false;
+		if (requested.virtualPad != null) {
+		   for(x in binds.get(input).mobileBinds){
+			  r = requested.virtualPad.anyPressed(x);
+			  if(r){ break; }
+	 	   }
+		}
+		return r;
+	}
+
+	inline public static function justPressedVirtualPadOnly(input:String):Bool{
+		var r:Bool = false;
+		if (requested.virtualPad != null) {
+		   for(x in binds.get(input).mobileBinds){
+	   	      r = requested.virtualPad.anyJustPressed(x);
+	 	      if(r){
+				  break; }
+		   }
+		}
+		return r;
+	}
+
+	inline public static function justReleasedVirtualPadOnly(input:String):Bool{
+		var r:Bool = false;
+		if (requested.virtualPad != null) {
+		   for(x in binds.get(input).mobileBinds){
+			  r = requested.virtualPad.anyJustReleased(x);
+			  if(r){ break; }
+		   }
+		}
+	    return r;
+	}
+
+	inline public static function pressedMobileCOnly(input:String):Bool{
+		var r:Bool = false;
+		if (requested.mobileControls != null && gameplayRequest != null) {
+		   for(x in binds.get(input).mobileBinds){
+			  r = gameplayRequest.anyPressed(x);
+			  if(r){ break; }
+		   }
+		}
+		return r;
+	}
+
+	inline public static function justPressedMobileCOnly(input:String):Bool{
+		var r:Bool = false;
+		if (requested.mobileControls != null && gameplayRequest != null) {
+		   for(x in binds.get(input).mobileBinds){
+	   	      r = gameplayRequest.anyJustPressed(x);
+	 	      if(r){
+				  break; }
+		   }
+		}
+		return r;
+	}
+
+	inline public static function justReleasedMobileCOnly(input:String):Bool{
+		var r:Bool = false;
+		if (requested.mobileControls != null && gameplayRequest != null) {
+		   for(x in binds.get(input).mobileBinds){
+			  r = gameplayRequest.anyJustReleased(x);
+			  if(r){ break; }
+		   }
+		}
+	    return r;
+	}
+
+	@:noCompletion
+	private static function get_requested():Dynamic
+			{
+				if (isInSubstate)
+					return MusicBeatSubState.instance;
+				else
+					return MusicBeatState.instance;
+			}
+						
+	@:noCompletion
+	private static function get_gameplayRequest():Dynamic
+			{
+				if (isInSubstate)
+					return MusicBeatSubState.instance.mobileControls.current.target;
+				else
+					return MusicBeatState.instance.mobileControls.current.target;
+			}
+>>>>>>> 28779341 (tentando recuperar)
 	
 }
 
@@ -426,5 +619,11 @@ typedef Keybind = {
 	var category:String;							//The category of the input in the config menu.
 	var binds:Array<FlxKey>;						//The default keyboard keys of input.
 	var controllerBinds:Array<FlxGamepadInputID>;	//The default controller buttons of input.
+<<<<<<< HEAD
 	var local:Bool;									//Whether the input is global (false) or mod specific (true). If you need to add extra keys that are only for a mod, make this true.
 }
+=======
+	var mobileBinds:Array<FlxMobileInputID>;        //The default mobile buttons of input.
+	var local:Bool;									//Whether the input is global (false) or mod specific (true). If you need to add extra keys that are only for a mod, make this true.
+}
+>>>>>>> 28779341 (tentando recuperar)

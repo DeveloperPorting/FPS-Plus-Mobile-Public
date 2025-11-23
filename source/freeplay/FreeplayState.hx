@@ -216,6 +216,14 @@ class FreeplayState extends MusicBeatState
 			setCurSelectedToBeginingOfList();
 		}
 
+<<<<<<< HEAD
+=======
+		#if mobile
+		addVirtualPad(LEFT_FULL, FREE_PLAY);
+		addVirtualPadCamera();
+		#end
+
+>>>>>>> 28779341 (tentando recuperar)
 		super.create();
 	} 
 
@@ -242,30 +250,54 @@ class FreeplayState extends MusicBeatState
 		if(transitionOver){
 			switch(selectingMode){
 				case "song":
+<<<<<<< HEAD
 					if(Binds.justPressed("menuUp")){
 						changeSelected(-1);
 						FlxG.sound.play(Paths.sound('scrollMenu'));
 					}
 					else if(Binds.justPressed("menuDown")){
+=======
+					if(Binds.justPressed("menuUp") || virtualPad.buttonUp.justPressed){
+						changeSelected(-1);
+						FlxG.sound.play(Paths.sound('scrollMenu'));
+					}
+					else if(Binds.justPressed("menuDown") || virtualPad.buttonDown.justPressed){
+>>>>>>> 28779341 (tentando recuperar)
 						changeSelected(1);
 						FlxG.sound.play(Paths.sound('scrollMenu'));
 					}
 		
+<<<<<<< HEAD
 					if(Binds.justPressed("menuLeft")){
 						changeDifficulty(-1);
 						FlxG.sound.play(Paths.sound('scrollMenu'));
 					}
 					else if(Binds.justPressed("menuRight")){
+=======
+					if(Binds.justPressed("menuLeft") || virtualPad.buttonLeft.justPressed){
+						changeDifficulty(-1);
+						FlxG.sound.play(Paths.sound('scrollMenu'));
+					}
+					else if(Binds.justPressed("menuRight") || virtualPad.buttonRight.justPressed){
+>>>>>>> 28779341 (tentando recuperar)
 						changeDifficulty(1);
 						FlxG.sound.play(Paths.sound('scrollMenu'));
 					}
 		
 					if(categoryLockOutSoItStopsBreaking > 0.25){
+<<<<<<< HEAD
 						if(Binds.justPressed("menuCycleLeft")){
 							changeCategory(-1);
 							FlxG.sound.play(Paths.sound('scrollMenu'));
 						}
 						else if(Binds.justPressed("menuCycleRight")){
+=======
+						if(Binds.justPressed("menuCycleLeft") || virtualPad.buttonLeft2.justPressed){
+							changeCategory(-1);
+							FlxG.sound.play(Paths.sound('scrollMenu'));
+						}
+						else if(Binds.justPressed("menuCycleRight") || virtualPad.buttonRight2.justPressed){
+>>>>>>> 28779341 (tentando recuperar)
 							changeCategory(1);
 							FlxG.sound.play(Paths.sound('scrollMenu'));
 						}
@@ -275,7 +307,11 @@ class FreeplayState extends MusicBeatState
 					}
 					
 		
+<<<<<<< HEAD
 					if(Binds.justPressed("menuAccept")){
+=======
+					if(Binds.justPressed("menuAccept") || virtualPad.buttonA.justPressed){
+>>>>>>> 28779341 (tentando recuperar)
 						if(!categoryMap[categoryNames[curCategory]][curSelected].randomCapsule){
 							if(categoryMap[categoryNames[curCategory]][curSelected].variations.length > 1){
 								openVariationPopup();
@@ -325,6 +361,7 @@ class FreeplayState extends MusicBeatState
 						updateCapsulePosition(i);
 					}
 			
+<<<<<<< HEAD
 					if(Binds.pressed("menuLeft")){ arrowLeft.scale.set(0.8, 0.8); }
 					else{ arrowLeft.scale.set(1, 1); }
 			
@@ -338,6 +375,21 @@ class FreeplayState extends MusicBeatState
 					else{ miniArrowRight.scale.set(1, 1); }
 			
 					if(Binds.justPressed("menuBack")){
+=======
+					if(Binds.pressed("menuLeft") || virtualPad.buttonLeft.pressed){ arrowLeft.scale.set(0.8, 0.8); }
+					else{ arrowLeft.scale.set(1, 1); }
+			
+					if(Binds.pressed("menuRight") || virtualPad.buttonRight.pressed){ arrowRight.scale.set(0.8, 0.8); }
+					else{ arrowRight.scale.set(1, 1); }
+		
+					if(Binds.pressed("menuCycleLeft") || virtualPad.buttonLeft2.pressed){ miniArrowLeft.scale.set(0.6, 0.6); }
+					else{ miniArrowLeft.scale.set(1, 1); }
+			
+					if(Binds.pressed("menuCycleRight") || virtualPad.buttonRight2.pressed){ miniArrowRight.scale.set(0.6, 0.6); }
+					else{ miniArrowRight.scale.set(1, 1); }
+			
+					if(Binds.justPressed("menuBack") || virtualPad.buttonB.justPressed){
+>>>>>>> 28779341 (tentando recuperar)
 						transitionOver = false;
 						FlxG.sound.play(Paths.sound('cancelMenu'));
 						FlxG.sound.music.fadeOut(0.5, 0, function(t) {
@@ -351,7 +403,11 @@ class FreeplayState extends MusicBeatState
 						});
 					}
 		
+<<<<<<< HEAD
 					if(Binds.justPressed("menuChangeCharacter")){
+=======
+					if(Binds.justPressed("menuChangeCharacter") || virtualPad.buttonC.justPressed){
+>>>>>>> 28779341 (tentando recuperar)
 						transitionOver = false;
 						dj.toCharacterSelect();
 						customTransOut = new transition.data.ScreenWipeOutFlipped(dropTime, dropEase);
@@ -374,25 +430,42 @@ class FreeplayState extends MusicBeatState
 		
 					
 				case "variation":
+<<<<<<< HEAD
 					if(Binds.justPressed("menuLeft")){
 						changeVariation(-1);
 						FlxG.sound.play(Paths.sound('scrollMenu'));
 					}
 					else if(Binds.justPressed("menuRight")){
+=======
+					if(Binds.justPressed("menuLeft") || virtualPad.buttonLeft.justPressed){
+						changeVariation(-1);
+						FlxG.sound.play(Paths.sound('scrollMenu'));
+					}
+					else if(Binds.justPressed("menuRight") || virtualPad.buttonRight.justPressed){
+>>>>>>> 28779341 (tentando recuperar)
 						changeVariation(1);
 						FlxG.sound.play(Paths.sound('scrollMenu'));
 					}
 
+<<<<<<< HEAD
 					if(Binds.justPressed("menuAccept")){
+=======
+					if(Binds.justPressed("menuAccept") || virtualPad.buttonA.justPressed){
+>>>>>>> 28779341 (tentando recuperar)
 						PlayState.overrideInsturmental = categoryMap[categoryNames[curCategory]][curSelected].variations[curVariation];
 						closeVariationPopup();
 						songAccept();
 					}
+<<<<<<< HEAD
 					else if(Binds.justPressed("menuBack")){
+=======
+					else if(Binds.justPressed("menuBack") || virtualPad.buttonB.justPressed){
+>>>>>>> 28779341 (tentando recuperar)
 						closeVariationPopup();
 						FlxG.sound.play(Paths.sound('cancelMenu'));
 					}
 
+<<<<<<< HEAD
 					if(Binds.pressed("menuLeft")){ variationArrowLeft.scale.set(1.6, 1.6); }
 					else{ variationArrowLeft.scale.set(2, 2); }
 			
@@ -405,11 +478,29 @@ class FreeplayState extends MusicBeatState
 						FlxG.sound.play(Paths.sound('scrollMenu'));
 					}
 					else if(Binds.justPressed("menuRight")){
+=======
+					if(Binds.pressed("menuLeft") || virtualPad.buttonLeft.pressed){ variationArrowLeft.scale.set(1.6, 1.6); }
+					else{ variationArrowLeft.scale.set(2, 2); }
+			
+					if(Binds.pressed("menuRight") || virtualPad.buttonRight.pressed){ variationArrowRight.scale.set(1.6, 1.6); }
+					else{ variationArrowRight.scale.set(2, 2); }
+					
+				case "variationRandom":
+					if(Binds.justPressed("menuLeft") || virtualPad.buttonLeft.justPressed){
+						changeVariationRandom(-1);
+						FlxG.sound.play(Paths.sound('scrollMenu'));
+					}
+					else if(Binds.justPressed("menuRight") || virtualPad.buttonRight.justPressed){
+>>>>>>> 28779341 (tentando recuperar)
 						changeVariationRandom(1);
 						FlxG.sound.play(Paths.sound('scrollMenu'));
 					}
 
+<<<<<<< HEAD
 					if(Binds.justPressed("menuAccept")){
+=======
+					if(Binds.justPressed("menuAccept") || virtualPad.buttonA.justPressed){
+>>>>>>> 28779341 (tentando recuperar)
 						curSelected = randomSongSelection;
 						changeSelected(0);
 
@@ -427,15 +518,26 @@ class FreeplayState extends MusicBeatState
 
 						curSelected = 0;
 					}
+<<<<<<< HEAD
 					else if(Binds.justPressed("menuBack")){
+=======
+					else if(Binds.justPressed("menuBack") || virtualPad.buttonB.justPressed){
+>>>>>>> 28779341 (tentando recuperar)
 						closeVariationPopup();
 						FlxG.sound.play(Paths.sound('cancelMenu'));
 					}
 
+<<<<<<< HEAD
 					if(Binds.pressed("menuLeft")){ variationArrowLeft.scale.set(1.6, 1.6); }
 					else{ variationArrowLeft.scale.set(2, 2); }
 			
 					if(Binds.pressed("menuRight")){ variationArrowRight.scale.set(1.6, 1.6); }
+=======
+					if(Binds.pressed("menuLeft") || virtualPad.buttonLeft.pressed){ variationArrowLeft.scale.set(1.6, 1.6); }
+					else{ variationArrowLeft.scale.set(2, 2); }
+			
+					if(Binds.pressed("menuRight") || virtualPad.buttonRight.pressed){ variationArrowRight.scale.set(1.6, 1.6); }
+>>>>>>> 28779341 (tentando recuperar)
 					else{ variationArrowRight.scale.set(2, 2); }
 
 				case "resetScore":
@@ -485,7 +587,11 @@ class FreeplayState extends MusicBeatState
 		}
 
 		//big if
+<<<<<<< HEAD
 		if(Binds.justPressed("menuUp")||Binds.justPressed("menuDown")||Binds.justPressed("menuLeft")||Binds.justPressed("menuRight")||Binds.justPressed("menuCycleLeft")||Binds.justPressed("menuCycleRight")){
+=======
+		if((Binds.justPressed("menuUp")||Binds.justPressed("menuDown")||Binds.justPressed("menuLeft")||Binds.justPressed("menuRight")||Binds.justPressed("menuCycleLeft")||Binds.justPressed("menuCycleRight")) || (virtualPad.buttonUp.justPressed||virtualPad.buttonDown.justPressed||virtualPad.buttonLeft.justPressed||virtualPad.buttonRight.justPressed||virtualPad.buttonLeft2.justPressed||virtualPad.buttonRight2.justPressed)){
+>>>>>>> 28779341 (tentando recuperar)
 			pressedAnything();
 		}
 
@@ -1765,4 +1871,8 @@ enum IntroAnimType {
 	fromSongExit;
 	fromSongWin;
 	fromSongLose;
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 28779341 (tentando recuperar)

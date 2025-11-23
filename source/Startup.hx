@@ -99,6 +99,11 @@ class Startup extends FlxUIStateExt
 			}
 		});
 
+<<<<<<< HEAD
+=======
+		#if android FlxG.android.preventDefaultKeys = [BACK]; #end
+
+>>>>>>> 28779341 (tentando recuperar)
 		FlxUIStateExt.defaultTransIn = ScreenWipeIn;
 		FlxUIStateExt.defaultTransInArgs = [0.6];
 		FlxUIStateExt.defaultTransOut = ScreenWipeOut;
@@ -238,7 +243,11 @@ class Startup extends FlxUIStateExt
 	}
 
 	function openPreloadSettings(){
+<<<<<<< HEAD
 		#if desktop
+=======
+		#if (desktop || mobile)
+>>>>>>> 28779341 (tentando recuperar)
 		FlxG.sound.play(Paths.sound('cancelMenu'));
 		CacheSettings.noFunMode = true;
 		customTransOut = new FadeOut(0.3);

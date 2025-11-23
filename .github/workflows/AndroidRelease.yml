@@ -1,0 +1,43 @@
+name: Android Release Build
+
+on: workflow_dispatch
+
+jobs:
+  build:
+    name: Android Release Build
+    permissions: write-all
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@main
+
+      - name: Setup Haxe
+        uses: krdlab/setup-haxe@master
+        with:
+          haxe-version: 4.3.6
+
+      - name: Install Libraries
+        run: |
+         haxelib install hmm --quiet
+         haxelib run hmm setup
+         haxelib run hmm install
+         haxelib --global install hxvlc
+         haxelib run lime rebuild hxcpp
+
+      - name: Configure Android
+        run: |
+          haxelib run lime setup -alias -y
+          haxelib run lime config ANDROID_SDK $ANDROID_HOME
+          haxelib run lime config ANDROID_NDK_ROOT $ANDROID_NDK_LATEST_HOME
+          haxelib run lime config JAVA_HOME $JAVA_HOME_17_X64
+          haxelib run lime config ANDROID_SETUP true
+
+      - name: Compile
+        run: haxelib run lime build android -final
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@main
+        with:
+          name: FPS Plus Android
+          path: export/final/android/bin/app/build/outputs/apk/*
+          if-no-files-found: error

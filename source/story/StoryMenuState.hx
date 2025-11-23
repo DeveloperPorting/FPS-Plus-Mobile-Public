@@ -280,6 +280,14 @@ class StoryMenuState extends MusicBeatState
 		add(resetScoreYes);
 		add(resetScoreNo);
 
+<<<<<<< HEAD
+=======
+		#if mobile
+		addVirtualPad(LEFT_FULL, A_B);
+		addVirtualPadCamera();
+		#end
+
+>>>>>>> 28779341 (tentando recuperar)
 		super.create();
 	}
 
@@ -315,41 +323,69 @@ class StoryMenuState extends MusicBeatState
 			case "week":
 				if (!movedBack){
 					if (!selectedWeek){
+<<<<<<< HEAD
 						if(Binds.justPressed("menuUp")){
 							changeWeek(-1);
 							changeDifficulty(0, false);
 						}
 						else if(Binds.justPressed("menuDown")){
+=======
+						if(Binds.justPressed("menuUp") || virtualPad.buttonUp.justPressed){
+							changeWeek(-1);
+							changeDifficulty(0, false);
+						}
+						else if(Binds.justPressed("menuDown") || virtualPad.buttonDown.justPressed){
+>>>>>>> 28779341 (tentando recuperar)
 							changeWeek(1);
 							changeDifficulty(0, false);
 						}
 		
+<<<<<<< HEAD
 						if (Binds.pressed("menuRight")){
+=======
+						if (Binds.pressed("menuRight") || virtualPad.buttonRight.pressed){
+>>>>>>> 28779341 (tentando recuperar)
 							rightArrow.animation.play('press');
 						}
 						else{
 							rightArrow.animation.play('idle');
 						}
 		
+<<<<<<< HEAD
 						if(Binds.pressed("menuLeft")){
+=======
+						if(Binds.pressed("menuLeft") || virtualPad.buttonLeft.pressed){
+>>>>>>> 28779341 (tentando recuperar)
 							leftArrow.animation.play('press');
 						}
 						else{
 							leftArrow.animation.play('idle');
 						}
 		
+<<<<<<< HEAD
 						if(Binds.justPressed("menuRight")){
+=======
+						if(Binds.justPressed("menuRight") || virtualPad.buttonRight.justPressed){
+>>>>>>> 28779341 (tentando recuperar)
 							changeDifficulty(1);
 							FlxG.sound.play(Paths.sound('scrollMenu'));
 						}
 		
+<<<<<<< HEAD
 						if(Binds.justPressed("menuLeft")){
+=======
+						if(Binds.justPressed("menuLeft") || virtualPad.buttonLeft.justPressed){
+>>>>>>> 28779341 (tentando recuperar)
 							changeDifficulty(-1);
 							FlxG.sound.play(Paths.sound('scrollMenu'));
 						}
 					}
 		
+<<<<<<< HEAD
 					if (Binds.justPressed("menuAccept")){
+=======
+					if (Binds.justPressed("menuAccept") || virtualPad.buttonA.justPressed){
+>>>>>>> 28779341 (tentando recuperar)
 						selectWeek();
 					}
 					else if(Binds.justPressed("menuResetScore")){
@@ -357,7 +393,11 @@ class StoryMenuState extends MusicBeatState
 					}
 				}
 		
+<<<<<<< HEAD
 				if (Binds.justPressed("menuBack") && !movedBack && !selectedWeek)
+=======
+				if (Binds.justPressed("menuBack") || virtualPad.buttonB.justPressed && !movedBack && !selectedWeek)
+>>>>>>> 28779341 (tentando recuperar)
 				{
 					FlxG.sound.play(Paths.sound('cancelMenu'));
 					movedBack = true;
@@ -365,7 +405,11 @@ class StoryMenuState extends MusicBeatState
 				}
 
 			case "resetScore":
+<<<<<<< HEAD
 				if(Binds.justPressed("menuLeft") || Binds.justPressed("menuRight")){
+=======
+				if((Binds.justPressed("menuLeft") || Binds.justPressed("menuRight")) || (virtualPad.buttonLeft.justPressed || virtualPad.buttonRight.justPressed)){
+>>>>>>> 28779341 (tentando recuperar)
 					resetScoreState = !resetScoreState;
 					FlxG.sound.play(Paths.sound('scrollMenu'));
 					if(resetScoreState){
@@ -389,7 +433,11 @@ class StoryMenuState extends MusicBeatState
 					resetScoreYes.color = 0xFF7F7F7F;
 				}
 
+<<<<<<< HEAD
 				if(Binds.justPressed("menuAccept") && resetScoreState){
+=======
+				if(Binds.justPressed("menuAccept") || virtualPad.buttonA.justPressed && resetScoreState){
+>>>>>>> 28779341 (tentando recuperar)
 					for(i in 0...3){
 						if(Highscore.getWeekScore(weekList[curWeek].id, i).score > 0){
 							Highscore.saveWeekScore(weekList[curWeek].id, 0, 0, i, none, true);
@@ -399,7 +447,11 @@ class StoryMenuState extends MusicBeatState
 					closeResetScorePopup();
 					FlxG.sound.play(Paths.sound('confirmMenu'));
 				}
+<<<<<<< HEAD
 				else if(Binds.justPressed("menuBack") || (Binds.justPressed("menuAccept") && !resetScoreState)){
+=======
+				else if((Binds.justPressed("menuBack") || (Binds.justPressed("menuAccept") && !resetScoreState)) || (virtualPad.buttonB.justPressed || (virtualPad.buttonB.justPressed && !resetScoreState))){
+>>>>>>> 28779341 (tentando recuperar)
 					closeResetScorePopup();
 					FlxG.sound.play(Paths.sound('cancelMenu'));
 				}
@@ -659,4 +711,8 @@ typedef StoryWeek = {
 	var stickerSet:Array<String>;	//The set of stickers to use when returning to the story menu.
 	var color:FlxColor;				//The color that the story menu is set to when selecting the week.
 	var difficulties:Array<String>;	//The color that the story menu is set to when selecting the week.
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 28779341 (tentando recuperar)

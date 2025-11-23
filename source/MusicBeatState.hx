@@ -2,9 +2,26 @@ package;
 
 import Conductor.BPMChangeEvent;
 import extensions.flixel.FlxUIStateExt;
+<<<<<<< HEAD
 
 class MusicBeatState extends FlxUIStateExt
 {
+=======
+import flixel.FlxCamera;
+import mobile.MobileControls;
+import mobile.flixel.FlxVirtualPad;
+import flixel.util.FlxDestroyUtil;
+import flixel.FlxG;
+
+class MusicBeatState extends FlxUIStateExt
+{
+	public static var instance:MusicBeatState = null;
+	public function new()
+	{
+		instance = this;
+		super();
+	}
+>>>>>>> 28779341 (tentando recuperar)
 	private var curStep:Int = 0;
 	private var curBeat:Int = 0;
 
@@ -18,6 +35,78 @@ class MusicBeatState extends FlxUIStateExt
 
 	private var stateConductorOffset:Float = 0;
 
+<<<<<<< HEAD
+=======
+	public var mobileControls:MobileControls;
+	public var virtualPad:FlxVirtualPad;
+
+	public var vpadCam:FlxCamera;
+	public var camControls:FlxCamera;
+
+	
+    public function addVirtualPad(DPad:FlxDPadMode, Action:FlxActionMode)
+	{
+		if (virtualPad != null)
+			removeVirtualPad();
+
+		virtualPad = new FlxVirtualPad(DPad, Action);
+		add(virtualPad);
+	}
+
+	public function removeVirtualPad()
+	{
+		if (virtualPad != null)
+			remove(virtualPad);
+	}
+
+	public function addMobileControls(DefaultDrawTarget:Bool = false)
+	{
+		mobileControls = new MobileControls();
+
+		camControls = new FlxCamera();
+		camControls.bgColor.alpha = 0;
+		FlxG.cameras.add(camControls, DefaultDrawTarget);
+
+		mobileControls.cameras = [camControls];
+		mobileControls.visible = false;
+		add(mobileControls);
+	}
+
+	public function removeMobileControls()
+	{
+		if (mobileControls != null)
+			remove(mobileControls);
+	}
+
+	public function addVirtualPadCamera(DefaultDrawTarget:Bool = false)
+	{
+		if (virtualPad != null)
+		{
+			vpadCam = new FlxCamera();
+			FlxG.cameras.add(vpadCam, DefaultDrawTarget);
+			vpadCam.bgColor.alpha = 0;
+			virtualPad.cameras = [vpadCam];
+		}
+	}
+
+	override function destroy()
+	{
+		super.destroy();
+
+		if (virtualPad != null)
+		{
+			virtualPad = FlxDestroyUtil.destroy(virtualPad);
+			virtualPad = null;
+		}
+
+		if (mobileControls != null)
+		{
+			mobileControls = FlxDestroyUtil.destroy(mobileControls);
+			mobileControls = null;
+		}
+	}
+
+>>>>>>> 28779341 (tentando recuperar)
 	override function create(){
 		super.create();
 	}
@@ -64,4 +153,8 @@ class MusicBeatState extends FlxUIStateExt
 
 	public function beatHit():Void{}
 	
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 28779341 (tentando recuperar)

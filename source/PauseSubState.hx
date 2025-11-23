@@ -122,6 +122,14 @@ class PauseSubState extends MusicBeatSubState
 
 		for(script in PlayState.instance.scripts){ script.pause(); }
 
+<<<<<<< HEAD
+=======
+		#if mobile
+		addVirtualPad(UP_DOWN, A_B);
+		addVirtualPadCamera();
+		#end
+
+>>>>>>> 28779341 (tentando recuperar)
 		super.create();
 
 		Utils.gc();
@@ -132,21 +140,37 @@ class PauseSubState extends MusicBeatSubState
 		super.update(elapsed);
 
 		if(!becomeUseless){
+<<<<<<< HEAD
 			if (Binds.justPressed("menuUp")){
 				changeSelection(-1);
 				FlxG.sound.play(Paths.sound("scrollMenu"), 0.8);
 			}
 			if (Binds.justPressed("menuDown")){
+=======
+			if (Binds.justPressed("menuUp") || virtualPad.buttonUp.justPressed){
+				changeSelection(-1);
+				FlxG.sound.play(Paths.sound("scrollMenu"), 0.8);
+			}
+			if (Binds.justPressed("menuDown") || virtualPad.buttonDown.justPressed){
+>>>>>>> 28779341 (tentando recuperar)
 				changeSelection(1);
 				FlxG.sound.play(Paths.sound("scrollMenu"), 0.8);
 			}
 	
+<<<<<<< HEAD
 			if (Binds.justPressed("menuBack")){
+=======
+			if (Binds.justPressed("menuBack") || virtualPad.buttonB.justPressed){
+>>>>>>> 28779341 (tentando recuperar)
 				PlayState.instance.tweenManager.active = true;
 				unpause();
 			}
 	
+<<<<<<< HEAD
 			if (!allowControllerPress ? Binds.justPressedKeyboardOnly("menuAccept") : Binds.justPressed("menuAccept")){
+=======
+			if (!allowControllerPress ? Binds.justPressedKeyboardOnly("menuAccept") || virtualPad.buttonA.justPressed : Binds.justPressed("menuAccept")){
+>>>>>>> 28779341 (tentando recuperar)
 	
 				PlayState.instance.tweenManager.active = true;
 	

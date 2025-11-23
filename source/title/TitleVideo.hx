@@ -54,6 +54,19 @@ class TitleVideo extends FlxState
 			video.skip();
 		}
 
+<<<<<<< HEAD
+=======
+		#if mobile
+		for (touch in FlxG.touches.list)
+		{
+			if (touch.justPressed)
+			{
+				video.skip();
+			}
+		}
+		#end
+
+>>>>>>> 28779341 (tentando recuperar)
 	}
 
 	function next():Void{
