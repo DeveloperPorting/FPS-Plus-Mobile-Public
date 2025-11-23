@@ -24,11 +24,7 @@ import caching.*;
 
 using StringTools;
 
-<<<<<<< HEAD
-class ConfigMenu extends FlxUIStateExt
-=======
 class ConfigMenu #if mobile extends MusicBeatState #else extends FlxUIStateExt #end
->>>>>>> 28779341 (tentando recuperar)
 {
 
 	public static final USE_LAYERED_MUSIC:Bool = true;	//If you're not using a layered options theme, set this to false.
@@ -321,14 +317,11 @@ class ConfigMenu #if mobile extends MusicBeatState #else extends FlxUIStateExt #
 			savedListOffset = -1;
 		}
 
-<<<<<<< HEAD
-=======
 		#if mobile
 		addVirtualPad(LEFT_FULL, A_B);
 		addVirtualPadCamera();
 		#end
 
->>>>>>> 28779341 (tentando recuperar)
 		super.create();
 
 	}
@@ -337,18 +330,6 @@ class ConfigMenu #if mobile extends MusicBeatState #else extends FlxUIStateExt #
 
 		super.update(elapsed);
 
-<<<<<<< HEAD
-		pressUp = Binds.justPressed("menuUp");
-		pressDown = Binds.justPressed("menuDown");
-		pressLeft = Binds.justPressed("menuLeft");
-		pressRight = Binds.justPressed("menuRight");
-		pressAccept = Binds.justPressed("menuAccept");
-		pressBack = Binds.justPressed("menuBack");
-		holdUp = Binds.pressed("menuUp");
-		holdDown = Binds.pressed("menuDown");
-		holdLeft = Binds.pressed("menuLeft");
-		holdRight = Binds.pressed("menuRight");
-=======
 		pressUp = (Binds.justPressed("menuUp") || virtualPad.buttonUp.justPressed);
 		pressDown = (Binds.justPressed("menuDown") || virtualPad.buttonDown.justPressed);
 		pressLeft = (Binds.justPressed("menuLeft") || virtualPad.buttonLeft.justPressed);
@@ -359,7 +340,6 @@ class ConfigMenu #if mobile extends MusicBeatState #else extends FlxUIStateExt #
 		holdDown = (Binds.pressed("menuDown") || virtualPad.buttonDown.pressed);
 		holdLeft = (Binds.pressed("menuLeft") || virtualPad.buttonLeft.pressed);
 		holdRight = (Binds.pressed("menuRight") || virtualPad.buttonRight.pressed);
->>>>>>> 28779341 (tentando recuperar)
 
 		if(USE_LAYERED_MUSIC){
 			if (!exiting && (Math.abs(songLayer.time - (FlxG.sound.music.time)) > 20)){
@@ -804,15 +784,9 @@ class ConfigMenu #if mobile extends MusicBeatState #else extends FlxUIStateExt #
 			framerateValue = allowedFramerates.length - 1;
 		}
 
-<<<<<<< HEAD
-		var fpsCap = new ConfigOption("FRAMERATE", #if desktop (allowedFramerates[framerateValue] == 999 ? "uncapped" : ""+allowedFramerates[framerateValue]) #else "disabled" #end, #if desktop "Uncaps the framerate during gameplay.\n(Some menus will limit framerate but gameplay will always be at the specified framerate.)" #else "Disabled on Web builds." #end);
-		fpsCap.optionUpdate = function(){
-			#if desktop
-=======
 		var fpsCap = new ConfigOption("FRAMERATE", #if (desktop || mobile) (allowedFramerates[framerateValue] == 999 ? "uncapped" : ""+allowedFramerates[framerateValue]) #else "disabled" #end, #if (desktop || mobile) "Uncaps the framerate during gameplay.\n(Some menus will limit framerate but gameplay will always be at the specified framerate.)" #else "Disabled on Web builds." #end);
 		fpsCap.optionUpdate = function(){
 			#if (desktop || mobile)
->>>>>>> 28779341 (tentando recuperar)
 			if (pressRight) {
 				FlxG.sound.play(Paths.sound('scrollMenu'));
 				framerateValue++;
@@ -1214,11 +1188,7 @@ class ConfigMenu #if mobile extends MusicBeatState #else extends FlxUIStateExt #
 		var cacheSettings = new ConfigOption("[CACHE SETTINGS]", "", "Press ENTER to change what assets the game keeps cached.");
 		cacheSettings.optionUpdate = function(){
 			if (pressAccept) {
-<<<<<<< HEAD
-				#if desktop
-=======
 				#if (desktop || mobile)
->>>>>>> 28779341 (tentando recuperar)
 				FlxG.sound.play(Paths.sound('scrollMenu'));
 				state = "transitioning";
 				saveMenuPosition();
@@ -1431,8 +1401,4 @@ class ConfigMenu #if mobile extends MusicBeatState #else extends FlxUIStateExt #
 		}
 	}
 
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> 28779341 (tentando recuperar)

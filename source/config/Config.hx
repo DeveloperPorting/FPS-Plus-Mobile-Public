@@ -33,13 +33,10 @@ class Config
 	@configParam public static var flashingLights:Bool = true;
 	@configParam public static var fullscreen:Bool = false;
 	@configParam public static var checkForUpdates:Bool = true;
-<<<<<<< HEAD
-=======
 	#if mobile
 	@configParam public static var padalpha:Float = 0.5;
 	@configParam public static var hitboxalpha:Float = 0.2;
 	#end
->>>>>>> 28779341 (tentando recuperar)
 
 	@configParam public static var ee1:Bool = false;
 	@configParam public static var ee2:Bool = false;
@@ -104,8 +101,4 @@ class Config
 		return configList;
 	}
 
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> 28779341 (tentando recuperar)
