@@ -1163,7 +1163,11 @@ class FreeplayState extends MusicBeatState
 		if(!controller){
 			if(Binds.binds.get("menuChangeCharacter").binds.length > 0){
 				var key = Binds.binds.get("menuChangeCharacter").binds[0];
+				#if mobile
+				changeCharacterText.text = "[C] to Change Character";
+				#else
 				changeCharacterText.text = "[" + Utils.keyToString(key) + "] to Change Character";
+				#end
 			}
 			else{
 				changeCharacterText.text = "Change Character not bound!";
@@ -1182,7 +1186,11 @@ class FreeplayState extends MusicBeatState
 			if(Binds.binds.get("menuCycleLeft").binds.length > 0 && Binds.binds.get("menuCycleRight").binds.length > 0){
 				var keyLeft = Binds.binds.get("menuCycleLeft").binds[0];
 				var keyRight = Binds.binds.get("menuCycleRight").binds[0];
+				#if mobile
+				changeTabText.text = "[LEFT TWO] & [RIGHT TWO] to Change Tabs";
+				#else
 				changeTabText.text = "[" + Utils.keyToString(keyLeft) + "] & [" + Utils.keyToString(keyRight) + "] to Change Tabs";
+				#end
 			}
 			else{
 				changeTabText.text = "Cycle Left or Cycle Right not bound!";
