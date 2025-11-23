@@ -20,11 +20,7 @@ import flixel.FlxSprite;
 import extensions.flixel.FlxUIStateExt;
 import caching.*;
 
-<<<<<<< HEAD
-class ModManagerState extends FlxUIStateExt
-=======
 class ModManagerState #if mobile extends MusicBeatState #else extends FlxUIStateExt #end
->>>>>>> 28779341 (tentando recuperar)
 {
 
 	var curSelectedMod:Int = 0;
@@ -271,14 +267,11 @@ class ModManagerState #if mobile extends MusicBeatState #else extends FlxUIState
 			add(button);
 		}
 
-<<<<<<< HEAD
-=======
 		#if mobile
 		addVirtualPad(LEFT_FULL, A_B);
 		addVirtualPadCamera();
 		#end
 
->>>>>>> 28779341 (tentando recuperar)
 		buildShownModList();
 
 		changeModSelection(0, false);
@@ -294,38 +287,15 @@ class ModManagerState #if mobile extends MusicBeatState #else extends FlxUIState
 		if(canDoThings){
 			switch(state){
 				case "selecting":
-<<<<<<< HEAD
-					if(Binds.justPressed("menuUp") && hasMods){
-						changeModSelection(-1);
-						FlxG.sound.play(Paths.sound("scrollMenu"));
-					}
-					else if(Binds.justPressed("menuDown") && hasMods){
-=======
 					if(Binds.justPressed("menuUp") || virtualPad.buttonUp.justPressed && hasMods){
 						changeModSelection(-1);
 						FlxG.sound.play(Paths.sound("scrollMenu"));
 					}
 					else if(Binds.justPressed("menuDown") || virtualPad.buttonDown.justPressed && hasMods){
->>>>>>> 28779341 (tentando recuperar)
 						changeModSelection(1);
 						FlxG.sound.play(Paths.sound("scrollMenu"));
 					}
 			
-<<<<<<< HEAD
-					if(Binds.justPressed("menuLeft")){
-						changeButtonSelection(-1);
-						FlxG.sound.play(Paths.sound("scrollMenu"));
-					}
-					else if(Binds.justPressed("menuRight")){
-						changeButtonSelection(1);
-						FlxG.sound.play(Paths.sound("scrollMenu"));
-					}
-					if(Binds.justPressed("menuAccept")){
-						menuButtons[curSelectedButton].press();
-					}
-			
-					if(Binds.justPressed("menuBack")){
-=======
 					if(Binds.justPressed("menuLeft") || virtualPad.buttonLeft.justPressed){
 						changeButtonSelection(-1);
 						FlxG.sound.play(Paths.sound("scrollMenu"));
@@ -339,7 +309,6 @@ class ModManagerState #if mobile extends MusicBeatState #else extends FlxUIState
 					}
 			
 					if(Binds.justPressed("menuBack") || virtualPad.buttonB.justPressed){
->>>>>>> 28779341 (tentando recuperar)
 						ImageCache.forceClearOnTransition = true;
 						FlxG.sound.play(Paths.sound("cancelMenu"));
 						canDoThings = false;
@@ -357,19 +326,11 @@ class ModManagerState #if mobile extends MusicBeatState #else extends FlxUIState
 					}
 
 				case "config":
-<<<<<<< HEAD
-					if(Binds.justPressed("menuBack")){
-						FlxG.sound.play(Paths.sound("cancelMenu"));
-						switchToSelecting();
-					}
-					else if(Binds.justPressed("menuDown")){
-=======
 					if(Binds.justPressed("menuBack") || virtualPad.buttonB.justPressed){
 						FlxG.sound.play(Paths.sound("cancelMenu"));
 						switchToSelecting();
 					}
 					else if(Binds.justPressed("menuDown") || virtualPad.buttonDown.justPressed){
->>>>>>> 28779341 (tentando recuperar)
 						if(curListStartOffset + curListPosition < modList[curSelectedMod].config.length-1){
 							if(curListPosition == 6){
 								curListStartOffset++;
@@ -383,11 +344,7 @@ class ModManagerState #if mobile extends MusicBeatState #else extends FlxUIState
 							textUpdate();
 						}
 					}
-<<<<<<< HEAD
-					else if(Binds.justPressed("menuUp")){
-=======
 					else if(Binds.justPressed("menuUp") || virtualPad.buttonUp.justPressed){
->>>>>>> 28779341 (tentando recuperar)
 						if(curListStartOffset + curListPosition > 0){
 							if(curListPosition == 0){
 								curListStartOffset--;
@@ -406,11 +363,7 @@ class ModManagerState #if mobile extends MusicBeatState #else extends FlxUIState
 						modList[curSelectedMod].config[curListStartOffset + curListPosition].optionUpdate();
 					}
 
-<<<<<<< HEAD
-					if(Binds.justPressed("menuLeft") || Binds.justPressed("menuRight")){
-=======
 					if((Binds.justPressed("menuLeft") || Binds.justPressed("menuRight")) || (virtualPad.buttonLeft.justPressed || virtualPad.buttonRight.justPressed)){
->>>>>>> 28779341 (tentando recuperar)
 						textUpdate();
 					}
 			}
@@ -1011,8 +964,4 @@ class ModManagerButton extends FlxSprite
 		scale.set(0.85, 0.85);
 		FlxTween.tween(scale, {x: 1, y: 1}, 1, {ease: FlxEase.elasticOut});
 	}
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> 28779341 (tentando recuperar)
