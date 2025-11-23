@@ -318,8 +318,10 @@ class ConfigMenu #if mobile extends MusicBeatState #else extends FlxUIStateExt #
 		}
 
 		#if mobile
-		addVirtualPad(LEFT_FULL, A_B);
+		addVirtualPad(LEFT_FULL, CONFIG_MENU);
 		addVirtualPadCamera();
+		virtualPad.buttonLeft2.alpha = 0;
+		virtualPad.buttonRight2.alpha = 0;
 		#end
 
 		super.create();
@@ -377,7 +379,7 @@ class ConfigMenu #if mobile extends MusicBeatState #else extends FlxUIStateExt #
 						songLayer.volume = 1;
 					}
 
-					if(Binds.justPressed("menuCycleLeft")){
+					if(Binds.justPressed("menuCycleLeft") || virtualPad.buttonLeft2.justPressed){
 						FlxG.sound.play(Paths.sound('scrollMenu'));
 						curListPosition = 0;
 						curListStartOffset = 0;
@@ -395,7 +397,7 @@ class ConfigMenu #if mobile extends MusicBeatState #else extends FlxUIStateExt #
 
 						FlxTween.tween(categoryTitle, {x: categoryTitle.x + 120}, 0.4, {ease: FlxEase.quintOut});
 					}
-					else if(Binds.justPressed("menuCycleRight")){
+					else if(Binds.justPressed("menuCycleRight") || virtualPad.buttonRight2.justPressed){
 						FlxG.sound.play(Paths.sound('scrollMenu'));
 						curListPosition = 0;
 						curListStartOffset = 0;
@@ -428,10 +430,10 @@ class ConfigMenu #if mobile extends MusicBeatState #else extends FlxUIStateExt #
 						subMenuDownArrow.scale.set(1, 1);
 					}*/
 
-					if(Binds.pressed("menuCycleRight")){ nextCategoryArrow.scale.set(0.75, 0.75); }
+					if(Binds.pressed("menuCycleRight") || virtualPad.buttonRight2.justPressed){ nextCategoryArrow.scale.set(0.75, 0.75); }
 					else{ nextCategoryArrow.scale.set(1, 1); }
 
-					if(Binds.pressed("menuCycleLeft")){ prevCategoryArrow.scale.set(0.75, 0.75); }
+					if(Binds.pressed("menuCycleLeft") || virtualPad.buttonLeft2.justPressed){ prevCategoryArrow.scale.set(0.75, 0.75); }
 					else{ prevCategoryArrow.scale.set(1, 1); }
 
 					if(pressDown){
@@ -605,6 +607,10 @@ class ConfigMenu #if mobile extends MusicBeatState #else extends FlxUIStateExt #
 		textUpdate();
 
 		FlxTween.cancelTweensOf(topLevelMenuGroup);
+	  #if mobile
+		FlxTween.cancelTweensOf(virtualPad.buttonLeft2);
+		FlxTween.cancelTweensOf(virtualPad.buttonRight2);
+	  #end
 		FlxTween.cancelTweensOf(subMenuGroup);
 		FlxTween.cancelTweensOf(descBar);
 		FlxTween.cancelTweensOf(categoryTitle);
@@ -614,6 +620,10 @@ class ConfigMenu #if mobile extends MusicBeatState #else extends FlxUIStateExt #
 		if(doTween){
 			FlxTween.tween(topLevelMenuGroup, {alpha: 0}, 0.3, {ease: FlxEase.quintOut});
 			FlxTween.tween(subMenuGroup, {alpha: 1}, 0.3, {ease: FlxEase.quintOut});
+		#if mobile
+			FlxTween.tween(virtualPad.buttonLeft2, {alpha: Config.padalpha}, 0.3, {ease: FlxEase.quintOut});
+			FlxTween.tween(virtualPad.buttonRight2, {alpha: Config.padalpha}, 0.3, {ease: FlxEase.quintOut});
+		#end
 			FlxTween.tween(descBar, {y: 720 - descBar.height}, 0.5, {ease: FlxEase.quintOut});
 			FlxTween.color(bg, 1.75, 0xFF4961B8, 0xFF5C6CA5, {ease: FlxEase.quintOut});
 
@@ -630,6 +640,10 @@ class ConfigMenu #if mobile extends MusicBeatState #else extends FlxUIStateExt #
 		else{
 			topLevelMenuGroup.alpha = 0;
 			subMenuGroup.alpha = 1;
+		#if mobile
+			virtualPad.buttonLeft2.alpha = 1;
+			virtualPad.buttonRight2.alpha = 1;
+		#end
 			descBar.y = 720 - descBar.height;
 
 			categoryTitle.visible = true;
@@ -647,10 +661,18 @@ class ConfigMenu #if mobile extends MusicBeatState #else extends FlxUIStateExt #
 
 		FlxTween.cancelTweensOf(topLevelMenuGroup);
 		FlxTween.cancelTweensOf(subMenuGroup);
+	  #if mobile
+		FlxTween.cancelTweensOf(virtualPad.buttonLeft2);
+		FlxTween.cancelTweensOf(virtualPad.buttonRight2);
+	  #end
 		FlxTween.cancelTweensOf(descBar);
 
 		FlxTween.tween(topLevelMenuGroup, {alpha: 1}, 0.3, {ease: FlxEase.quintOut});
 		FlxTween.tween(subMenuGroup, {alpha: 0}, 0.3, {ease: FlxEase.quintOut});
+	#if mobile
+		FlxTween.tween(virtualPad.buttonLeft2, {alpha: 0}, 0.3, {ease: FlxEase.quintOut});
+		FlxTween.tween(virtualPad.buttonRight2, {alpha: 0}, 0.3, {ease: FlxEase.quintOut});
+	#end
 		FlxTween.tween(descBar, {y: 720}, 0.5, {ease: FlxEase.quintOut});
 
 		categoryTitle.visible = false;
