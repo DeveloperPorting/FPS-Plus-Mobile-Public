@@ -308,7 +308,7 @@ class FreeplayState extends MusicBeatState
 							
 						}
 					}
-					else if(Binds.justPressed("menuResetScore")){
+					else if(Binds.justPressed("menuResetScore") || virtualPad.buttonR.justPressed){
 						openResetScorePopup();
 					}
 					else if(Binds.justPressed("chartEditor")){
@@ -444,7 +444,7 @@ class FreeplayState extends MusicBeatState
 					else{ variationArrowRight.scale.set(2, 2); }
 
 				case "resetScore":
-					if(Binds.justPressed("menuLeft") || Binds.justPressed("menuRight")){
+					if((Binds.justPressed("menuLeft") || Binds.justPressed("menuRight")) || (virtualPad.buttonLeft.justPressed || virtualPad.buttonRight.justPressed)){
 						resetScoreState = !resetScoreState;
 						FlxG.sound.play(Paths.sound('scrollMenu'));
 						if(resetScoreState){
@@ -468,7 +468,7 @@ class FreeplayState extends MusicBeatState
 						resetScoreYes.color = 0xFF7F7F7F;
 					}
 
-					if(Binds.justPressed("menuAccept") && resetScoreState){
+					if((Binds.justPressed("menuAccept") || virtualPad.buttonA.justPressed) && resetScoreState){
 						for(i in 0...3){
 							if(Highscore.songScores.exists(Highscore.formatSong(categoryMap[categoryNames[curCategory]][curSelected].song, i))){
 								Highscore.saveScore(categoryMap[categoryNames[curCategory]][curSelected].song, 0, 0, i, none, true);
@@ -482,7 +482,7 @@ class FreeplayState extends MusicBeatState
 						closeResetScorePopup();
 						FlxG.sound.play(Paths.sound('confirmMenu'));
 					}
-					else if(Binds.justPressed("menuBack") || (Binds.justPressed("menuAccept") && !resetScoreState)){
+					else if((Binds.justPressed("menuBack") || virtualPad.buttonB.justPressed) || ((Binds.justPressed("menuAccept") || virtualPad.buttonA.justPressed) || () && !resetScoreState)){
 						closeResetScorePopup();
 						FlxG.sound.play(Paths.sound('cancelMenu'));
 					}
