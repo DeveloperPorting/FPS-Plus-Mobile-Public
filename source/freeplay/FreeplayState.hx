@@ -482,7 +482,7 @@ class FreeplayState extends MusicBeatState
 						closeResetScorePopup();
 						FlxG.sound.play(Paths.sound('confirmMenu'));
 					}
-					else if((Binds.justPressed("menuBack") || virtualPad.buttonB.justPressed) || ((Binds.justPressed("menuAccept") || virtualPad.buttonA.justPressed) || () && !resetScoreState)){
+					else if((Binds.justPressed("menuBack") || virtualPad.buttonB.justPressed) || ((Binds.justPressed("menuAccept") || virtualPad.buttonA.justPressed) && !resetScoreState)){
 						closeResetScorePopup();
 						FlxG.sound.play(Paths.sound('cancelMenu'));
 					}
