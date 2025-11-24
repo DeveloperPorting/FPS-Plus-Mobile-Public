@@ -9,7 +9,6 @@ import flixel.FlxGame;
 import flixel.FlxSprite;
 import openfl.display.Sprite;
 import openfl.display.InteractiveObject;
-import haxe.io.Path;
 
 #if mobile
 import mobile.utils.*;
@@ -29,10 +28,8 @@ class Main extends Sprite
 		super();
 
 		#if android
-		Sys.setCwd(Path.addTrailingSlash(MobileUtil.getDirectory()));
 		MobileUtil.getPermissions();
-	    #elseif ios
-		Sys.setCwd(lime.system.System.documentsDirectory);
+		Sys.setCwd(haxe.io.Path.addTrailingSlash(MobileUtil.getDirectory()));
 		#end
 			
 		PolymodHandler.init();
