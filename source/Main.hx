@@ -27,7 +27,7 @@ class Main extends Sprite
 	{
 		super();
 
-		#if android
+		#if mobile
 		MobileUtil.getPermissions();
 		Sys.setCwd(haxe.io.Path.addTrailingSlash(MobileUtil.getDirectory()));
 		#end
