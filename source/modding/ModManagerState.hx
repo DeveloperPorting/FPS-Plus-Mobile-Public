@@ -240,8 +240,12 @@ class ModManagerState #if mobile extends MusicBeatState #else extends FlxUIState
 		openFolderButton.animation.add("deselected", [0], 0, false);
 		openFolderButton.pressFunction = function(){
 			FlxG.sound.play(Paths.sound("scrollMenu"));
-			//Currently this is Windows only, if anyone wants to add opening mod folder support for other OSes be my guest.
-			Sys.command("explorer.exe /n, /e, \"" + Sys.getCwd().substring(0, Sys.getCwd().length-1) + "\\mods\"");
+			#if mobile
+			  extension.androidtools.Tools.showAlertDialog("FPS Plus Mobile Function Incomplete", "This feature is not yet available on mobile!", {name: "OK", func: null}, null);
+			#else
+			  //Currently this is Windows only, if anyone wants to add opening mod folder support for other OSes be my guest.
+			  Sys.command("explorer.exe /n, /e, \"" + Sys.getCwd().substring(0, Sys.getCwd().length-1) + "\\mods\"");
+			#end
 		};
 
 		menuButtons = [enableDisableButton, moveUpButton, moveDownButton, configButton, reloadButton, openFolderButton];
@@ -532,7 +536,7 @@ class ModManagerState #if mobile extends MusicBeatState #else extends FlxUIState
 
 	function getModIcon(mod:String):BitmapData{
 		if(FileSystem.exists("mods/" + mod + "/icon.png")){
-			return BitmapData.fromFile("mods/" + mod + "/icon.png");
+			return BitmapData.fromFile(#if mobile MobileUtil.getDirectory() + #end "mods/" + mod + "/icon.png");
 		}
 		return BitmapData.fromFile(Paths.image("menu/modMenu/defaultModIcon", true));
 	}
