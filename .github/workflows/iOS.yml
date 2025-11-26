@@ -23,7 +23,7 @@ jobs:
          haxelib run hmm install
          haxelib --global install hxvlc
          haxelib remove lime
-         haxelib git lime https://github.com/th2l-devs/lime
+         haxelib git lime https://github.com/HomuHomu833-haxe-stuff/lime
          haxelib run lime rebuild hxcpp
 
       - name: Compile
