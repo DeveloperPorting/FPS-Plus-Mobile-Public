@@ -50,11 +50,15 @@ class Main extends Sprite
 
 		SaveManager.global();
 
-		fpsDisplay = new FPSExt(3, 3, 0xFFFFFF);
+		fpsDisplay = new FPSExt(#if mobile FlxG.game.x + #end 3, #if mobile FlxG.game.y + #end 3, 0xFFFFFF);
 		fpsDisplay.visible = true;
 
 		addChild(new FlxGame(0, 0, Startup, 60, 60, true));
 		addChild(fpsDisplay);
+
+		#if mobile
+		FlxG.stage.window.onResize.add((w:Int, h:Int) -> fpsDisplay.setScale());
+		#end
 
 		//On web builds, video tends to lag quite a bit, so this just helps it run a bit faster.
 		#if web
