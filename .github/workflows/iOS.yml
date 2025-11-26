@@ -24,7 +24,6 @@ jobs:
          haxelib --global install hxvlc
          haxelib remove lime
          haxelib git lime https://github.com/th2l-devs/lime
-         haxelib run lime rebuild hxcpp
 
       - name: Compile
         run: haxelib run lime build ios -eval -nosign
