@@ -18,7 +18,7 @@ import mobile.utils.*;
 class Main extends Sprite
 {
 
-	public static var fpsDisplay:FPSExt;
+	public static var fpsDisplay:InteractiveObject;
 
 	public static var novid:Bool = false;
 	public static var flippymode:Bool = false;
@@ -55,10 +55,6 @@ class Main extends Sprite
 
 		addChild(new FlxGame(0, 0, Startup, 60, 60, true));
 		addChild(fpsDisplay);
-
-		#if mobile
-		FlxG.stage.window.onResize.add((w:Int, h:Int) -> fpsDisplay.setScale());
-		#end
 
 		//On web builds, video tends to lag quite a bit, so this just helps it run a bit faster.
 		#if web
