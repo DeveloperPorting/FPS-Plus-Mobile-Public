@@ -50,7 +50,7 @@ class Main extends Sprite
 
 		SaveManager.global();
 
-		fpsDisplay = new FPSExt(#if mobile FlxG.game.x + #end 3, #if mobile FlxG.game.y + #end 3, 0xFFFFFF);
+		fpsDisplay = new FPSExt(3, 3, 0xFFFFFF);
 		fpsDisplay.visible = true;
 
 		addChild(new FlxGame(0, 0, Startup, 60, 60, true));
