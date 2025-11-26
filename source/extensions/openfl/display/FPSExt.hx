@@ -69,12 +69,5 @@ class FPSExt extends TextField
 	inline function get_memoryMegas():Float{
 		return System.totalMemoryNumber;
 	}
-
-	#if mobile
-	public inline function setScale(?scale:Float){
-		if(scale == null)
-			scale = Math.min(FlxG.stage.window.width / FlxG.width, FlxG.stage.window.height / FlxG.height);
-		    scaleX = scaleY = #if android (scale > 1 ? scale : 1) #else (scale < 1 ? scale : 1) #end;
-	}
-	#end
+	
 }
