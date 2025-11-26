@@ -18,7 +18,7 @@ import mobile.utils.*;
 class Main extends Sprite
 {
 
-	public static var fpsDisplay:InteractiveObject;
+	public static var fpsDisplay:FPSExt;
 
 	public static var novid:Bool = false;
 	public static var flippymode:Bool = false;
