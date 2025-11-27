@@ -166,6 +166,27 @@ public static function getDirectory():String {
     #end
   }
 
+  public static function copyModsFromAPK(sourcePath:String = "mods/", targetPath:String = null):Void {
+    #if mobile
+    if (targetPath == null) {
+        targetPath = getDirectory() + "mods/";
+    }
+    
+    try {
+        if (!FileSystem.exists(targetPath)) {
+            FileSystem.createDirectory(targetPath);
+        }
+
+        copyModsRecursively(sourcePath, targetPath);
+        
+        trace('Mods successfully copied to: $targetPath');
+    } catch (e:Dynamic) {
+        trace('Error copying mods: $e');
+        Application.current.window.alert('Error', 'Error copying game files. Check storage permissions or re-open the game to see what happens.');
+    }
+    #end
+  }
+
   /**
    * Helper function to copy assets recursively
    */
@@ -184,6 +205,59 @@ public static function getDirectory():String {
                 var relativePath = assetPath;
                 
                 if (StringTools.startsWith(relativePath, "assets/")) {
+                    relativePath = relativePath.substring(7);
+                }
+                
+                if (relativePath == "") continue;
+                
+                var fullTargetPath = targetPath + relativePath;
+                
+                var targetDir = haxe.io.Path.directory(fullTargetPath);
+                if (targetDir != "" && !FileSystem.exists(targetDir)) {
+                    createDirectoryRecursive(targetDir);
+                }
+                
+                try {
+                    if (Assets.exists(assetPath)) {
+                        var fileData:Bytes = Assets.getBytes(assetPath);
+                        if (fileData != null) {
+                            File.saveBytes(fullTargetPath, fileData);
+                            trace('Copied: $assetPath -> $fullTargetPath');
+                        } else {
+                            var textData = Assets.getText(assetPath);
+                            if (textData != null) {
+                                File.saveContent(fullTargetPath, textData);
+                                trace('Copied (text): $assetPath -> $fullTargetPath');
+                            }
+                        }
+                    }
+                } catch (e:Dynamic) {
+                    trace('Error copying file $assetPath: $e');
+                }
+            }
+        }
+    } catch (e:Dynamic) {
+        trace('Error in recursive copy: $e');
+        throw e;
+    }
+    #end
+  }
+
+  private static function copyModsRecursively(sourcePath:String, targetPath:String):Void {
+    #if mobile
+    try {
+        var cleanSourcePath = sourcePath;
+        if (StringTools.endsWith(cleanSourcePath, "/")) {
+            cleanSourcePath = cleanSourcePath.substring(0, cleanSourcePath.length - 1);
+        }
+        
+        var assetList:Array<String> = Assets.list();
+        
+        for (assetPath in assetList) {
+            if (StringTools.startsWith(assetPath, cleanSourcePath)) {
+                var relativePath = assetPath;
+                
+                if (StringTools.startsWith(relativePath, "mods/")) {
                     relativePath = relativePath.substring(7);
                 }
                 
@@ -367,6 +441,35 @@ public static function getDirectory():String {
     #end
   }
 
+  private static function countModsFiles(sourcePath:String):Int {
+    #if mobile
+    var count = 0;
+    var cleanSourcePath = sourcePath;
+    if (StringTools.endsWith(cleanSourcePath, "/")) {
+        cleanSourcePath = cleanSourcePath.substring(0, cleanSourcePath.length - 1);
+    }
+    var assetList:Array<String> = Assets.list();
+    
+    for (assetPath in assetList) {
+        if (StringTools.startsWith(assetPath, cleanSourcePath)) {
+            var relativePath = assetPath;
+            
+            if (StringTools.startsWith(relativePath, "mods/")) {
+                relativePath = relativePath.substring(7);
+            }
+            
+            if (relativePath != "") {
+                count++;
+            }
+        }
+    }
+    
+    return count;
+    #else
+    return 0;
+    #end
+  }
+
   /**
    * Checks if assets have already been copied
    */
@@ -381,6 +484,25 @@ public static function getDirectory():String {
     }
     
     var sourceCount = countAssetsFiles(sourcePath);
+    var targetCount = countFilesInDirectory(targetPath);
+    
+    return sourceCount > 0 && sourceCount == targetCount;
+    #else
+    return false;
+    #end
+  }
+
+  public static function areModsCopied(sourcePath:String = "mods/", targetPath:String = null):Bool {
+    #if mobile
+    if (targetPath == null) {
+        targetPath = getDirectory() + "mods/";
+    }
+    
+    if (!FileSystem.exists(targetPath)) {
+        return false;
+    }
+    
+    var sourceCount = countModsFiles(sourcePath);
     var targetCount = countFilesInDirectory(targetPath);
     
     return sourceCount > 0 && sourceCount == targetCount;
