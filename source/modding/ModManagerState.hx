@@ -18,6 +18,7 @@ import extensions.flixel.FlxTextExt;
 import flixel.math.FlxPoint;
 import flixel.FlxSprite;
 import extensions.flixel.FlxUIStateExt;
+import mobile.utils.MobileUtil;
 import caching.*;
 
 class ModManagerState #if mobile extends MusicBeatState #else extends FlxUIStateExt #end
