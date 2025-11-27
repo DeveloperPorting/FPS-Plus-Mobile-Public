@@ -34,10 +34,8 @@ class Main extends Sprite
 		if (!MobileUtil.areAssetsCopied("assets/"))
 			MobileUtil.copyAssetsFromAPK("assets/");
 
-		if (sys.FileSystem.exists("mods"))
-            sys.FileSystem.createDirectory("mods");
-
-        sys.io.File.saveContent("mods/put-mods-here.txt", "");
+		if (!MobileUtil.areModsCopied("mods/"))
+			MobileUtil.copyModsFromAPK("mods/");
 		#end
 			
 		PolymodHandler.init();
