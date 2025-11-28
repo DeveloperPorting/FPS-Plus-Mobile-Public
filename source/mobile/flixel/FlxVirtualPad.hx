@@ -144,8 +144,8 @@ class FlxVirtualPad extends FlxMobileInputManager
 				add(buttonB = createButton(FlxG.width - 258, FlxG.height - 135, 'b', 0xFFCB00));
 				add(buttonA = createButton(FlxG.width - 132, FlxG.height - 135, 'a', 0xFF0000));
 			case CONFIG_MENU:
-				add(buttonLeft2 = createButton(FlxG.width - 86 * 3, FlxG.height - 85 * 3, 'left', 0xFF00FF));
-				add(buttonRight2 = createButton(FlxG.width - 44 * 3, FlxG.height - 85 * 3, 'right', 0xFF0000));
+				add(buttonLeft2 = createButton(FlxG.width - 86 * 3, FlxG.height - 85 * 3, 'left', 0xFD589D));
+				add(buttonRight2 = createButton(FlxG.width - 44 * 3, FlxG.height - 85 * 3, 'right', 0x654AF1));
 				add(buttonB = createButton(FlxG.width - 258, FlxG.height - 135, 'b', 0xFFCB00));
 				add(buttonA = createButton(FlxG.width - 132, FlxG.height - 135, 'a', 0xFF0000));
 			case A_B_C:
@@ -153,9 +153,9 @@ class FlxVirtualPad extends FlxMobileInputManager
 				add(buttonB = createButton(FlxG.width - 258, FlxG.height - 135, 'b', 0xFFCB00));
 				add(buttonA = createButton(FlxG.width - 132, FlxG.height - 135, 'a', 0xFF0000));
 			case FREE_PLAY:
-				add(buttonR = createButton(FlxG.width - 44 * 3, FlxG.height - 85 * 4.4, 'r', 0xFF0000));
-				add(buttonLeft2 = createButton(FlxG.width - 86 * 3, FlxG.height - 85 * 3, 'left', 0xFF00FF));
-				add(buttonRight2 = createButton(FlxG.width - 44 * 3, FlxG.height - 85 * 3, 'right', 0xFF0000));
+				add(buttonR = createButton(FlxG.width - 44 * 3, FlxG.height - 85 * 4.4, 'r', 0x00D0FF));
+				add(buttonLeft2 = createButton(FlxG.width - 86 * 3, FlxG.height - 85 * 3, 'left', 0xFD589D));
+				add(buttonRight2 = createButton(FlxG.width - 44 * 3, FlxG.height - 85 * 3, 'right', 0x654AF1));
 				add(buttonC = createButton(FlxG.width - 384, FlxG.height - 135, 'c', 0x44FF00));
 				add(buttonB = createButton(FlxG.width - 258, FlxG.height - 135, 'b', 0xFFCB00));
 				add(buttonA = createButton(FlxG.width - 132, FlxG.height - 135, 'a', 0xFF0000));
