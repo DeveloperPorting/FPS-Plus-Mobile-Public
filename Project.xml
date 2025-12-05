@@ -115,7 +115,7 @@
 
 	<!--Place custom nodes like icons here (higher priority to override the HaxeFlixel icon)-->
 	<icon path="art/icons/icon128.png" />
-	<icon path="art/icons/MobileIcon.png" if='mobile'/>
+	<!--icon path="art/icons/MobileIcon.png" if='mobile' -->
 	<icon path="art/icons/icon16.png" size='16' />
 
 	<section if="android">
