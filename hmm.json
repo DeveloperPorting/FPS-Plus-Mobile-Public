@@ -8,7 +8,7 @@
 		{
 			"name": "flixel",
 			"type": "haxelib",
-			"version": "6.1.1"
+			"version": "6.1.2"
 		},
 		{
 			"name": "flixel-addons",
@@ -56,7 +56,7 @@
 		{
 			"name": "hxvlc",
 			"type": "haxelib",
-			"version": "2.2.2"
+			"version": "2.2.5"
 		},
 		{
 			"name": "hxcpp",
