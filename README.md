@@ -47,7 +47,7 @@ Run `lime test PLATFORM` or `lime build PLATFORM` to compile the game.
 - [Everyone else who has contributed to the engine.](https://github.com/ThatRozebudDude/FPS-Plus-Public/graphs/contributors)
 
 ### FPS Plus Mobile
-- [Cream.BR](https://youtube.com/@creambroficial?si=Ixws9MIHHssPPQgR) - *I literally did everything in Port*
+- [StarNova/Cream.BR](https://youtube.com/@creambroficial?si=Ixws9MIHHssPPQgR) - *I literally did everything in Port*
 
 ### Shoutouts
 - [Fabs](https://twitter.com/fabsthefabs) - Coding buddy.
