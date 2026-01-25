@@ -99,9 +99,6 @@ class CharacterSelectState extends MusicBeatState
 		FlxG.camera.filters = [new ShaderFilter(fadeShader.shader)];
 
 		addCharacter("locked", "LockedPlayerCharacterSelect", null, null, [-1, -1]);
-		
-		//addCharacter("bf", "BfPlayer", "GfPartner", "Boyfriend", [1, 1]);
-		//addCharacter("pico", "PicoPlayer", "NenePartner", "Pico", [0, 1]);
 
 		var usedPositions:Array<Array<Int>> = [];
 
@@ -163,6 +160,8 @@ class CharacterSelectState extends MusicBeatState
 		add(bg);
 	
 		var crowd:AtlasSprite = new AtlasSprite(0, 0, Paths.getTextureAtlas("menu/characterSelect/crowd"));
+		crowd.applyStageMatrix = true;
+		crowd.antialiasing = true;
 		crowd.scrollFactor.set(0.3, 0.3);
 		crowd.addFullAnimation("idle", 24, true);
 		crowd.playAnim("idle");
@@ -179,6 +178,8 @@ class CharacterSelectState extends MusicBeatState
 		add(curtains);
 
 		titleBar = new AtlasSprite(0, 0, Paths.getTextureAtlas("menu/characterSelect/bar"));
+		titleBar.applyStageMatrix = true;
+		titleBar.antialiasing = true;
 		titleBar.scrollFactor.set();
 		titleBar.addFullAnimation("loop", 24, true);
 		titleBar.playAnim("loop");
@@ -197,6 +198,8 @@ class CharacterSelectState extends MusicBeatState
 		add(characterGroup);
 
 		speakers = new AtlasSprite(0, 0, Paths.getTextureAtlas("menu/characterSelect/charSelectSpeakers"));
+		speakers.applyStageMatrix = true;
+		speakers.antialiasing = true;
 		speakers.scrollFactor.set(1.8, 1.8);
 		speakers.addFullAnimation("bop", 24, false);
 		speakers.playAnim("bop");

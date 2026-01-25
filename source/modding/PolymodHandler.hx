@@ -42,7 +42,7 @@ class PolymodHandler
 		//scriptableClassCheck();
 	}
 
-	public static function reload(?restartState:Bool = true):Void{
+	public static function reload(restartState:Bool = true):Void{
 		reloadScripts();
 		//scriptableClassCheck();
 		if(restartState){ //Using CustomTransition since the transition is what handles the cache stuff. This is what FlxUIStateExt uses in it's switchState function.
@@ -401,6 +401,7 @@ class PolymodHandler
 		return result;
 	}
 
+	//Use a mod's UID to look up what folder it's in. Useful to make sure you have the right folder in case the user renamed it.
 	public static function getModFolderFromUid(uid:String):String{
 		if(uidToFolder.exists(uid)){
 			return uidToFolder.get(uid);

@@ -29,7 +29,6 @@ class Character extends FlxSpriteGroup
 	public var animOffsets:Map<String, Array<Dynamic>>;
 	private var originalAnimOffsets:Map<String, Array<Dynamic>>;
 	private var animLoopPoints:Map<String, Int>;
-	public var repositionPoint:FlxPoint = new FlxPoint();
 	public var debugMode:Bool = false;
 	public var noLogic:Bool = false;
 
@@ -57,8 +56,6 @@ class Character extends FlxSpriteGroup
 
 	public var curAnim:String = "";
 
-	var facesLeft:Bool = false;
-
 	public var idleSequence:Array<String> = ["idle"];
 	public var idleSequenceIndex:Int = 0;
 
@@ -67,6 +64,9 @@ class Character extends FlxSpriteGroup
 	public var deathDelay:Float = 0.5;
 
 	public var worldPopupOffset:FlxPoint = new FlxPoint();
+
+	public var isAtlas(get, never):Bool;
+	public var isFacingDefaultDirection(get, never):Bool;
 
 	var character:FlxSprite;
 	var atlasCharacter:AtlasSprite;
@@ -105,7 +105,7 @@ class Character extends FlxSpriteGroup
 
 		createCharacterFromInfo(charClass);
 
-		if (((facesLeft && !isPlayer) || (!facesLeft && isPlayer)) && !debugMode){
+		if(!isFacingDefaultDirection && !debugMode){
 			setFlipX(true);
 			swapLeftAndRightAnimations();
 		}
@@ -398,7 +398,6 @@ class Character extends FlxSpriteGroup
 		iconName = characterInfo.info.iconName;
 		deathCharacter = characterInfo.info.deathCharacter;
 		characterColor = characterInfo.info.healthColor;
-		facesLeft = characterInfo.info.facesLeft;
 		idleSequence = characterInfo.info.idleSequence;
 		focusOffset = characterInfo.info.focusOffset;
 		deathOffset = characterInfo.info.deathOffset;
@@ -422,21 +421,47 @@ class Character extends FlxSpriteGroup
 				character.frames = Paths.getPackerAtlas(characterInfo.info.spritePath);
 			case atlas:
 				atlasCharacter = new AtlasSprite(0, 0, Paths.getTextureAtlas(characterInfo.info.spritePath));
+				@:privateAccess
+				atlasCharacter.useRenderTexture = true && !atlasCharacter.isOld; //Turn on useRenderTexture on by default for characters (except for backwards compatibility).
 		}
 
 		for(x in characterInfo.info.anims){
 			switch(x.type){
 				case frames:
+					if(isAtlas){
+						trace("Cannot add \"" + x.name + "\", wrong frame load type.");
+						continue;
+					}
 					character.animation.add(x.name, x.data.frames, x.data.framerate, false, x.data.flipX, x.data.flipY);
 				case prefix:
+					if(isAtlas){
+						trace("Cannot add \"" + x.name + "\", wrong frame load type.");
+						continue;
+					}
 					character.animation.addByPrefix(x.name, x.data.prefix, x.data.framerate, false, x.data.flipX, x.data.flipY);
 				case indices:
+					if(isAtlas){
+						trace("Cannot add \"" + x.name + "\", wrong frame load type.");
+						continue;
+					}
 					character.animation.addByIndices(x.name, x.data.prefix, x.data.frames, x.data.postfix, x.data.framerate, false, x.data.flipX, x.data.flipY);
 				case label:
+					if(!isAtlas){
+						trace("Cannot add \"" + x.name + "\", wrong frame load type.");
+						continue;
+					}
 					atlasCharacter.addAnimationByLabel(x.name, x.data.prefix, x.data.framerate, x.data.loop.looped, x.data.loop.loopPoint);
 				case start:
+					if(!isAtlas){
+						trace("Cannot add \"" + x.name + "\", wrong frame load type.");
+						continue;
+					}
 					atlasCharacter.addAnimationByFrame(x.name, x.data.frames[0], x.data.frames[1], x.data.framerate, x.data.loop.looped, x.data.loop.loopPoint);
 				case startAtLabel:
+					if(!isAtlas){
+						trace("Cannot add \"" + x.name + "\", wrong frame load type.");
+						continue;
+					}
 					atlasCharacter.addAnimationStartingAtLabel(x.name, x.data.prefix, x.data.frames[0], x.data.framerate, x.data.loop.looped, x.data.loop.loopPoint);
 			}
 
@@ -472,8 +497,6 @@ class Character extends FlxSpriteGroup
 						stepsUntilRelease = data;
 					case "scale":
 						changeCharacterScale(data);
-					case "reposition":
-						repositionPoint.set(data[0], data[1]);
 					case "deathDelay":
 						deathDelay = data;
 					case "deathSound":
@@ -488,6 +511,14 @@ class Character extends FlxSpriteGroup
 						missSounds = data;
 					case "missSoundVolume":
 						missSoundVolume = data;
+					case "applyStageMatrix":
+						if(atlasCharacter != null){
+							atlasCharacter.applyStageMatrix = data;
+						}
+					case "useRenderTexture":
+						if(atlasCharacter != null){
+							atlasCharacter.useRenderTexture = data;
+						}
 					default:
 						//Do nothing by default.
 				}
@@ -592,12 +623,45 @@ class Character extends FlxSpriteGroup
 	}
 
 	public function reposition():Void{
-		x += repositionPoint.x;
-		y += repositionPoint.y;
+		var reposX:Float = 0;
+		var reposY:Float = 0;
+
+		if(characterInfo.info.extraData.exists("reposition")){
+			reposX = characterInfo.info.extraData.get("reposition")[0] * (!isFacingDefaultDirection ? -1 : 1);
+			reposY = characterInfo.info.extraData.get("reposition")[1];
+		}
+
+		if(characterInfo.info.extraData.exists("repositionFlipped") && !isFacingDefaultDirection){
+			reposX = characterInfo.info.extraData.get("repositionFlipped")[0];
+			reposY = characterInfo.info.extraData.get("repositionFlipped")[1];
+		}
+
+		x += reposX;
+		y += reposY;
 
 		for(member in members){
-			member.x += repositionPoint.x;
-			member.y += repositionPoint.y;
+			member.x += reposX;
+			member.y += reposY;
+		}
+
+		updateCharacterPostion();
+	}
+
+	public function repositionDeath():Void{
+		var reposX:Float = 0;
+		var reposY:Float = 0;
+
+		if(characterInfo.info.extraData.exists("repositionDeath")){
+			reposX = characterInfo.info.extraData.get("repositionDeath")[0];
+			reposY = characterInfo.info.extraData.get("repositionDeath")[1];
+		}
+
+		x += reposX;
+		y += reposY;
+
+		for(member in members){
+			member.x += reposX;
+			member.y += reposY;
 		}
 
 		updateCharacterPostion();
@@ -900,7 +964,7 @@ class Character extends FlxSpriteGroup
 			return character.animation.curAnim.curFrame;
 		}
 		else{ //Code for atlas characters
-			return atlasCharacter.anim.curFrame - atlasCharacter.animInfoMap.get(curAnim).startFrame;
+			return atlasCharacter.anim.curAnim.curFrame - atlasCharacter.animInfoMap.get(curAnim).startFrame;
 		}
 	}
 
@@ -909,7 +973,7 @@ class Character extends FlxSpriteGroup
 			character.animation.curAnim.curFrame = frameNumber;
 		}
 		else{ //Code for atlas characters
-			atlasCharacter.anim.curFrame = atlasCharacter.animInfoMap.get(curAnim).startFrame + frameNumber;
+			atlasCharacter.anim.curAnim.curFrame = atlasCharacter.animInfoMap.get(curAnim).startFrame + frameNumber;
 		}
 	}
 
@@ -918,7 +982,7 @@ class Character extends FlxSpriteGroup
 			return character.animation.curAnim.frameRate;
 		}
 		else{ //Code for atlas characters
-			return atlasCharacter.anim.framerate;
+			return atlasCharacter.anim.curAnim.frameRate;
 		}
 	}
 
@@ -927,7 +991,7 @@ class Character extends FlxSpriteGroup
 			return character.animation.curAnim.finished;
 		}
 		else{ //Code for atlas characters
-			return !atlasCharacter.anim.isPlaying;
+			return atlasCharacter.finishedAnim;
 		}
 	}
 
@@ -965,6 +1029,23 @@ class Character extends FlxSpriteGroup
 			return atlasCharacter.shader;
 		}
 		return null;
+	}
+	
+	public function pause():Void{
+		if(character != null){ //Code for sheet characters
+			character.animation.pause();
+		}
+		else if(atlasCharacter != null){ //Code for atlas characters
+			atlasCharacter.anim.pause();
+		}
+	}
+
+	public function get_isAtlas():Bool{
+		return characterInfo.info.frameLoadType == atlas;
+	}
+	
+	public function get_isFacingDefaultDirection():Bool{
+		return !(characterInfo.info.facesLeft && !isPlayer) && !(!characterInfo.info.facesLeft && isPlayer);
 	}
 
 }

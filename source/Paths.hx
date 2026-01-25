@@ -7,6 +7,7 @@ import sys.FileSystem;
 import caching.*;
 import flixel.graphics.frames.FlxAtlasFrames;
 import flixel.graphics.FlxGraphic;
+import modding.PolymodHandler;
 
 using StringTools;
 

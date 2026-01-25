@@ -1,5 +1,6 @@
 package;
 
+import flixel.sound.FlxSound;
 import note.NoteType;
 import events.Events;
 import flixel.tweens.FlxTween;
@@ -24,19 +25,18 @@ class Startup extends FlxUIStateExt
 {
 
 	var nextState:FlxState = new TitleVideo();
-	//var nextState:FlxState = new debug.AtlasScale();
+	//var nextState:FlxState = new debug.CharacterCompare();
 	//var nextState:FlxState = new results.ResultsState(null, "Results Test", "PicoResults");
 
 	var splashHasSoundTrigger:Bool = false;
 	var splash:AtlasSprite;
+	var splashSound:FlxSound;
 	var loadingBar:FlxBar;
 	var loadingText:FlxText;
 
 	var currentLoaded:Int = 0;
 	var loadTotal:Int = 0;
 								
-	//List of character graphics and some other stuff.
-	//Just in case it want to do something with it later.
 	var charactersCached:Bool;
 	var startCachingCharacters:Bool = false;
 	var charI:Int = 0;
@@ -107,17 +107,16 @@ class Startup extends FlxUIStateExt
 		hasEe2 = Utils.exists(Paths.inst("Lil-Buddies"));
 
 		splash = new AtlasSprite(0, 0, Paths.getTextureAtlas("fpsPlus/splash"));
-
-		var labels = [];
-		for(tempLabel in splash.anim.getFrameLabels()){ labels.push(tempLabel.name); }
+		splash.antialiasing = true;
+		splash.applyStageMatrix = true;
+		splashHasSoundTrigger = splash.anim.findFrameLabelIndices("Trigger Sound").length > 0;
 
 		splash.addAnimationByLabel("start", "Start", 24, false);
-		if(labels.contains("Trigger Sound")){
+		if(splashHasSoundTrigger){
 			splash.addAnimationByLabel("soundTrigger", "Trigger Sound", 24, false);
-			splashHasSoundTrigger = true;
 		}
 		splash.addAnimationByLabel("end", "End", 24, false);
-		splash.animationEndCallback = splashState;
+		splash.animationEndCallback = splashAnimEnd;
 		add(splash);
 
 		CacheReload.buildPreloadList();
@@ -243,10 +242,10 @@ class Startup extends FlxUIStateExt
 		#end
 	}
 
-	function splashState(anim:String):Void{
+	function splashAnimEnd(anim:String):Void{
 		switch(anim){
 			case "start":
-				FlxG.sound.play(Paths.sound("splashSound"));
+				splashSound = FlxG.sound.play(Paths.sound("splashSound"));
 				if(splashHasSoundTrigger){
 					splash.playAnim("soundTrigger");
 				}
@@ -258,6 +257,7 @@ class Startup extends FlxUIStateExt
 				startCache();
 
 			case "end":
+				if(splashSound != null && splashSound.playing){ splashSound.fadeOut(0.3); }
 				ImageCache.localCache.clear();
 				Utils.gc();
 				customTransOut = new FadeOut(0.3);

@@ -1,0 +1,76 @@
+import flixel.FlxSprite;
+
+class PicoWeekendDead extends CharacterInfoBase
+{
+
+	public function new(){
+		super();
+
+		includeInCharacterList = false;
+
+		info.name = "pico-dead";
+		info.spritePath = "shared/pico_dead";
+		info.frameLoadType = setAtlas();
+		
+		info.iconName = "pico";
+		info.facesLeft = true;
+		info.deathOffset.set(0, -25);
+
+		addByLabel("firstDeath", offset(), "Death Start", 24, loop(false));
+		addByLabel("deathLoop", offset(), "Death Loop", 24, loop(true));
+		addByLabel("deathConfirm", offset(), "Death Loop", 24, loop(true));
+
+		info.functions.create = deathCreate;
+		info.functions.deathAdd = deathAdd;
+		info.functions.frame = frame;
+		info.functions.playAnim = playAnim;
+		
+		addExtraData("repositionDeath", [132, 129]);
+		addExtraData("deathSound", "gameOver/fnf_loss_sfx-pico");
+		addExtraData("deathSong", "gameOver/gameOver-pico");
+		addExtraData("deathSongEnd", "gameOver/gameOverEnd-pico");
+	}
+
+	var retryButton:FlxSprite;
+	var nene:FlxSprite;
+
+	function deathCreate(character:Character):Void{
+		retryButton = new FlxSprite(150, -145);
+		retryButton.frames = Paths.getSparrowAtlas("shared/Pico_Death_Retry");
+		retryButton.animation.addByPrefix("loop", "Retry Text Loop", 24);
+		retryButton.animation.addByPrefix("confirm", "Retry Text Confirm", 24, false);
+		retryButton.animation.play("loop");
+		retryButton.centerOffsets();
+		retryButton.visible = false;
+
+		nene = new FlxSprite(playstate.gf.x + 135, playstate.gf.y);
+		nene.frames = Paths.getSparrowAtlas("shared/NeneKnifeToss");
+		nene.animation.addByPrefix("throw", "knife toss", 24, false);
+		nene.animation.play("throw");
+		nene.animation.finishCallback = function(name:String){
+			nene.visible = false;
+		}
+
+		addToSubstate(nene);
+	}
+
+	function deathAdd(character:Character):Void{
+		addToCharacter(retryButton);
+	}
+
+	function frame(character:Character, anim:String, frame:Int):Void{
+		if(retryButton != null && anim == "firstDeath" && frame == 35){
+			retryButton.visible = true;
+		}
+	}
+
+	function playAnim(character:Character, anim:String):Void{
+		if(retryButton != null && anim == "deathConfirm"){
+			retryButton.visible = true;
+			retryButton.animation.play("confirm", true);
+			retryButton.centerOffsets();
+			retryButton.x += 15;
+		}
+	}
+
+}

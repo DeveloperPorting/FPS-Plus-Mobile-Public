@@ -17,18 +17,24 @@ class PicoDoppleganger extends ScriptedCutscene
 	public function new(args:Array<Dynamic>){
 		super(args);
 
+		destroyOnEnd = false;
+
 		playerCigarette = FlxG.random.bool(50);
 		fuckingDie = FlxG.random.bool(8);
 
 		originalZoom = playstate.defaultCamZoom;
 
 		opPico = new AtlasSprite(307, 800, Paths.getTextureAtlas("week3/philly/erect/pico_doppleganger"));
+		opPico.applyStageMatrix = true;
+		opPico.antialiasing = true;
 		opPico.addAnimationByLabel("shootOpponent", "shootOpponent", 24, false);
 		opPico.addAnimationByLabel("cigaretteOpponent", "cigaretteOpponent", 24, false);
 		opPico.addAnimationByLabel("explodeOpponent", "explodeOpponent", 24, false);
 		opPico.shader = dad.getShader();
 
 		playerPico = new AtlasSprite(847, 787, Paths.getTextureAtlas("week3/philly/erect/pico_doppleganger"));
+		playerPico.applyStageMatrix = true;
+		playerPico.antialiasing = true;
 		playerPico.addAnimationByLabel("cigarettePlayer", "cigarettePlayer", 24, false);
 		playerPico.addAnimationByLabel("shootPlayer", "shootPlayer", 24, false);
 		playerPico.addAnimationByLabel("explodePlayer", "explodePlayer", 24, false);

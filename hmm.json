@@ -21,11 +21,11 @@
 			"version": "2.6.4"
 		},
 		{
-			"name": "flxanimate",
+			"name": "flixel-animate",
 			"type": "git",
 			"dir": null,
-			"ref": "b8970d2e4d875c743abe28e356a15413b1774d94",
-			"url": "https://github.com/Dot-Stuff/flxanimate"
+			"ref": "48a00207e84ab3541c82056ea0349cd1df0a8478",
+			"url": "https://github.com/MaybeMaru/flixel-animate"
 		},
 		{
 			"name": "format",
@@ -50,7 +50,7 @@
 			"name": "hscript",
 			"type": "git",
 			"dir": null,
-			"ref": "8c1d238b069ef97cec13f5121b29d2afe2b8985d",
+			"ref": "dcc6f822e0866ca4fda300ed23e99559260f7bf5",
 			"url": "https://github.com/FunkinCrew/hscript"
 		},
 		{

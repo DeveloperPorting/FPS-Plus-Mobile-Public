@@ -42,6 +42,7 @@ class DJCharacter extends AtlasSprite
 	public function new() {
 		super(0, 0, null);
 		antialiasing = true;
+		applyStageMatrix = true;
 
 		animationEndCallback = function(name) {
 			switch(name){
@@ -73,7 +74,7 @@ class DJCharacter extends AtlasSprite
 	}
 
 	public function beat(curBeat:Int):Void{
-		if(FlxG.sound.music.playing && curBeat % bopEvery == 0 && !skipNextIdle &&  ((curAnim == "idle") || (canPlayIdleAfter.contains(curAnim) && finishedAnim))){
+		if(FlxG.sound.music.playing && curBeat % bopEvery == 0 && !skipNextIdle &&  ((curAnim == "idle") || (canPlayIdleAfter.contains(curAnim) && (finishedAnim || isLooping)))){
 			if(!doRandomIdle || idleCount <= 0){
 				playAnim("idle", true);
 			}

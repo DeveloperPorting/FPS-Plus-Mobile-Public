@@ -1,5 +1,6 @@
 package;
 
+import flixel.sound.FlxSound;
 import flixel.FlxCamera;
 import openfl.events.KeyboardEvent;
 import flixel.FlxG;
@@ -61,10 +62,11 @@ class GameOverSubState extends MusicBeatSubState
 		if(bf.characterInfo.info.functions.deathAdd != null){
 			bf.characterInfo.info.functions.deathAdd(bf);
 		}
-		bf.playAnim('firstDeath', true);
+		bf.repositionDeath();
+		bf.playAnim("firstDeath", true);
 
 		cameraPanDelayTimer = new FlxTimer().start(bf.deathDelay, function(t) {
-			FlxTween.tween(camFollow, {x: bf.getGraphicMidpoint().x + bf.deathOffset.x, y: bf.getGraphicMidpoint().y + bf.deathOffset.y}, 3, {ease: FlxEase.expoOut});
+			FlxTween.tween(camFollow, {x: bf.getMidpoint().x + bf.deathOffset.x, y: bf.getMidpoint().y + bf.deathOffset.y}, 3, {ease: FlxEase.expoOut});
 		});
 
 		if(bf.deathSound != null){
@@ -89,15 +91,15 @@ class GameOverSubState extends MusicBeatSubState
 		if (Binds.justPressed("menuBack") || virtualPad.buttonB.justPressed && !isEnding){
 			FlxG.sound.music.stop();
 			isEnding = true;
-			FlxG.sound.play(Paths.sound('cancelMenu'));
+			FlxG.sound.play(Paths.sound("cancelMenu"));
 
 			PlayState.instance.returnToMenu();
 
 			camGameOver.fade(FlxColor.BLACK, 0.1, false);	
 		}
 
-		if (bf.curAnim == 'firstDeath' && bf.curAnimFinished() && !isEnding){
-			bf.playAnim('deathLoop');
+		if (bf.curAnim == "firstDeath" && bf.curAnimFinished() && !isEnding){
+			bf.playAnim("deathLoop");
 
 			if(bf.deathSong != null){
 				FlxG.sound.playMusic(Paths.music(bf.deathSong));
@@ -120,20 +122,23 @@ class GameOverSubState extends MusicBeatSubState
 	var isEnding:Bool = false;
 
 	function endBullshit():Void{
+		var songEnd:FlxSound;
+
 		isEnding = true;
-		bf.playAnim('deathConfirm', true);
+		bf.playAnim("deathConfirm", true);
 		FlxG.sound.music.stop();
 		if(bf.deathSongEnd != null){
-			FlxG.sound.play(Paths.music(bf.deathSongEnd));
+			songEnd = FlxG.sound.play(Paths.music(bf.deathSongEnd));
 		}
 		if(PlayState.instance.instSong != null){
 			PlayState.overrideInsturmental = PlayState.instance.instSong;
 		}
 		for(script in PlayState.instance.scripts){ script.gameOverEnd(); }
-		new FlxTimer().start(0.4, function(tmr:FlxTimer){
-			camGameOver.fade(FlxColor.BLACK, 1.2, false, function(){
+		new FlxTimer().start(0.6, function(tmr:FlxTimer){
+			camGameOver.fade(FlxColor.BLACK, 1, false, function(){
 				PlayState.replayStartCutscene = false;
 				PlayState.instance.switchState(new PlayState());
+				if(songEnd != null && songEnd.playing){ songEnd.fadeOut(0.5); }
 			});
 		});
 	}

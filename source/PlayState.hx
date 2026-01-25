@@ -1603,9 +1603,9 @@ class PlayState extends MusicBeatState
 		updateAccuracy();
 
 		if(songStats.score != previouslyTrackedSongStats.score || 
-		   songStats.accuracy != previouslyTrackedSongStats.accuracy || 
-		   songStats.missCount != previouslyTrackedSongStats.missCount || 
-		   songStats.comboBreakCount != previouslyTrackedSongStats.comboBreakCount){
+			songStats.accuracy != previouslyTrackedSongStats.accuracy || 
+			songStats.missCount != previouslyTrackedSongStats.missCount || 
+			songStats.comboBreakCount != previouslyTrackedSongStats.comboBreakCount){
 			updateScoreText();
 			previouslyTrackedSongStats = Reflect.copy(songStats);
 		}
@@ -1855,7 +1855,7 @@ class PlayState extends MusicBeatState
 
 		camGame.filters = [];
 
-		openSubState(new GameOverSubState(boyfriend.getSprite().getScreenPosition().x, boyfriend.getSprite().getScreenPosition().y, camFollowFinal.getScreenPosition().x, camFollowFinal.getScreenPosition().y, defaultCamZoom, character));
+		openSubState(new GameOverSubState(boyfriend.x, boyfriend.y, camFollowFinal.x, camFollowFinal.y, camGame.zoom, character));
 		sectionStart = false;
 	}
 
