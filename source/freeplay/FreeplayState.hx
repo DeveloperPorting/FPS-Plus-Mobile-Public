@@ -907,12 +907,21 @@ class FreeplayState extends MusicBeatState
 			if(jsonMeta.difficultySet != null)		{ meta.difficultySet = jsonMeta.difficultySet; }
 			if(jsonMeta.dadBeats != null)			{ meta.dadBeats = jsonMeta.dadBeats; }
 			if(jsonMeta.bfBeats != null)			{ meta.bfBeats = jsonMeta.bfBeats; }
-			if(jsonMeta.compatableInsts != null)	{ meta.compatableInsts = jsonMeta.compatableInsts; }
+
+			if(jsonMeta.compatibleInsts != null)	{ meta.compatibleInsts = jsonMeta.compatibleInsts; }
+			#if BACKWARD_COMPATIBILITY
+			if(jsonMeta.compatableInsts != null)	{
+				if(jsonMeta.compatableInsts.length > 1 || !jsonMeta.compatableInsts.contains("Included for backwards compatibility purposes and to prevent crashes."))
+				jsonMeta.compatableInsts.remove("Included for backwards compatibility purposes and to prevent crashes."); //Remove note from list.
+				meta.compatibleInsts = meta.compatibleInsts.concat(jsonMeta.compatableInsts);
+			}
+			#end
+
 			if(jsonMeta.mixName != null)			{ meta.mixName = jsonMeta.mixName; }
 		}
 
 		if(categories == null){ categories = ["All"]; }
-		var capsule:Capsule = new Capsule(_song, meta.name, _icon, meta.album, calcAvailableDifficulties(_song), meta.difficulties, meta.difficultySet, meta.compatableInsts, [dj.freeplaySkin, dj.capsuleSelectColor, dj.capsuleDeselectColor, dj.capsuleSelectOutlineColor, dj.capsuleDeselectOutlineColor]);
+		var capsule:Capsule = new Capsule(_song, meta.name, _icon, meta.album, calcAvailableDifficulties(_song), meta.difficulties, meta.difficultySet, meta.compatibleInsts, [dj.freeplaySkin, dj.capsuleSelectColor, dj.capsuleDeselectColor, dj.capsuleSelectOutlineColor, dj.capsuleDeselectOutlineColor]);
 		for(cat in categories){
 			createCategory(cat);
 			categoryMap[cat].push(capsule);

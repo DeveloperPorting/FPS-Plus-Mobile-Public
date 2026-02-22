@@ -81,6 +81,11 @@
 	<haxelib name="polymod" />
 	<haxelib name="extension-androidtools" if="android"/>
 
+	<!-- _______________________________ Defines ______________________________ -->
+
+	<!--Enables backwards compatibility features for older mod versions. Can be commented out if you don't need to include mod backwards compatibility or mod compatibility at all.-->
+	<define name="BACKWARD_COMPATIBILITY" />
+
 	<!-- ______________________________ Haxedefines _____________________________ -->
 
 	<!--Essentially, this forces the local .haxelib folder to act as "global" and is a solid fix for the hxvlc issue.-->
