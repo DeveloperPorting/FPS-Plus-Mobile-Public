@@ -1,5 +1,6 @@
 package note;
 
+import flixel.util.typeLimit.OneOfTwo;
 import flixel.tweens.FlxTween.FlxTweenManager;
 import note.*;
 
@@ -28,7 +29,7 @@ class NoteType
 		for(x in ScriptableNoteType.listScriptClasses()){
 			typeGroups.set(x, []);
 
-			var noteTypeClass:NoteType = ScriptableNoteType.init(x);
+			var noteTypeClass:NoteType = ScriptableNoteType.scriptInit(x);
 			noteTypeClass.defineTypes();
 
 			for(k => v in noteTypeClass.localTypes){
@@ -60,11 +61,11 @@ class NoteType
 	*/
 	function defineTypes():Void{}
 
-	function addNoteType(name:String, hitFunction:(Note, Character)->Void, missFunction:(Int, Character)->Void):Void{
+	function addNoteType(name:String, hitFunction:(Note, Character)->Void, missFunction:(Note, Character)->Void):Void{
 		localTypes.set(name, [hitFunction, missFunction]);
 	}
 
-	function addSustainType(name:String, hitFunction:(Note, Character)->Void, missFunction:(Int, Character)->Void):Void{
+	function addSustainType(name:String, hitFunction:(Note, Character)->Void, missFunction:(Note, Character)->Void):Void{
 		localSustainTypes.set(name, [hitFunction, missFunction]);
 	}
 

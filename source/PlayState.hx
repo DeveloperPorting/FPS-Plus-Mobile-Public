@@ -1,6 +1,5 @@
 package;
 
-import thx.Path;
 import shaders.*;
 import ui.*;
 import config.*;
@@ -13,6 +12,7 @@ import cutscenes.*;
 import cutscenes.data.*;
 import events.*;
 import note.*;
+import caching.*;
 
 import flixel.FlxBasic;
 import flixel.math.FlxAngle;
@@ -52,7 +52,9 @@ import scripts.Script;
 import modding.PolymodHandler;
 import openfl.filters.ShaderFilter;
 import story.StoryMenuState;
-import caching.*;
+
+import data.OrderedMap;
+import thx.Path;
 import mobile.MobileControls;
 
 using StringTools;
@@ -242,7 +244,7 @@ class PlayState extends MusicBeatState
 	private var eventList:Array<Dynamic> = [];
 
 	public var comboUI:ComboPopup;
-	public static final minCombo:Int = 10;
+	public var minCombo:Int = 10;
 	public var comboUiGroup:FlxTypedGroup<ComboPopup>;
 
 	public var stage:BaseStage;
@@ -308,7 +310,7 @@ class PlayState extends MusicBeatState
 	public var managedSounds:Array<FlxSound> = [];
 	var missNoteSound:FlxSound;
 
-	public var scripts:Map<String, Script> = new Map<String, Script>();
+	public var scripts:OrderedMap<String, Script> = new OrderedMap<String, Script>();
 
 	public static var replayStartCutscene:Bool = true;
 	public static var replayEndCutscene:Bool = true;
@@ -522,7 +524,7 @@ class PlayState extends MusicBeatState
 		if (SONG.stage != null) { stageCheck = SONG.stage; }
 
 		if(ScriptableStage.listScriptClasses().contains(stageCheck)){
-			stage = ScriptableStage.init(stageCheck);
+			stage = ScriptableStage.scriptInit(stageCheck);
 		}
 		else{
 			stage = new BaseStage();
@@ -749,7 +751,7 @@ class PlayState extends MusicBeatState
 					if(cutsceneJson.startCutscene.playOnce != null) {startCutscenePlayOnce = cutsceneJson.startCutscene.playOnce;}
 					//startCutscene = Type.createInstance(startCutsceneClass, startCutsceneArgs);
 					if((startCutscenePlayOnce ? replayStartCutscene : true)){
-						startCutscene = ScriptableCutscene.init(cutsceneJson.startCutscene.name, startCutsceneArgs);
+						startCutscene = ScriptableCutscene.scriptInit(cutsceneJson.startCutscene.name, startCutsceneArgs);
 					}
 				}
 			}
@@ -764,7 +766,7 @@ class PlayState extends MusicBeatState
 					if(cutsceneJson.endCutscene.args != null) {endCutsceneArgs = cutsceneJson.endCutscene.args;}
 					if(cutsceneJson.endCutscene.playOnce != null) {endCutscenePlayOnce = cutsceneJson.endCutscene.playOnce;}
 					//endCutscene = Type.createInstance(endCutsceneClass, endCutsceneArgs);
-					endCutscene = ScriptableCutscene.init(cutsceneJson.endCutscene.name, endCutsceneArgs);
+					endCutscene = ScriptableCutscene.scriptInit(cutsceneJson.endCutscene.name, endCutsceneArgs);
 				}
 			}
 			//trace(endCutscene);
@@ -803,9 +805,11 @@ class PlayState extends MusicBeatState
 
 		//trace(scriptList);
 
+		scripts.set("___STAGE_SCRIPT___", stage);
+
 		for(script in scriptList){
 			if(ScriptableScript.listScriptClasses().contains(script)){
-				var scriptToAdd:Script = ScriptableScript.init(script);
+				var scriptToAdd:Script = ScriptableScript.scriptInit(script);
 				scripts.set(script, scriptToAdd);
 			}
 		}
@@ -820,8 +824,6 @@ class PlayState extends MusicBeatState
 		if(fromChartEditor && !fceForLilBuddies){
 			preventScoreSaving = true;
 		}
-		
-		scripts.set("___STAGE_SCRIPT___", stage);
 
 		for(script in scripts){ script.create(); }
 		for(script in scripts){ script.postCreate(); }
@@ -1158,7 +1160,7 @@ class PlayState extends MusicBeatState
 			for (songNotes in section.sectionNotes)
 			{
 				var daStrumTime:Float = songNotes[0];
-				var daNoteData:Int = Std.int(songNotes[1] % 4);
+				var daDirection:Int = Std.int(songNotes[1] % 4);
 				var daNoteType:String = songNotes[3];
 
 				var gottaHitNote:Bool = section.mustHitSection;
@@ -1175,7 +1177,7 @@ class PlayState extends MusicBeatState
 					oldNote = null;
 				}
 
-				var swagNote:Note = new Note(daStrumTime, daNoteData, daNoteType, false, oldNote);
+				var swagNote:Note = new Note(daStrumTime, daDirection, daNoteType, false, oldNote);
 				swagNote.sustainLength = songNotes[2];
 				swagNote.scrollFactor.set(0, 0);
 
@@ -1208,7 +1210,7 @@ class PlayState extends MusicBeatState
 							timeAdd = 0.1; 
 						}
 	
-						var sustainNote:Note = new Note(daStrumTime + (Conductor.stepCrochet * susNote) + timeAdd, daNoteData, daNoteType, false, oldNote, true);
+						var sustainNote:Note = new Note(daStrumTime + (Conductor.stepCrochet * susNote) + timeAdd, daDirection, daNoteType, false, oldNote, true);
 						sustainNote.isFake = makeFake;
 						sustainNote.scrollFactor.set();
 						sustainNote.mustPress = gottaHitNote;
@@ -1868,12 +1870,12 @@ class PlayState extends MusicBeatState
 			var scrollSpeed:Float;
 
 			if(daNote.mustPress){
-				targetY = playerStrums.members[Math.floor(Math.abs(daNote.noteData))].y;
-				targetX = playerStrums.members[Math.floor(Math.abs(daNote.noteData))].x;
+				targetY = playerStrums.members[Math.floor(Math.abs(daNote.direction))].y;
+				targetX = playerStrums.members[Math.floor(Math.abs(daNote.direction))].x;
 			}
 			else{
-				targetY = enemyStrums.members[Math.floor(Math.abs(daNote.noteData))].y;
-				targetX = enemyStrums.members[Math.floor(Math.abs(daNote.noteData))].x;
+				targetY = enemyStrums.members[Math.floor(Math.abs(daNote.direction))].y;
+				targetX = enemyStrums.members[Math.floor(Math.abs(daNote.direction))].x;
 			}
 
 			if(Config.scrollSpeedOverride > 0){
@@ -1921,7 +1923,7 @@ class PlayState extends MusicBeatState
 
 			if(daNote.tooLate){
 				if (!daNote.didTooLateAction && !daNote.isFake){
-					noteMiss(daNote.noteData, daNote.missCallback, Scoring.MISS_DAMAGE_AMOUNT, true, true);
+					noteMiss(daNote, daNote.missCallback, Scoring.MISS_DAMAGE_AMOUNT, true, true);
 					if(canChangeVocalVolume){ vocals.volume = 0; }
 					daNote.didTooLateAction = true;
 				}
@@ -1942,7 +1944,7 @@ class PlayState extends MusicBeatState
 		opponentNotesInRange = [false, false, false, false];
 		notes.forEachAlive(function(daNote:Note){
 
-			if(!opponentNotesInRange[daNote.noteData] && daNote.inRange && !daNote.mustPress) {opponentNotesInRange[daNote.noteData] = true;}
+			if(!opponentNotesInRange[daNote.direction] && daNote.inRange && !daNote.mustPress) {opponentNotesInRange[daNote.direction] = true;}
 
 			if (!daNote.mustPress && daNote.canBeHit && !daNote.wasGoodHit){
 
@@ -1952,7 +1954,7 @@ class PlayState extends MusicBeatState
 				healthAdjustOverride = null;
 
 				enemyStrums.forEach(function(spr:FlxSprite){
-					if (Math.abs(daNote.noteData) == spr.ID){
+					if (Math.abs(daNote.direction) == spr.ID){
 						spr.animation.play('confirm', true);
 					}
 				});
@@ -1979,7 +1981,7 @@ class PlayState extends MusicBeatState
 				else{
 					if(daNote.prevNote == null || !daNote.prevNote.isSustainNote){
 						/*enemyCovers.forEach(function(cover:NoteHoldCover) {
-							if (Math.abs(daNote.noteData) == cover.noteDirection) {
+							if (Math.abs(daNote.direction) == cover.noteDirection) {
 								cover.start();
 							}
 						});*/
@@ -1987,7 +1989,7 @@ class PlayState extends MusicBeatState
 					}
 					else if(daNote.isSustainEnd){
 						enemyCovers.forEachAlive(function(cover:NoteHoldCover) {
-							if (Math.abs(daNote.noteData) == cover.noteDirection) {
+							if (Math.abs(daNote.direction) == cover.noteDirection) {
 								cover.end(false);
 							}
 						});
@@ -2183,15 +2185,15 @@ class PlayState extends MusicBeatState
 				comboBreak();
 		}
 
-		comboUI.ratingPopup(rating);
+		ratingPopup(rating);
 
 		if(combo >= minCombo)
-			comboUI.comboPopup(combo);
+			comboPopup(combo);
 
 	}
 
 	private function createNoteSplash(note:Note){
-		var bigSplashy = new NoteSplash(Utils.getGraphicMidpoint(playerStrums.members[note.noteData]).x, Utils.getGraphicMidpoint(playerStrums.members[note.noteData]).y, note.noteData, false, note.noteSplashOverride);
+		var bigSplashy = new NoteSplash(Utils.getGraphicMidpoint(playerStrums.members[note.direction]).x, Utils.getGraphicMidpoint(playerStrums.members[note.direction]).y, note.direction, false, note.noteSplashOverride);
 		bigSplashy.cameras = [camHUD];
 		add(bigSplashy);
 	}
@@ -2200,7 +2202,7 @@ class PlayState extends MusicBeatState
 
 		if(note.mustPress){
 			playerCovers.forEachAlive(function(cover:NoteHoldCover){
-				if(cover.ID == note.noteData){
+				if(cover.ID == note.direction){
 					if((note.holdCoverOverride == null && cover.coverSkin != NoteHoldCover.defaultSkin) || (note.holdCoverOverride != null && cover.coverSkin != note.holdCoverOverride)){
 						cover.coverSkin = note.holdCoverOverride == null ? NoteHoldCover.defaultSkin : note.holdCoverOverride;
 						cover.loadSkin();
@@ -2211,7 +2213,7 @@ class PlayState extends MusicBeatState
 		}
 		else{
 			enemyCovers.forEachAlive(function(cover:NoteHoldCover){
-				if(cover.ID == note.noteData){
+				if(cover.ID == note.direction){
 					if((note.holdCoverOverride == null && cover.coverSkin != NoteHoldCover.defaultSkin) || (note.holdCoverOverride != null && cover.coverSkin != note.holdCoverOverride)){
 						cover.coverSkin = note.holdCoverOverride == null ? NoteHoldCover.defaultSkin : note.holdCoverOverride;
 						cover.loadSkin();
@@ -2276,7 +2278,7 @@ class PlayState extends MusicBeatState
 
 		playerNotesInRange = [false, false, false, false];
 		notes.forEachAlive(function(daNote:Note){
-			if(!playerNotesInRange[daNote.noteData] && daNote.inRange && daNote.mustPress){playerNotesInRange[daNote.noteData] = true;}
+			if(!playerNotesInRange[daNote.direction] && daNote.inRange && daNote.mustPress){playerNotesInRange[daNote.direction] = true;}
 		});
 
 		if((upPress || rightPress || downPress || leftPress) && generatedMusic){
@@ -2287,7 +2289,7 @@ class PlayState extends MusicBeatState
 			notes.forEachAlive(function(daNote:Note){
 				if(daNote.canBeHit && daNote.mustPress && !daNote.tooLate && !daNote.wasGoodHit) {
 					possibleNotes.push(daNote);
-					ignoreList[daNote.noteData] = true;
+					ignoreList[daNote.direction] = true;
 
 					if(Config.ghostTapType == 1){
 						setCanMiss();
@@ -2299,9 +2301,9 @@ class PlayState extends MusicBeatState
 
 			if(possibleNotes.length > 0 && !forceMissNextNote){
 				for(i in 0...possibleNotes.length){
-					if(controlArray[possibleNotes[i].noteData] && !directionsAccounted[possibleNotes[i].noteData]){
+					if(controlArray[possibleNotes[i].direction] && !directionsAccounted[possibleNotes[i].direction]){
 						goodNoteHit(possibleNotes[i]);
-						directionsAccounted[possibleNotes[i].noteData] = true;
+						directionsAccounted[possibleNotes[i].direction] = true;
 					}
 				}
 				for(i in 0...4){
@@ -2322,7 +2324,7 @@ class PlayState extends MusicBeatState
 
 					//boyfriend.holdTimer = 0;
 
-					switch (daNote.noteData)
+					switch (daNote.direction)
 					{
 						// NOTES YOU ARE HOLDING
 						case 2:
@@ -2348,15 +2350,15 @@ class PlayState extends MusicBeatState
 				if(daNote.prevNote.tooLate && !daNote.prevNote.wasGoodHit){
 					daNote.tooLate = true;
 					daNote.destroy();
-					noteMiss(daNote.noteData, daNote.missCallback, Scoring.HOLD_DROP_DMAMGE_PER_NOTE * (daNote.isFake ? 0 : 1), false, false, true, Std.int(Scoring.HOLD_DROP_PENALTY_PER_SECOND * (Conductor.stepCrochet/1000)));
+					noteMiss(daNote, daNote.missCallback, Scoring.HOLD_DROP_DMAMGE_PER_NOTE * (daNote.isFake ? 0 : 1), false, false, true, Std.int(Scoring.HOLD_DROP_PENALTY_PER_SECOND * (Conductor.stepCrochet/1000)));
 					//updateAccuracyOld();
 				}
 
 				//This is for the first released note.
 				if(daNote.prevNote.wasGoodHit && !daNote.wasGoodHit){
 
-					if(releaseTimes[daNote.noteData] >= releaseBufferTime){
-						noteMiss(daNote.noteData, daNote.missCallback, Scoring.HOLD_DROP_INITAL_DAMAGE, true, false, true, Std.int(Scoring.HOLD_DROP_INITIAL_PENALTY_PER_SECOND * (Conductor.stepCrochet/1000)));
+					if(releaseTimes[daNote.direction] >= releaseBufferTime){
+						noteMiss(daNote, daNote.missCallback, Scoring.HOLD_DROP_INITAL_DAMAGE, true, false, true, Std.int(Scoring.HOLD_DROP_INITIAL_PENALTY_PER_SECOND * (Conductor.stepCrochet/1000)));
 						if(canChangeVocalVolume){ vocals.volume = 0; }
 						daNote.tooLate = true;
 						daNote.destroy();
@@ -2364,7 +2366,7 @@ class PlayState extends MusicBeatState
 						//updateAccuracyOld();
 
 						playerCovers.forEach(function(cover:NoteHoldCover) {
-							if (Math.abs(daNote.noteData) == cover.noteDirection) {
+							if (Math.abs(daNote.direction) == cover.noteDirection) {
 								cover.end(false);
 							}
 						});
@@ -2434,7 +2436,7 @@ class PlayState extends MusicBeatState
 		playerNotesInRange = [false, false, false, false];
 
 		notes.forEachAlive(function(daNote:Note){
-			if(!playerNotesInRange[daNote.noteData] && daNote.inRange && daNote.mustPress){ playerNotesInRange[daNote.noteData] = true; }
+			if(!playerNotesInRange[daNote.direction] && daNote.inRange && daNote.mustPress){ playerNotesInRange[daNote.direction] = true; }
 
 			if (!forceMissNextNote && !daNote.wasGoodHit && daNote.mustPress && daNote.strumTime < Conductor.songPosition + Conductor.safeZoneOffset * (!daNote.isSustainNote ? 0.125 : (daNote.prevNote.wasGoodHit ? 1 : 0))){
 				hitNotes.push(daNote);
@@ -2460,7 +2462,7 @@ class PlayState extends MusicBeatState
 			goodNoteHit(x);
 			
 			playerStrums.forEach(function(spr:FlxSprite){
-				if (Math.abs(x.noteData) == spr.ID){
+				if (Math.abs(x.direction) == spr.ID){
 					spr.animation.play('confirm', true);
 				}
 			});
@@ -2469,7 +2471,10 @@ class PlayState extends MusicBeatState
 
 	}
 
-	function noteMiss(direction:Int = 1, callback:(Int, Character)->Void, ?healthLoss:Float, ?playAudio:Bool = true, ?countMiss:Bool = true, ?dropCombo:Bool = true, ?scoreAdjust:Null<Int>):Void{
+	function noteMiss(note:Dynamic, callback:Dynamic, ?healthLoss:Float, ?playAudio:Bool = true, ?countMiss:Bool = true, ?dropCombo:Bool = true, ?scoreAdjust:Null<Int>):Void{
+		var direction = -1;
+		if(note is Int){ direction = note; }
+		else{ direction = note.direction; }
 
 		if(scoreAdjust == null){
 			scoreAdjust = Scoring.MISS_PENALTY;
@@ -2494,7 +2499,7 @@ class PlayState extends MusicBeatState
 			
 			forceMissNextNote = false;
 			
-			callback(direction, boyfriend);
+			callback(note, boyfriend);
 			
 			if(healthAdjustOverride == null){
 				health -= healthLoss * Config.healthDrainMultiplier;
@@ -2508,9 +2513,7 @@ class PlayState extends MusicBeatState
 				boyfriend.characterInfo.info.functions.noteMiss(boyfriend, direction, countMiss);
 			}
 			for(script in scripts){ script.noteMiss(direction, countMiss); }
-
 		}
-
 	}
 
 	inline function noteMissWrongPress(direction:Int = 1):Void{
@@ -2568,7 +2571,7 @@ class PlayState extends MusicBeatState
 				note.wasGoodHit = true;
 				if(note.prevNote == null || !note.prevNote.isSustainNote){
 					/*playerCovers.forEach(function(cover:NoteHoldCover) {
-						if (Math.abs(note.noteData) == cover.noteDirection) {
+						if (Math.abs(note.direction) == cover.noteDirection) {
 							cover.start();
 						}
 					});*/
@@ -2599,7 +2602,7 @@ class PlayState extends MusicBeatState
 			}
 
 			playerStrums.forEach(function(spr:FlxSprite) {
-				if (Math.abs(note.noteData) == spr.ID) {
+				if (Math.abs(note.direction) == spr.ID) {
 					spr.animation.play('confirm', true);
 				}
 			});
@@ -2621,7 +2624,7 @@ class PlayState extends MusicBeatState
 				}
 				else if(note.isSustainEnd){
 					playerCovers.forEachAlive(function(cover:NoteHoldCover) {
-						if (Math.abs(note.noteData) == cover.noteDirection) {
+						if (Math.abs(note.direction) == cover.noteDirection) {
 							cover.end(true);
 						}
 					});
@@ -2690,7 +2693,7 @@ class PlayState extends MusicBeatState
 			iconP2.bop(defaultIconBopScale, defaultIconBopTime, defaultIconBopEase, tweenManager);
 		}
 		
-		if (curBeat % gfBopFrequency == 0){
+		if (curBeat % gfBopFrequency == 0 && gf.canAutoAnim){
 			gf.dance();
 		}
 
@@ -2735,7 +2738,7 @@ class PlayState extends MusicBeatState
 
 	public function defaultNoteHit(note:Note, character:Character):Void{
 		if(character.canAutoAnim && characterShouldPlayAnimation(note, character)){
-			switch (note.noteData){
+			switch (note.direction){
 				case 0:
 					character.singAnim('singLEFT', true);
 				case 1:
@@ -2749,7 +2752,10 @@ class PlayState extends MusicBeatState
 		getExtraCamMovement(note);
 	}
 
-	public function defaultNoteMiss(direction:Int, character:Character):Void{
+	public function defaultNoteMiss(note:Dynamic, character:Character):Void{
+		var direction:Int = -1;
+		if(note is Int){ direction = note; }
+		else{ direction = note.direction; }
 		if(character.canAutoAnim){
 			switch (direction){
 				case 0:
@@ -2767,8 +2773,8 @@ class PlayState extends MusicBeatState
 	function setNoteHitCallback(note:Note):Void{
 
 		if(!note.isSustainNote){ //Normal notes
-			if(NoteType.types.exists(note.type)){
-				var callbacks = NoteType.types.get(note.type);
+			if(NoteType.types.exists(note.typePrefix)){
+				var callbacks = NoteType.types.get(note.typePrefix);
 				if(callbacks[0] != null){ note.hitCallback = callbacks[0]; }
 				else{ note.hitCallback = defaultNoteHit; }
 				if(callbacks[1] != null){ note.missCallback = callbacks[1]; }
@@ -2780,8 +2786,8 @@ class PlayState extends MusicBeatState
 			}
 		}
 		else{ //sustain notes
-			if(NoteType.sustainTypes.exists(note.type)){
-				var callbacks = NoteType.sustainTypes.get(note.type);
+			if(NoteType.sustainTypes.exists(note.typePrefix)){
+				var callbacks = NoteType.sustainTypes.get(note.typePrefix);
 				if(callbacks[0] != null){ note.hitCallback = callbacks[0]; }
 				else{ note.hitCallback = defaultNoteHit; }
 				if(callbacks[1] != null){ note.missCallback = callbacks[1]; }
@@ -2821,7 +2827,7 @@ class PlayState extends MusicBeatState
 
 	public function getExtraCamMovement(note:Note):Void{
 		if(note.isSustainNote){return;}
-		switch (note.noteData){
+		switch (note.direction){
 			case 0:
 				changeCamOffset(-1 * camOffsetAmount, 0);
 			case 1:
@@ -3006,7 +3012,13 @@ class PlayState extends MusicBeatState
 	public function changeCamOffset(_x:Float, _y:Float, ?_time:Null<Float>, ?_ease:Null<flixel.tweens.EaseFunction>){
 
 		//Don't allow for extra camera offsets if it's disabled in the config.
-		if(!Config.extraCamMovement){ return; }
+		if(Config.extraCamMovement == 2){ return; }
+
+		//Reduce extra cam motion if the user has the setting set to reduced.
+		if(Config.extraCamMovement == 1){
+			_x = _x/2;
+			_y = _y/2;
+		}
 
 		if(_time == null){ _time = defaultCameraOffsetTime; }
 		if(_ease == null){ _ease = defaultCameraOffsetEase; }
@@ -3076,10 +3088,22 @@ class PlayState extends MusicBeatState
 
 	}
 
+	public dynamic function ratingPopup(rating:String):Void{
+		comboUI.ratingPopup(rating);
+	}
+
+	public dynamic function comboPopup(number:Int):Void{
+		comboUI.comboPopup(number);
+	}
+
+	public dynamic function breakPopup():Void{
+		comboUI.breakPopup();
+	}
+	
 	function comboBreak():Void{
 		if (combo > minCombo){
 			gf.danceLockout = gf.playAnim("sad");
-			comboUI.breakPopup();
+			breakPopup();
 		}
 		if(combo > 0){ songStats.comboBreakCount++; }
 		combo = 0;

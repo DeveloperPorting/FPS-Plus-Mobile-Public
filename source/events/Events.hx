@@ -23,7 +23,7 @@ class Events
 		ignoreOffset = [];
 
 		for(x in ScriptableEvents.listScriptClasses()){
-			var eventClass:Events = ScriptableEvents.init(x);
+			var eventClass:Events = ScriptableEvents.scriptInit(x);
 			eventClass.defineEvents();
 		}
 	}
@@ -191,6 +191,14 @@ class Events
 
 	public static inline function parseBool(v:String):Bool{
 		return (v.toLowerCase() == "true");
+	}
+
+	public static inline function parseInt(v:String):Int{
+		return Std.parseInt(v);
+	}
+
+	public static inline function parseFloat(v:String):Float{
+		return Std.parseFloat(v);
 	}
 
 	public function toString():String{ return "Events"; }

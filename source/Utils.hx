@@ -191,15 +191,20 @@ class Utils
 		return files;
 	}
 
-	public static inline function listEveryFileInFolder(folder:String, postfix:String){
+	private static var cachedAssetsList:Array<String>;
+	public static inline function listEveryFileInFolder(folder:String, postfix:String):Array<String>{
 		var last:Array<String> = [];
-		var assets = Assets.list();
-		for (file in assets){
+		if(cachedAssetsList == null){ cachedAssetsList = Assets.list(); }
+		for (file in cachedAssetsList){
 			if (file.startsWith('assets/$folder/') && file.endsWith(postfix)){
 				last.push(file.split('assets/$folder/')[1]);
 			}
 		}
 		return last;
+	}
+
+	public static inline function clearCachedAssetList():Void{
+		cachedAssetsList = null;
 	}
 
 	//Removes duplicate items from an array. Can additionally supply extra arrays to check from.
@@ -389,42 +394,4 @@ class Utils
 		if(doCompact){ cpp.vm.Gc.compact(); }
 		#end
 	}
-}
-
-class OrderedMap<K, V>{
-
-	public var keys:Array<K>;
-	public var values:Array<V>;
-
-	public function new() {
-		keys = [];
-		values = [];
-	}
-
-	public function set(key:K, value:V):Void{
-		if(keys.contains(key)){
-			var index = keys.indexOf(key);
-			values[index] = value;
-		}
-		else{
-			keys.push(key);
-			values.push(value);
-		}
-	}
-
-	public function get(key:K):V{
-		if(keys.contains(key)){
-			return values[keys.indexOf(key)];
-		}
-		return null;
-	}
-
-	public function remove(key:K):Void{
-		if(keys.contains(key)){
-			var index = keys.indexOf(key);
-			keys.remove(key);
-			values.remove(values[index]);
-		}
-	}
-
 }

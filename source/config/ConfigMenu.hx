@@ -105,7 +105,7 @@ class ConfigMenu #if mobile extends MusicBeatState #else extends FlxUIStateExt #
 	var glowValue:Bool;
 	var randomTapValue:Int;
 	final randomTapTypes:Array<String> = ["never", "not singing", "always"];
-	final allowedFramerates:Array<Int> = [60, 120, 144, 240, 999];
+	final allowedFramerates:Array<Int> = [60, 120, 144, 240, 360, 480, 999];
 	var framerateValue:Int;
 	var dimValue:Int;
 	var noteSplashValue:Int;
@@ -115,7 +115,7 @@ class ConfigMenu #if mobile extends MusicBeatState #else extends FlxUIStateExt #
 	var showComboBreaksValue:Bool;
 	var showFPSValue:Bool;
 	var useGPUValue:Bool;
-	var extraCamMovementValue:Bool;
+	var extraCamMovementValue:Int;
 	var camBopAmountValue:Int;
 	final camBopAmountTypes:Array<String> = ["on", "reduced", "off"];
 	var showCaptionsValue:Bool;
@@ -125,7 +125,7 @@ class ConfigMenu #if mobile extends MusicBeatState #else extends FlxUIStateExt #
 	var autoPauseValue:Bool;
 	var flashingLightsValue:Bool;
 	var fullscreenValue:Bool;
-	var checkForUpdatesValue:Bool;
+	#if UPDATE_CHECKING var checkForUpdatesValue:Bool; #end
 
 	var pressUp:Bool = false;
 	var pressDown:Bool = false;
@@ -724,7 +724,7 @@ class ConfigMenu #if mobile extends MusicBeatState #else extends FlxUIStateExt #
 		Config.autoPause = autoPauseValue;
 		Config.flashingLights = flashingLightsValue;
 		Config.fullscreen = fullscreenValue;
-		Config.checkForUpdates = checkForUpdatesValue;
+		#if UPDATE_CHECKING Config.checkForUpdates = checkForUpdatesValue; #end
 		Config.write();
 	}
 
@@ -799,7 +799,7 @@ class ConfigMenu #if mobile extends MusicBeatState #else extends FlxUIStateExt #
 		autoPauseValue = Config.autoPause;
 		flashingLightsValue = Config.flashingLights;
 		fullscreenValue = Config.fullscreen;
-		checkForUpdatesValue = Config.checkForUpdates;
+		#if UPDATE_CHECKING checkForUpdatesValue = Config.checkForUpdates; #end
 
 		framerateValue = allowedFramerates.indexOf(Config.framerate);
 		if(framerateValue == -1){
@@ -894,13 +894,23 @@ class ConfigMenu #if mobile extends MusicBeatState #else extends FlxUIStateExt #
 
 
 
-		var extraCamStuff = new ConfigOption("DYNAMIC CAMERA", genericOnOff[extraCamMovementValue?0:1] , "Moves the camera in the direction of hit notes.");
+		var extraCamStuff = new ConfigOption("DYNAMIC CAMERA", camBopAmountTypes[extraCamMovementValue], "Moves the camera when hitting notes.\nReduced cuts the movement in half.");
 		extraCamStuff.optionUpdate = function(){
-			if (pressRight || pressLeft || pressAccept) {
+			if (pressRight) {
 				FlxG.sound.play(Paths.sound('scrollMenu'));
-				extraCamMovementValue = !extraCamMovementValue;
+				extraCamMovementValue += 1;
 			}
-			extraCamStuff.setting = genericOnOff[extraCamMovementValue?0:1];
+			else if(pressLeft){
+				FlxG.sound.play(Paths.sound('scrollMenu'));
+				extraCamMovementValue -= 1;
+			}
+
+			if (extraCamMovementValue > 2)
+				extraCamMovementValue = 0;
+			if (extraCamMovementValue < 0)
+				extraCamMovementValue = 2;
+
+			extraCamStuff.setting = camBopAmountTypes[extraCamMovementValue];
 		};
 
 
@@ -1381,6 +1391,7 @@ class ConfigMenu #if mobile extends MusicBeatState #else extends FlxUIStateExt #
 			selectionColor = selectionColors[0];
 		};
 
+		#if UPDATE_CHECKING
 		var checkForUpdatesSetting = new ConfigOption("CHECK FOR UPDATES", genericOnOff[checkForUpdatesValue?0:1], "Alerts you if there is an update available and adds a button to the menu that opens the game's releases page on GitHub.");
 		checkForUpdatesSetting.optionUpdate = function(){
 			if (pressRight || pressLeft || pressAccept) {
@@ -1389,14 +1400,17 @@ class ConfigMenu #if mobile extends MusicBeatState #else extends FlxUIStateExt #
 			}
 			checkForUpdatesSetting.setting = genericOnOff[checkForUpdatesValue?0:1];
 		}
+		#end
 
 
 		configOptions = [
 							[keyBinds, ghostTap, noteOffset, scrollSpeed, resetAllScoresSettings],
 							[fpsCap, fullscreenSettings, bgDim, useGPU, showFPS, cacheSettings],
-							[downscroll, centeredNotes, noteSplash, noteGlow, showMissesSetting, showAccuracyDisplay, comboDisplay, checkForUpdatesSetting],
+							[downscroll, centeredNotes, noteSplash, noteGlow, showMissesSetting, showAccuracyDisplay, comboDisplay],
 							[extraCamStuff, camBopStuff, captionsStuff, flashingLightsSettings, autoPauseSettings, hpGain, hpDrain]
 						];
+
+		#if UPDATE_CHECKING configOptions[2].push(checkForUpdatesSetting); #end //Insert update check setting.
 
 	}
 

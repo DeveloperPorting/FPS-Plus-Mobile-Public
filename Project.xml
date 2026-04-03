@@ -2,7 +2,7 @@
 <project>
 	<!-- _________________________ Application Settings _________________________ -->
 
-	<app title="Friday Night Funkin' FPS Plus" file="FunkinFPSPlus" packageName="com.rozebud.funkinfpsplus" package="com.rozebud.funkinfpsplus" main="Main" version="FNF: v0.2.7 | FPS Plus: v6.0" company="Rozebud" />
+	<app title="Friday Night Funkin' FPS Plus" file="FunkinFPSPlus" main="Main" version="9.0.0" company="Rozebud" />
 
 	<!--Minimum without FLX_NO_GAMEPAD: 11.8, without FLX_NO_NATIVE_CURSOR: 11.2-->
 	<set name="SWF_VERSION" value="11.8" />
@@ -24,13 +24,13 @@
 	<!-- ____________________________ Window Settings ___________________________ -->
 
 	<!--These window settings apply to all targets-->
-	<window width="1280" height="720" fps="60" background="#000000" hardware="true" vsync="false" />
+	<window width="1280" height="720" fps="60" background="#000000" hardware="true" vsync="false" allow-high-dpi="true" />
 
 	<!--HTML5-specific-->
 	<window if="html5" resizable="true" />
 
 	<!--Desktop-specific-->
-	<window if="desktop" orientation="landscape" fullscreen="false" resizable="true" allow-high-dpi="true" />
+	<window if="desktop" orientation="landscape" fullscreen="false" resizable="true" />
 
 	<!--Mobile-specific-->
 	<window if="mobile" orientation="landscape" fullscreen="true" resizable="false" allow-shaders="true" require-shaders="true" allow-high-dpi="true"/>
@@ -48,9 +48,8 @@
 	<assets path="assets/mobile" />
 	<assets path="assets/data" />
 	<assets path="assets/videos" />
-
-	<assets path="assets/music" include="*.ogg" />
-	<assets path="assets/sounds" include="*.ogg" />
+	<assets path="assets/music" />
+	<assets path="assets/sounds" />
 	<assets path="assets/songs" />
 
 	<assets path="mods" />
@@ -85,6 +84,9 @@
 
 	<!--Enables backwards compatibility features for older mod versions. Can be commented out if you don't need to include mod backwards compatibility or mod compatibility at all.-->
 	<define name="BACKWARD_COMPATIBILITY" />
+
+	<!--Enables update checking features. This will check if the version matches a file in the FPS Plus repo. Should be removed or altered if you're modding from source.-->
+	<define name="UPDATE_CHECKING" />
 
 	<!-- ______________________________ Haxedefines _____________________________ -->
 

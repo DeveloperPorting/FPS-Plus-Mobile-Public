@@ -33,12 +33,11 @@ import Song.SwagSong;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.addons.display.FlxGridOverlay;
-import flixel.addons.ui.FlxInputText;
+import flixel.text.FlxInputText;
 import flixel.addons.ui.FlxUI9SliceSprite;
 import flixel.addons.ui.FlxUI;
 import flixel.addons.ui.FlxUICheckBox;
 import flixel.addons.ui.FlxUIDropDownMenu;
-import flixel.addons.ui.FlxUIInputText;
 import flixel.addons.ui.FlxUINumericStepper;
 import flixel.addons.ui.FlxUITabMenu;
 import flixel.addons.ui.FlxUITooltip;
@@ -136,17 +135,17 @@ class ChartingState extends MusicBeatState
 	var _song:SwagSong;
 	var _events:SongEvents;
 
-	var typingShit:FlxUIInputText;
-	var noteType:FlxUIInputText;
+	var typingShit:FlxInputText;
+	var noteType:FlxInputText;
 	var noteTypeDrop:FlxUIDropDownMenuScrollable;
 	var noteTypesArray:Array<String> = [""];
 	var noteTypeGroupsDrop:FlxUIDropDownMenuScrollable;
 	var noteTypeGroupsArray:Array<String> = ["All Note Types"];
 
-	var textBoxArray:Array<FlxUIInputText> = [];
+	var textBoxArray:Array<FlxInputText> = [];
 	var anyTextHasFocus:Bool = false;
 
-	var eventTagName:FlxUIInputText;
+	var eventTagName:FlxInputText;
 	var eventTagDrop:FlxUIDropDownMenuScrollable;
 	var eventTagPrefixDrop:FlxUIDropDownMenuScrollable;
 	var eventDescription:FlxUIText;
@@ -422,7 +421,7 @@ class ChartingState extends MusicBeatState
 
 	function addSongUI():Void{
 
-		typingShit = new FlxUIInputText(10, 10, 70, _song.song, 8);
+		typingShit = new FlxInputText(10, 10, 70, _song.song, 8);
 		textBoxArray.push(typingShit);
 
 		var saveButton:FlxButton = new FlxButton(110, 8, "Save", function(){
@@ -661,7 +660,7 @@ class ChartingState extends MusicBeatState
 		var bSideButton:FlxButton = new FlxButton(10, 200, "Flip BF Notes", function(){
 			var flipTable:Array<Int> = [3, 2, 1, 0, 7, 6, 5, 4];
 
-			//[noteStrum, noteData, noteSus]
+			//[noteStrum, direction, noteSus]
 			for(x in _song.notes[curSection].sectionNotes){
 				if(_song.notes[curSection].mustHitSection){
 					if(x[1] < 4)
@@ -682,7 +681,7 @@ class ChartingState extends MusicBeatState
 		var bSideButton2:FlxButton = new FlxButton(10, 220, "Flip Opp Notes", function(){
 			var flipTable:Array<Int> = [3, 2, 1, 0, 7, 6, 5, 4];
 
-			//[noteStrum, noteData, noteSus]
+			//[noteStrum, direction, noteSus]
 			for(x in _song.notes[curSection].sectionNotes){
 				if(_song.notes[curSection].mustHitSection){
 					if(x[1] > 3)
@@ -728,7 +727,7 @@ class ChartingState extends MusicBeatState
 		tab_group_note = new FlxUI(null, UI_box);
 		tab_group_note.name = 'Note';
 
-		noteType = new FlxUIInputText(10, 30, 160, "", 8);
+		noteType = new FlxInputText(10, 30, 160, "", 8);
 		textBoxArray.push(noteType);
 
 		var noteTagText = new FlxUIText(10, noteType.y - 20, 0, "Note Tag");
@@ -765,7 +764,7 @@ class ChartingState extends MusicBeatState
 
 	function addEventUI():Void{
 
-		eventTagName = new FlxUIInputText(10, 70, 160, "", 8);
+		eventTagName = new FlxInputText(10, 70, 160, "", 8);
 		textBoxArray.push(eventTagName);
 
 		eventTagDrop = new FlxUIDropDownMenuScrollable(10, 110, FlxUIDropDownMenu.makeStrIdLabelArray(eventTagList, true), function(tag:String){
@@ -1294,11 +1293,11 @@ class ChartingState extends MusicBeatState
 				if(x.y < strumLine.y && !x.playedEditorClick && FlxG.sound.music.playing){
 					if(x.editorBFNote){
 						if(bfClick.checked){ FlxG.sound.play(Paths.sound("tick"), 0.6); }
-						lilBf.animation.play("" + (x.noteData % 4), true);
+						lilBf.animation.play("" + (x.direction % 4), true);
 					}
 					else if(!x.editorBFNote){
 						if(opClick.checked){ FlxG.sound.play(Paths.sound("tick"), 0.6); }
-						lilOpp.animation.play("" + (x.noteData % 4), true);
+						lilOpp.animation.play("" + (x.direction % 4), true);
 					}
 				}
 
@@ -1380,6 +1379,7 @@ class ChartingState extends MusicBeatState
 		if(Binds.justPressed("polymodReload")){
 			PlayState.SONG = _song;
 			PlayState.EVENTS = _events;
+			FlxG.signals.preStateSwitch.addOnce(function() { PolymodHandler.reInit(); });
 			PolymodHandler.reload();
 		}
 
@@ -1539,8 +1539,8 @@ class ChartingState extends MusicBeatState
 			var leftChar:characters.CharacterInfoBase;
 			var rightChar:characters.CharacterInfoBase;
 
-			leftChar = ScriptableCharacter.init(player2DropDown.selectedLabel);
-			rightChar = ScriptableCharacter.init(player1DropDown.selectedLabel);
+			leftChar = ScriptableCharacter.scriptInit(player2DropDown.selectedLabel);
+			rightChar = ScriptableCharacter.scriptInit(player1DropDown.selectedLabel);
 
 			leftIcon.setIconCharacter(leftChar.info.iconName);
 			rightIcon.setIconCharacter(rightChar.info.iconName);
@@ -1749,13 +1749,12 @@ class ChartingState extends MusicBeatState
 
 	function selectNote(note:Note):Void{
 
-		for(x in _song.notes[curSection].sectionNotes){
-			if(Utils.inRange(x[0], note.strumTime, 3) && x[1] == note.absoluteNumber && Utils.inRange(x[2], note.sustainLength, 3)){
-
-				curSelectedNote = x;
-				noteType.text = x[3];
+		for(sectionNote in _song.notes[curSection].sectionNotes){
+			if(Utils.inRange(sectionNote[0], note.strumTime, 3) && sectionNote[1] == note.absoluteNumber && Utils.inRange(sectionNote[2], note.sustainLength, 3)){
+				curSelectedNote = sectionNote;
+				if(sectionNote.length >= 4){ noteType.text = sectionNote[3]; }
+				else{ noteType.text = ""; }
 				break;
-
 			}
 		}
 
@@ -1842,14 +1841,14 @@ class ChartingState extends MusicBeatState
 		updateGrid();
 	}
 
-	private function addNote(_noteStrum:Float, _noteData:Int, ?skipSectionCheck:Bool = false):Void{
+	private function addNote(_noteStrum:Float, _direction:Int, ?skipSectionCheck:Bool = false):Void{
 		var noteAdjust:Array<Int> = [0, 1, 2, 3, 4, 5, 6, 7];
 
 		if(_song.notes[curSection].mustHitSection){
 			noteAdjust = [4, 5, 6, 7, 0, 1, 2, 3];
 		}
 
-		var noteData = noteAdjust[_noteData];
+		var direction = noteAdjust[_direction];
 		var noteStrum = _noteStrum;
 		var noteSus = 0;
 		var noteTypeString = noteType.text;
@@ -1861,12 +1860,12 @@ class ChartingState extends MusicBeatState
 		}
 			
 
-		_song.notes[curSection].sectionNotes.push([noteStrum, noteData, noteSus, noteTypeString]);
+		_song.notes[curSection].sectionNotes.push([noteStrum, direction, noteSus, noteTypeString]);
 
 		curSelectedNote = _song.notes[curSection].sectionNotes[_song.notes[curSection].sectionNotes.length - 1];
 
 		if (FlxG.keys.pressed.TAB){
-			_song.notes[curSection].sectionNotes.push([noteStrum, (noteData + 4) % 8, noteSus, noteTypeString]);
+			_song.notes[curSection].sectionNotes.push([noteStrum, (direction + 4) % 8, noteSus, noteTypeString]);
 		}
 
 		removeDuplicates(curSection, curSelectedNote);
@@ -1894,13 +1893,13 @@ class ChartingState extends MusicBeatState
 	private var daSpacing:Float = 0.3;
 
 	function getNotes():Array<Dynamic>{
-		var noteData:Array<Dynamic> = [];
+		var direction:Array<Dynamic> = [];
 
 		for (i in _song.notes){
-			noteData.push(i.sectionNotes);
+			direction.push(i.sectionNotes);
 		}
 
-		return noteData;
+		return direction;
 	}
 
 	function loadJson(song:String):Void{
@@ -2093,14 +2092,14 @@ class ChartingState extends MusicBeatState
 		_song.notes[section].sectionNotes.sort(sortByNoteStuff);
 	}
 
-	private function addEventNote(_noteStrum:Float, _noteData:Int):Void{
-		var noteData = _noteData;
+	private function addEventNote(_noteStrum:Float, _direction:Int):Void{
+		var direction = _direction;
 		var noteStrum = _noteStrum;
 		var eventTag = eventTagName.text;
 		var section = curSection;
 
 		for (i in _events.events){
-			if (Utils.inRange(i[1], noteStrum, 3) && (eventTag == i[3] || noteData == i[2])){
+			if (Utils.inRange(i[1], noteStrum, 3) && (eventTag == i[3] || direction == i[2])){
 				return;
 			}
 		}
@@ -2109,10 +2108,10 @@ class ChartingState extends MusicBeatState
 			eventTagDrop.setData(FlxUIDropDownMenu.makeStrIdLabelArray(eventTagList, true));
 		}
 
-		_events.events.push([section, noteStrum, noteData, eventTag]);
+		_events.events.push([section, noteStrum, direction, eventTag]);
 		_events.events.sort(sortByEventStuff);
 		
-		//trace("Slot: " + noteData);
+		//trace("Slot: " + direction);
 		//trace("Time: " + noteStrum);
 		//trace("Tag:  " + eventTag);
 
@@ -2198,7 +2197,7 @@ class ChartingState extends MusicBeatState
 		stageList = [];
 
 		for(x in ScriptableCharacter.listScriptClasses()){
-			var getScriptInfo:CharacterInfoBase = ScriptableCharacter.init(x);
+			var getScriptInfo:CharacterInfoBase = ScriptableCharacter.scriptInit(x);
 			if(getScriptInfo.includeInCharacterList){ charactersList.push(x); }
 			if(getScriptInfo.includeInGfList){ gfList.push(x); }
 		}

@@ -25,7 +25,7 @@ class Startup extends FlxUIStateExt
 {
 
 	var nextState:FlxState = new TitleVideo();
-	//var nextState:FlxState = new debug.CharacterCompare();
+	//var nextState:FlxState = new debug.CharacterCompare("", "");
 	//var nextState:FlxState = new results.ResultsState(null, "Results Test", "PicoResults");
 
 	var splashHasSoundTrigger:Bool = false;
@@ -118,8 +118,6 @@ class Startup extends FlxUIStateExt
 		splash.addAnimationByLabel("end", "End", 24, false);
 		splash.animationEndCallback = splashAnimEnd;
 		add(splash);
-
-		CacheReload.buildPreloadList();
 
 		loadTotal = (!charactersCached ? CacheReload.characterPreloadList.length : 0) + (!graphicsCached ? CacheReload.graphicsPreloadList.length : 0);
 
