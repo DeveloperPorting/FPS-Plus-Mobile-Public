@@ -29,7 +29,7 @@ import openfl.system.System;
 import Section.SwagSection;
 import Song.SwagSong;
 import Song.SongEvents;
-import flixel.FlxCamera;
+import extensions.flixel.FlxCameraExt;
 import flixel.FlxG;
 import flixel.FlxObject;
 import flixel.FlxSprite;
@@ -222,17 +222,17 @@ class PlayState extends MusicBeatState
 	public var combo:Int = 0;
 	public var totalPlayed:Int = 0;
 
-	public var healthBarBG:FlxSprite;
-	public var healthBar:FlxBar;
+	public var healthBar:FlxSprite;
+	public var healthBarShader:SplitBarShader;
 
 	public var generatedMusic:Bool = false;
 	public var startingSong:Bool = true;
 
 	public var iconP1:HealthIcon;
 	public var iconP2:HealthIcon;
-	public var camHUD:FlxCamera;
-	public var camGame:FlxCamera;
-	public var camOverlay:FlxCamera;
+	public var camHUD:FlxCameraExt;
+	public var camGame:FlxCameraExt;
+	public var camOverlay:FlxCameraExt;
 	private var camGameZoomAdjust:Float = 0;
 
 	public var defaultIconBopScale:Float = 1.2;
@@ -345,6 +345,10 @@ class PlayState extends MusicBeatState
 
 		countSteps = false;
 
+		if(FlxG.sound.music != null && FlxG.sound.music.playing){
+			FlxG.sound.music.stop();
+		}
+
 		if(overrideInsturmental != ""){
 			instSong = overrideInsturmental;
 			overrideInsturmental = "";
@@ -379,13 +383,6 @@ class PlayState extends MusicBeatState
 			if(jsonMeta.mixName != null)			{ metadata.mixName = jsonMeta.mixName; }
 			if(jsonMeta.pauseMusic != null)			{ metadata.pauseMusic = jsonMeta.pauseMusic; }
 		}
-		
-		for(i in EVENTS.events){
-			eventList.push([i[1], i[3], i[2]]);
-			preprocessEvent(i[3]);
-		}
-
-		eventList.sort(sortByEventStuff);
 
 		inCutscene = false;
 
@@ -403,14 +400,14 @@ class PlayState extends MusicBeatState
 		
 		canHit = !(Config.ghostTapType > 0);
 
-		camGame = new FlxCamera();
+		camGame = new FlxCameraExt();
 		camGame.filters = [];
 
-		camOverlay = new FlxCamera();
+		camOverlay = new FlxCameraExt();
 		camOverlay.bgColor.alpha = 0;
 		camOverlay.filters = [];
 
-		camHUD = new FlxCamera();
+		camHUD = new FlxCameraExt();
 		camHUD.bgColor.alpha = 0;
 		camHUD.filters = [new ShaderFilter(hudShader.shader)];
 
@@ -673,23 +670,17 @@ class PlayState extends MusicBeatState
 
 		FlxG.worldBounds.set(0, 0, FlxG.width, FlxG.height);
 
-		FlxG.fixedTimestep = false;
-
 		if(Utils.exists(Paths.json(SONG.song.toLowerCase() + "/meta"))){
 			meta = new SongMetaTags(0, 144, SONG.song.toLowerCase());
 			meta.cameras = [camHUD];
 			add(meta);
 		}
 
-		healthBarBG = new FlxSprite(0, Config.downscroll ? FlxG.height * 0.1 : FlxG.height * 0.875).loadGraphic(Paths.image("ui/healthBar"));
-		healthBarBG.screenCenter(X);
-		healthBarBG.scrollFactor.set();
-		add(healthBarBG);
-
-		healthBar = new FlxBar(healthBarBG.x + 4, healthBarBG.y + 4, RIGHT_TO_LEFT, Std.int(healthBarBG.width - 8), Std.int(healthBarBG.height - 8), this, 'healthLerp', 0, 2);
+		healthBar = new FlxSprite(0, (Config.downscroll ? FlxG.height * 0.1 : FlxG.height * 0.875)-1).loadGraphic(Paths.image("ui/healthBar"));
 		healthBar.scrollFactor.set();
-		healthBar.createFilledBar(dad.characterColor, boyfriend.characterColor);
-		// healthBar
+		healthBar.screenCenter(X);
+		healthBarShader = new SplitBarShader(boyfriend.characterColor, dad.characterColor, 0.5, 5);
+		healthBar.shader = healthBarShader.shader;
 		
 		scoreTxt = new FlxTextExt(0, 687, 800, "", 20);
 		scoreTxt.setFormat(Paths.font("vcr"), 20, 0xFFFFFFFF, FlxTextAlign.CENTER, FlxTextBorderStyle.OUTLINE, 0xFF000000);
@@ -717,14 +708,12 @@ class PlayState extends MusicBeatState
 		enemyCovers.cameras = [camHUD];
 		notes.cameras = [camHUD];
 		healthBar.cameras = [camHUD];
-		healthBarBG.cameras = [camHUD];
 		iconP1.cameras = [camHUD];
 		iconP2.cameras = [camHUD];
 		scoreTxt.cameras = [camHUD];
 		ccText.cameras = [camHUD];
 
 		healthBar.visible = false;
-		healthBarBG.visible = false;
 		iconP1.visible = false;
 		iconP2.visible = false;
 		scoreTxt.visible = false;
@@ -741,37 +730,29 @@ class PlayState extends MusicBeatState
 		if(Utils.exists("assets/data/songs/" + SONG.song.toLowerCase() + "/cutscene.json") && !fromChartEditor){
 			trace("song has cutscene info");
 			var cutsceneJson = Json.parse(Utils.getText("assets/data/songs/" + SONG.song.toLowerCase() + "/cutscene.json"));
-			//trace(cutsceneJson);
 			if(Type.typeof(cutsceneJson.startCutscene) == TObject){
 				if(cutsceneJson.startCutscene.storyOnly != null) {startCutsceneStoryOnly = cutsceneJson.startCutscene.storyOnly;}
 				if((!startCutsceneStoryOnly || (startCutsceneStoryOnly && isStoryMode)) ){
-					//var startCutsceneClass = Type.resolveClass("cutscenes.data." + cutsceneJson.startCutscene.name);
 					var startCutsceneArgs = [];
 					if(cutsceneJson.startCutscene.args != null) {startCutsceneArgs = cutsceneJson.startCutscene.args;}
 					if(cutsceneJson.startCutscene.playOnce != null) {startCutscenePlayOnce = cutsceneJson.startCutscene.playOnce;}
-					//startCutscene = Type.createInstance(startCutsceneClass, startCutsceneArgs);
 					if((startCutscenePlayOnce ? replayStartCutscene : true)){
 						startCutscene = ScriptableCutscene.scriptInit(cutsceneJson.startCutscene.name, startCutsceneArgs);
 					}
 				}
 			}
-			//trace(startCutscene);
-			//trace(startCutsceneStoryOnly);
 
 			if(Type.typeof(cutsceneJson.endCutscene) == TObject){
 				if(cutsceneJson.endCutscene.storyOnly != null) {endCutsceneStoryOnly = cutsceneJson.endCutscene.storyOnly;}
 				if((!endCutsceneStoryOnly || (endCutsceneStoryOnly && isStoryMode)) ){
-					//var endCutsceneClass = Type.resolveClass("cutscenes.data." + cutsceneJson.endCutscene.name);
 					var endCutsceneArgs = [];
 					if(cutsceneJson.endCutscene.args != null) {endCutsceneArgs = cutsceneJson.endCutscene.args;}
 					if(cutsceneJson.endCutscene.playOnce != null) {endCutscenePlayOnce = cutsceneJson.endCutscene.playOnce;}
-					//endCutscene = Type.createInstance(endCutsceneClass, endCutsceneArgs);
 					endCutscene = ScriptableCutscene.scriptInit(cutsceneJson.endCutscene.name, endCutsceneArgs);
 				}
 			}
-			//trace(endCutscene);
-			//trace(endCutsceneStoryOnly);
 		}
+
 		var globalScripts:Array<String> = [];
 		if(Utils.exists(Paths.text("globalScripts", "data/scripts"))){
 			var globalScriptsText:String = Utils.getText(Paths.text("globalScripts", "data/scripts"));
@@ -780,8 +761,6 @@ class PlayState extends MusicBeatState
 				globalScripts[i] = globalScripts[i].trim();
 			}
 		}
-
-		//trace(globalScripts);
 
 		var scriptList:Array<String> = [];
 		if(Utils.exists(Paths.json("scripts", "data/songs/" + SONG.song.toLowerCase()))){
@@ -802,9 +781,7 @@ class PlayState extends MusicBeatState
 		while(scriptList.contains("")){
 			scriptList.remove("");
 		}
-
-		//trace(scriptList);
-
+		
 		scripts.set("___STAGE_SCRIPT___", stage);
 
 		for(script in scriptList){
@@ -826,11 +803,29 @@ class PlayState extends MusicBeatState
 		}
 
 		for(script in scripts){ script.create(); }
-		for(script in scripts){ script.postCreate(); }
+
+		for(i in EVENTS.events){
+			eventList.push([i[1], i[3], i[2]]);
+			preprocessEvent(i[3]);
+		}
+
+		eventList.sort(sortByEventStuff);
 		
 		cutsceneCheck();
 
 		super.create();
+
+		for(script in scripts){ script.postCreate(); }
+
+		if(boyfriend.characterInfo.info.functions.postScript != null){
+			boyfriend.characterInfo.info.functions.postScript(boyfriend);
+		}
+		if(dad.characterInfo.info.functions.postScript != null){
+			dad.characterInfo.info.functions.postScript(dad);
+		}
+		if(gf.characterInfo.info.functions.postScript != null){
+			gf.characterInfo.info.functions.postScript(gf);
+		}
 	}
 
 	function cutsceneCheck():Void{
@@ -899,7 +894,6 @@ class PlayState extends MusicBeatState
 
 		#if mobile mobileControls.visible = true; #end
 		healthBar.visible = true;
-		healthBarBG.visible = true;
 		iconP1.visible = true;
 		iconP2.visible = true;
 		scoreTxt.visible = true;
@@ -1061,7 +1055,6 @@ class PlayState extends MusicBeatState
 		inCutscene = false;
 
 		healthBar.visible = true;
-		healthBarBG.visible = true;
 		iconP1.visible = true;
 		iconP2.visible = true;
 		scoreTxt.visible = true;
@@ -1076,17 +1069,20 @@ class PlayState extends MusicBeatState
 	function startSong():Void{
 		startingSong = false;
 
-		//if (!paused)
-		if(instSong != null){
-			FlxG.sound.playMusic(Paths.inst(instSong), 1, false);
-		}
-		else{
-			FlxG.sound.playMusic(Paths.inst(SONG.song), 1, false);
-		}
-
+		FlxG.sound.music.time = 0;
+		FlxG.sound.music.volume = 1;
+		FlxG.sound.music.play();
 		FlxG.sound.music.onComplete = endSongCutsceneCheck;
+
+		vocals.time = 0;
+		vocals.volume = 1;
 		vocals.play();
-		if(vocalType == splitVocalTrack){ vocalsOther.play(); }
+
+		if(vocalType == splitVocalTrack){
+			vocalsOther.time = 0;
+			vocalsOther.volume = 1;
+			vocalsOther.play();
+		}
 
 		Conductor.songPosition = 0;
 
@@ -1119,20 +1115,32 @@ class PlayState extends MusicBeatState
 
 		curSong = songData.song;
 
+		FlxG.sound.playMusic(Paths.inst(instSong != null ? instSong : SONG.song), 0, false);
+		FlxG.sound.music.pause();
+
 		switch(vocalType){
 			case splitVocalTrack:
 				vocals = new FlxSound().loadEmbedded(Paths.voices(curSong, "Player"));
+				vocals.volume = 0;
 				vocals.onComplete = function(){ vocals.volume = 0; }
+
 				vocalsOther = new FlxSound().loadEmbedded(Paths.voices(curSong, "Opponent"));
+				vocalsOther.volume = 0;
 				vocalsOther.onComplete = function(){ vocalsOther.volume = 0; }
+				vocalsOther.play().pause();
 				FlxG.sound.list.add(vocalsOther);
+
 			case combinedVocalTrack:
 				vocals = new FlxSound().loadEmbedded(Paths.voices(curSong));
 				vocals.onComplete = function(){ vocals.volume = 0; }
+				vocals.volume = 0;
+				
 			case noVocalTrack:
 				vocals = new FlxSound();
+				vocals.volume = 0;
 		}
 
+		vocals.play().pause();
 		FlxG.sound.list.add(vocals);
 
 		notes = new FlxTypedGroup<Note>();
@@ -1509,7 +1517,6 @@ class PlayState extends MusicBeatState
 
 	function resyncVocals():Void {
 		vocals.pause();
-		//FlxG.sound.music.pause();
 		FlxG.sound.music.play();
 		Conductor.songPosition = FlxG.sound.music.time;
 		if (Conductor.songPosition <= vocals.length){
@@ -1647,7 +1654,10 @@ class PlayState extends MusicBeatState
 			vocals.pause();
 			if(vocalType == splitVocalTrack){ vocalsOther.pause(); }
 			if(instSong != null){ overrideInsturmental = instSong; }
-			PolymodHandler.reload();
+			PolymodHandler.reload(false);
+			customTransOut = new InstantTransition();
+			ImageCache.refreshLocal();
+			switchState(new PlayState());
 		}
 
 		/*if(FlxG.keys.anyJustPressed([P])){
@@ -1662,12 +1672,6 @@ class PlayState extends MusicBeatState
 			trace(getGfFocusPosition());
 		}*/
 
-		iconP1.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01) - iconP1.xOffset);
-		iconP1.y = healthBar.y - (iconP1.height / 2) + iconP1.yOffset;
-		
-		iconP2.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01)) - (iconP2.width - iconP2.xOffset);
-		iconP2.y = healthBar.y - (iconP2.height / 2) + iconP2.yOffset;
-
 		if (health > 2){
 			health = 2;
 		}
@@ -1675,15 +1679,23 @@ class PlayState extends MusicBeatState
 		if(healthLerp != health){
 			//Designed to be roughly equivalent to Utils.fpsAdjustedLerp(healthLerp, health, 0.07, 600),
 			//which is roughly equivalent to Utils.fpsAdjustedLerpOld(healthLerp, health, 0.7) at the performance I got when I implemented with smoother health bar.
-			healthLerp = Utils.fpsAdjustedLerp(healthLerp, health, 0.516, 60, true, 0.0001);
+			healthLerp = Utils.fpsAdjustedLerp(healthLerp, health, 0.516, 60, true);
 		}
 
+		healthBarShader.setPercentBasedOnHealth(healthLerp);
+
+		iconP1.x = healthBar.x + healthBarShader.borderSize + ((healthBar.width-(healthBarShader.borderSize*2)) * (1 - (healthLerp / 2))) - (iconP1.xOffset);
+		iconP1.y = healthBar.y + (healthBar.height/2) - (iconP1.height / 2) + iconP1.yOffset;
+		
+		iconP2.x = healthBar.x + healthBarShader.borderSize + ((healthBar.width-(healthBarShader.borderSize*2)) * (1 - (healthLerp / 2))) - (iconP2.width - iconP2.xOffset);
+		iconP2.y = healthBar.y + (healthBar.height/2) - (iconP2.height / 2) + iconP2.yOffset;
+
 		//Health Icons
-		if (healthBar.percent < 20){
+		if (healthLerp < 0.4){
 			iconP1.animation.curAnim.curFrame = 1;
 			iconP2.animation.curAnim.curFrame = 2;
 		}
-		else if (healthBar.percent > 80){
+		else if (healthLerp > 1.6){
 			iconP1.animation.curAnim.curFrame = 2;
 			iconP2.animation.curAnim.curFrame = 1;
 		}
@@ -2001,7 +2013,6 @@ class PlayState extends MusicBeatState
 	}
 
 	function endSongCutsceneCheck():Void{
-		//trace("in cutsceneCheck");
 		stopMusic();
 
 		if(boyfriend.characterInfo.info.functions.songEnd != null){
@@ -2042,7 +2053,6 @@ class PlayState extends MusicBeatState
 	}
 
 	public function endSong():Void{
-		
 		inEndingCutscene = false;
 
 		if(!songEnded){ stopMusic(); }
@@ -2064,21 +2074,13 @@ class PlayState extends MusicBeatState
 				weekStats.missCount += songStats.missCount;
 				weekStats.comboBreakCount += songStats.comboBreakCount;
 			}
-
 			//CODE FOR ENDING A WEEK
-			if (storyPlaylist.length <= 0)
-			{
-
+			if(storyPlaylist.length <= 0){
 				StoryMenuState.fromPlayState = true;
-				//returnToMenu();
 				sectionStart = false;
-
-				// if ()
-				//StoryMenuState.weekUnlocked[Std.int(Math.min(storyWeek + 1, StoryMenuState.weekUnlocked.length - 1))] = true;
 
 				weekStats.accuracy / StoryMenuState.weekList[storyWeek].songs.length;
 
-				//Highscore.saveWeekScore(storyWeek, campaignScore, storyDifficulty);
 				var songSaveStuff:SaveInfo = null;
 				if(!preventScoreSaving){
 					songSaveStuff = {
@@ -2091,13 +2093,9 @@ class PlayState extends MusicBeatState
 
 				ImageCache.forceClearOnTransition = true;
 				switchState(new ResultsState(weekStats, weekName, boyfriend.characterInfo.info.resultsCharacter, songSaveStuff, StoryMenuState.weekList[storyWeek].stickerSet));
-
-				//FlxG.save.data.weekUnlocked = StoryMenuState.weekUnlocked;
-				//FlxG.save.flush();
 			}
 			//CODE FOR CONTINUING A WEEK
 			else{
-
 				var difficulty:String = "";
 
 				if (storyDifficulty == 0)
@@ -2109,10 +2107,8 @@ class PlayState extends MusicBeatState
 				PlayState.SONG = Song.loadFromJson(PlayState.storyPlaylist[0].toLowerCase() + difficulty, PlayState.storyPlaylist[0]);
 				FlxG.sound.music.stop();
 
+				ImageCache.refreshLocal();
 				switchState(new PlayState());
-
-				//transIn = FlxTransitionableState.defaultTransIn;
-				//transOut = FlxTransitionableState.defaultTransOut;
 			}
 		}
 		//CODE FOR ENDING A FREEPLAY SONG
@@ -2438,7 +2434,7 @@ class PlayState extends MusicBeatState
 		notes.forEachAlive(function(daNote:Note){
 			if(!playerNotesInRange[daNote.direction] && daNote.inRange && daNote.mustPress){ playerNotesInRange[daNote.direction] = true; }
 
-			if (!forceMissNextNote && !daNote.wasGoodHit && daNote.mustPress && daNote.strumTime < Conductor.songPosition + Conductor.safeZoneOffset * (!daNote.isSustainNote ? 0.125 : (daNote.prevNote.wasGoodHit ? 1 : 0))){
+			if (!forceMissNextNote && !daNote.wasGoodHit && daNote.mustPress && daNote.strumTime < Conductor.songPosition + (!daNote.isSustainNote ? Scoring.PERFECT_SCORE_THRESHOLD : Conductor.safeZoneOffset * (daNote.prevNote.wasGoodHit ? 1 : 0))){
 				hitNotes.push(daNote);
 			}
 		});
@@ -2488,7 +2484,7 @@ class PlayState extends MusicBeatState
 			
 			if(countMiss){
 				songStats.missCount++;
-				if(Main.flippymode) { System.exit(0); }
+				if(Main.launchArguments.flippy_mode) { System.exit(0); }
 			}
 			
 			songStats.score -= scoreAdjust;
@@ -3126,12 +3122,7 @@ class PlayState extends MusicBeatState
 	}
 
 	function songPreload():Void {
-		if(instSong != null){
-			FlxG.sound.cache(Paths.inst(instSong));
-		}
-		else{
-			FlxG.sound.cache(Paths.inst(SONG.song));
-		}
+		FlxG.sound.cache(Paths.inst(instSong != null ? instSong : SONG.song));
 		
 		if(Utils.exists(Paths.voices(SONG.song, "Player"))){
 			FlxG.sound.cache(Paths.voices(SONG.song, "Player"));
@@ -3144,28 +3135,34 @@ class PlayState extends MusicBeatState
 		else{
 			vocalType = noVocalTrack;
 		}
-	}
-
-	override function switchState(_state:FlxState, ?_allowScriptedStates:Bool = true):Void{
-		if(Utils.exists(Paths.voices(SONG.song, "Player"))){
-			Assets.cache.removeSound(Paths.voices(SONG.song, "Player"));
-			Assets.cache.removeSound(Paths.voices(SONG.song, "Opponent"));
-		}
-		else if(Utils.exists(Paths.voices(SONG.song))){
-			Assets.cache.removeSound(Paths.voices(SONG.song));
-		}
-
-		if(instSong != null){
-			Assets.cache.removeSound(Paths.inst(instSong));
-		}
-		else{
-			Assets.cache.removeSound(Paths.inst(SONG.song));
-		}
 
 		var pauseSongName = "pause/breakfast";
 		if(metadata != null){ pauseSongName = metadata.pauseMusic; }
-		Assets.cache.removeSound(Paths.music(pauseSongName));
+		FlxG.sound.cache(Paths.music(pauseSongName));
+	}
 
+	override function switchState(_state:FlxState, ?_allowScriptedStates:Bool = true):Void{
+		stopMusic();
+		FlxG.signals.postStateSwitch.addOnce(function(){
+			if(Utils.exists(Paths.voices(SONG.song, "Player"))){
+				Assets.cache.removeSound(Paths.voices(SONG.song, "Player"));
+				Assets.cache.removeSound(Paths.voices(SONG.song, "Opponent"));
+			}
+			else if(Utils.exists(Paths.voices(SONG.song))){
+				Assets.cache.removeSound(Paths.voices(SONG.song));
+			}
+	
+			if(instSong != null){
+				Assets.cache.removeSound(Paths.inst(instSong));
+			}
+			else{
+				Assets.cache.removeSound(Paths.inst(SONG.song));
+			}
+	
+			var pauseSongName = "pause/breakfast";
+			if(metadata != null){ pauseSongName = metadata.pauseMusic; }
+			Assets.cache.removeSound(Paths.music(pauseSongName));
+		});
 		super.switchState(_state);
 	}
 

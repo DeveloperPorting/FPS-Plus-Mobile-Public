@@ -3,17 +3,20 @@ import shaders.RainShader;
 import flixel.util.FlxTimer;
 import flixel.FlxG;
 import flixel.tweens.FlxEase;
+import flixel.tweens.FlxTween;
 import flixel.addons.display.FlxBackdrop;
 import flixel.FlxSprite;
 import flixel.math.FlxPoint;
 import flixel.FlxObject;
-import objects.PicoBullet;
 import StringTools;
 
 class PhillyStreets extends BaseStage
 {
 	var rainShader:RainShader;
 	var rainInensityEnd:Float = 0;
+
+	var intensityTween:FlxTween;
+	var speedTween:FlxTween;
 
 	var dimSprite:FlxSprite;
 	var kickedCan:AtlasSprite;
@@ -37,6 +40,9 @@ class PhillyStreets extends BaseStage
 
 		name = "phillyStreets";
 		startingZoom = 0.75;
+
+		intensityTween = FlxTween.tween(this, {}, 0);
+		speedTween = FlxTween.tween(this, {}, 0);
 
 		var scrollingSky = new FlxBackdrop(Paths.image("weekend1/phillyStreets/phillySkybox"), FlxAxes.X);
 		scrollingSky.setPosition(-650, -375);
@@ -154,7 +160,7 @@ class PhillyStreets extends BaseStage
 				canExplosion.animation.play("explode", true);
 				playstate.playSound(Paths.sound("weekend1/canExplodeSfx"));
 			}
-		}
+		};
 		addToForeground(kickedCan);
 
 		canExplosion = new FlxSprite(1500, 400);
@@ -200,10 +206,14 @@ class PhillyStreets extends BaseStage
 		addEvent("phillyStreets-canHit", canHit);
 		addEvent("phillyStreets-canShot", canShot);
 		addEvent("phillyStreets-playerGlow", createCharacterGlow);
-		addEvent("phillyStreets-createBullet", createBullet);
+
+		addEvent("pico-createBullet", createBullet);
+
+		addEvent("phillyStreets-setRainIntensity", setRainIntensity);
+		addEvent("phillyStreets-setRainSpeed", setRainSpeed);
 	}
 
-	override function postCreate():Void{
+	override function create():Void{
 		characterGlow.setPosition(boyfriend.x, boyfriend.y);
 		if(boyfriend.getSprite().shader != null){
 			characterGlow.applyShader(boyfriend.getSprite().shader);
@@ -211,7 +221,7 @@ class PhillyStreets extends BaseStage
 	}
 
 	override function songStart() {
-		tween.tween(rainShader, {uIntensity: rainInensityEnd}, FlxG.sound.music.length/1000);
+		intensityTween = tween.tween(rainShader, {uIntensity: rainInensityEnd}, FlxG.sound.music.length/1000);
 	}
 
 	override function beat(curBeat:Int) {
@@ -263,6 +273,30 @@ class PhillyStreets extends BaseStage
 		kickedCan.playAnim("shot");
 	}
 
+	function setRainIntensity(tag:String):Void{
+		var args = Events.getArgs(tag, ["0", "4b", "quadInOut"]);
+		intensityTween.cancel();
+		var tweenTime = Events.eventConvertTime(args[1]);
+		if(tweenTime <= 0){
+			rainShader.uIntensity = Std.parseFloat(args[0]);
+		}
+		else{
+			intensityTween = tween.tween(rainShader, {uIntensity: Std.parseFloat(args[0])}, tweenTime, {ease: Events.easeNameToEase(args[2])});
+		}
+	}
+
+	function setRainSpeed(tag:String):Void{
+		var args = Events.getArgs(tag, ["1", "4b", "quadInOut"]);
+		speedTween.cancel();
+		var tweenTime = Events.eventConvertTime(args[1]);
+		if(tweenTime <= 0){
+			rainShader.timeScale = Std.parseFloat(args[0]);
+		}
+		else{
+			speedTween = tween.tween(rainShader, {timeScale: Std.parseFloat(args[0])}, tweenTime, {ease: Events.easeNameToEase(args[2])});
+		}
+	}
+
 	public function createCharacterGlow(tag:String):Void{
 		tween.cancelTweensOf(characterGlow);
 		tween.cancelTweensOf(characterGlow.scale);
@@ -279,7 +313,7 @@ class PhillyStreets extends BaseStage
 	}
 
 	public function createBullet(tag:String):Void{
-		var bullet = new PicoBullet(2083, 880);
+		var bullet = new BulletCasing(2083, 880);
 		addToForeground(bullet);
 	}
 

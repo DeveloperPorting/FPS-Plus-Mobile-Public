@@ -10,8 +10,8 @@ import flixel.FlxG;
 
 class MusicBeatState extends FlxUIStateExt
 {
-	private var curStep:Int = 0;
-	private var curBeat:Int = 0;
+	public var curStep:Int = 0;
+	public var curBeat:Int = 0;
 
 	private var trackedStep:Int = -1;
 	private var trackedBeat:Int = -1;

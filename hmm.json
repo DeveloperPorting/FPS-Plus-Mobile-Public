@@ -7,13 +7,17 @@
 		},
 		{
 			"name": "flixel",
-			"type": "haxelib",
-			"version": "6.1.2"
+			"type": "git",
+			"dir": null,
+			"ref": "f7b94eebf7dbb452a929d0c67ab31a9cbd71d3a0",
+			"url": "https://github.com/FunkinCrew/flixel"
 		},
 		{
 			"name": "flixel-addons",
-			"type": "haxelib",
-			"version": "3.3.2"
+			"type": "git",
+			"dir": null,
+			"ref": "187f93b34f93c6a405d634a42913c745e443463a",
+			"url": "https://github.com/FunkinCrew/flixel-addons"
 		},
 		{
 			"name": "flixel-ui",
@@ -24,7 +28,7 @@
 			"name": "flixel-animate",
 			"type": "git",
 			"dir": null,
-			"ref": "48a00207e84ab3541c82056ea0349cd1df0a8478",
+			"ref": "d599e9920468c0c14e69760d665b4da427baf911",
 			"url": "https://github.com/MaybeMaru/flixel-animate"
 		},
 		{
@@ -36,27 +40,34 @@
 			"name": "funkin.vis",
 			"type": "git",
 			"dir": null,
-			"ref": "1966f8fbbbc509ed90d4b520f3c49c084fc92fd6",
+			"ref": "02bada154b474c2554709b9d12aef0cbf0da3ec9",
 			"url": "https://github.com/FunkinCrew/funkVis"
 		},
 		{
 			"name": "grig.audio",
 			"type": "git",
 			"dir": null,
-			"ref": "57f5d47f2533fd0c3dcd025a86cb86c0dfa0b6d2",
-			"url": "https://gitlab.com/haxe-grig/grig.audio.git"
+			"ref": "6409f3c6d1b4c52176813d3ede86c0d34e8af2c1",
+			"url": "https://github.com/FunkinCrew/grig.audio"
 		},
 		{
 			"name": "hxvlc",
 			"type": "haxelib",
-			"version": "2.2.5"
+			"version": "2.2.6"
 		},
 		{
 			"name": "hxcpp",
 			"type": "git",
 			"dir": null,
-			"ref": "v4.3.89",
-			"url": "https://github.com/HaxeFoundation/hxcpp"
+			"ref": "1a468335a0016aa87439c1878b5b845f88a4bae0",
+			"url": "https://github.com/FunkinCrew/hxcpp"
+		},
+		{
+			"name": "hxcpp-debug-server",
+			"type": "git",
+			"dir": "hxcpp-debug-server",
+			"ref": "7459934666a473a4cc4d066ba4a93ef92f1ce94c",
+			"url": "https://github.com/FunkinCrew/hxcpp-debugger"
 		},
 		{
 			"name": "hxp",
@@ -78,22 +89,24 @@
 			"url": "https://github.com/EliteMasterEric/jsonpath"
 		},
 		{
-            "name": "lime",
-            "type": "git",
-            "dir": null,
-            "ref": "main",
-            "url": "https://github.com/MaysLastPlays-Stuff/lime-h"
-        },
+			"name": "lime",
+			"type": "git",
+			"dir": null,
+			"ref": "826d25199c17329b730ae09838f3df7a2903c471",
+			"url": "https://github.com/FunkinCrew/lime"
+		},
 		{
 			"name": "openfl",
-			"type": "haxelib",
-			"version": "9.5.0"
+			"type": "git",
+			"dir": null,
+			"ref": "88534506595a32c3f02b21b3987e789a24074ae7",
+			"url": "https://github.com/FunkinCrew/openfl"
 		},
 		{
 			"name": "polymod",
 			"type": "git",
 			"dir": null,
-			"ref": "d8f036378c4ff472f1922ad623b8800b6a061c1a",
+			"ref": "568d735139c90e34f218e796361f10ca43405ae9",
 			"url": "https://github.com/FunkinCrew/polymod"
 		},
 		{

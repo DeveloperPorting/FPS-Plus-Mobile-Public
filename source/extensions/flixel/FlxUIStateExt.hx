@@ -1,5 +1,6 @@
 package extensions.flixel;
 
+import flixel.FlxSubState;
 import transition.*;
 import transition.data.*;
 
@@ -9,7 +10,7 @@ import polymod.hscript._internal.PolymodScriptClass;
 
 import openfl.display.BitmapData;
 import openfl.system.System;
-import flixel.FlxCamera;
+import extensions.flixel.FlxCameraExt;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.FlxState;
@@ -33,6 +34,8 @@ class FlxUIStateExt extends FlxUIState
 	public var customTransIn:BaseTransition = null;
 	public var customTransOut:BaseTransition = null;
 
+	private var gcTimer:Int = 0;
+
 	override function create(){
 		if(customTransIn != null){
 			CustomTransition.transition(customTransIn, null);
@@ -44,7 +47,7 @@ class FlxUIStateExt extends FlxUIState
 		//This creates a camera and a cover sprite that gets automatically added to a state that will hide anything outside the normal camera bounds.
 		//Not noticable most of the time but Flixel can extend cameras out by 1 pixel when the game isn't at it's native resolution can it can create a weird pixel gap.
 		//Also useful to hide stuff outside the frame on rotated cameras since those won't be clipped to the game resolution and show up when the game is maximized.
-		var coverCamera:FlxCamera = new FlxCamera(((FlxG.width*2)-FlxG.width)/-2, ((FlxG.height*2)-FlxG.height)/-2, FlxG.width*2, FlxG.height*2);
+		var coverCamera:FlxCameraExt = new FlxCameraExt(((FlxG.width*2)-FlxG.width)/-2, ((FlxG.height*2)-FlxG.height)/-2, FlxG.width*2, FlxG.height*2);
 		coverCamera.bgColor.alpha = 0;
 		FlxG.cameras.add(coverCamera, false);
 
@@ -60,7 +63,7 @@ class FlxUIStateExt extends FlxUIState
 		coverSprite.cameras = [coverCamera];
 		add(coverSprite);
 
-		FlxG.signals.postUpdate.addOnce(function(){Utils.gc();});
+		FlxG.signals.postUpdate.add(gcCount);
 		
 		super.create();
 	}
@@ -78,8 +81,7 @@ class FlxUIStateExt extends FlxUIState
 			//Extended States
 			else if(PolymodScriptClass.listScriptClassesExtending(statePath).length > 0){
 				var scriptClassPath = statePath.replace(stateName, "Scripted" + stateName);
-				_state = RestrictedUtils.callStaticGeneratedMethod(Type.resolveClass(scriptClassPath), "init", [RestrictedUtils.callStaticGeneratedMethod(Type.resolveClass(scriptClassPath), "listScriptClasses")[0]]);
-				Reflect.setProperty(_state, "_stateName", "Scripted" + stateName);
+				_state = RestrictedUtils.callStaticGeneratedMethod(Type.resolveClass(scriptClassPath), "scriptInit", [RestrictedUtils.callStaticGeneratedMethod(Type.resolveClass(scriptClassPath), "listScriptClasses")[0]]);
 			}
 
 		}
@@ -96,5 +98,19 @@ class FlxUIStateExt extends FlxUIState
 			CustomTransition.transition(new InstantTransition(), _state);
 			return;
 		}
+	}
+
+	override function openSubState(SubState:FlxSubState):Void{
+		Binds.lockControllerInputs(2);
+		super.openSubState(SubState);
+	}
+
+	//For some reason doing a post update signal doesn't do garbage collection correctly so this delays it by 1 frame.
+	private function gcCount():Void{
+		if(gcTimer == 1){
+			Utils.gc();
+			FlxG.signals.postUpdate.remove(gcCount);
+		}
+		gcTimer++;
 	}
 }

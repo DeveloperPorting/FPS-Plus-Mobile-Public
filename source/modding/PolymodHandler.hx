@@ -1,5 +1,6 @@
 package modding;
 
+import restricted.RestrictedUtils;
 import config.CacheReload;
 import transition.CustomTransition;
 import transition.data.InstantTransition;
@@ -7,6 +8,7 @@ import openfl.Assets;
 import haxe.Json;
 import flixel.FlxG;
 import polymod.Polymod;
+import utils.ClassMacro;
 
 using StringTools;
 
@@ -24,6 +26,8 @@ class PolymodHandler
 	#else
 	"assets"
 	#end;
+
+	public static var MODS_FOLDER:String = "mods";
 	
 	public static var allModDirs:Array<String>;
 	public static var disabledModDirs:Array<String>;
@@ -36,6 +40,7 @@ class PolymodHandler
 	static var modMetadata:Map<String, Dynamic>;
 
 	public static function init():Void{
+		if(Main.launchArguments.no_mods){ MODS_FOLDER = ""; }
 		buildImports();
 		reInit();
 		//scriptableClassCheck();
@@ -53,9 +58,10 @@ class PolymodHandler
 		buildModDirectories();
 
 		loadedModMetadata = Polymod.init({
-			modRoot: "./mods/",
+			modRoot: MODS_FOLDER,
 			dirs: loadedModDirs,
 			useScriptedClasses: true,
+			loadScriptsAsync: #if html5 true #else false #end,
 			errorCallback: onPolymodError,
 			ignoredFiles: buildIgnoreList(),
 			frameworkParams: {
@@ -74,146 +80,155 @@ class PolymodHandler
 	}
 
 	public static function buildModDirectories():Void{
-		//Get disabled list. Create file if not already created.
-		var disabled:String;
-		if(sys.FileSystem.exists("mods/disabled")){
-			disabled = sys.io.File.getContent("mods/disabled");
+		if(!Main.launchArguments.no_mods){
+			RestrictedUtils.createDirectoryIfNonexistent(MODS_FOLDER);
+
+			//Get disabled list. Create file if not already created.
+			var disabled:String;
+			if(sys.FileSystem.exists(MODS_FOLDER + "/disabled")){
+				disabled = sys.io.File.getContent(MODS_FOLDER + "/disabled");
+			}
+			else{
+				disabled = "";
+				sys.io.File.saveContent(MODS_FOLDER + "/disabled", "");
+				trace("\"disable\" not found, creating");
+			}
+
+			disabledModDirs = disabled.split("\n");
+			for(dir in disabledModDirs){ dir = dir.trim(); }
+			while(disabledModDirs.contains("")){
+				disabledModDirs.remove("");
+			}
+
+			//trace("Disabled Mod List: " + disabledModDirs);
+			
+			//Get all directories in the mods folder.
+			allModDirs = sys.FileSystem.readDirectory(MODS_FOLDER + "/");
+			if(allModDirs == null){ allModDirs = []; }
+
+			//trace("Mod Directories: " + allModDirs);
+
+			//Remove all non-folder entries.
+			allModDirs = allModDirs.filter(function(path){ return sys.FileSystem.isDirectory(MODS_FOLDER + "/" + path); });
+
+			//trace("Culled Mod Directories: " + allModDirs);
+
+			var order:String;
+			if(sys.FileSystem.exists(MODS_FOLDER + "/order")){
+				order = sys.io.File.getContent(MODS_FOLDER + "/order");
+			}
+			else{
+				order = "";
+				sys.io.File.saveContent(MODS_FOLDER + "/order", "");
+				trace("\"order\" not found, creating");
+			}
+
+			var modOrder = order.split("\n");
+			var modOrderFilter:Array<String> = [];
+			var dupelicateList:Array<String> = [];
+			for(dir in modOrder){
+				dir = dir.trim();
+				if(!allModDirs.contains(dir) || dupelicateList.contains(dir)){
+					modOrderFilter.push(dir);
+					continue;
+				}
+				dupelicateList.push(dir);
+			}
+
+			modOrder = modOrder.filter(function(dir){
+				var r = true;
+				if(modOrderFilter.contains(dir)){
+					r = false;
+					modOrderFilter.remove(dir);
+				}
+				return r;
+			});
+
+			for(dir in allModDirs){
+				if(!modOrder.contains(dir)){
+					modOrder.push(dir);
+				}
+			}
+
+			allModDirs = modOrder;
+			while(allModDirs.contains("")){
+				allModDirs.remove("");
+			}
+
+			var write:String = "";
+			for(dir in allModDirs){ write += dir+"\n"; }
+			sys.io.File.saveContent(MODS_FOLDER + "/order", write);
+
+			loadedModDirs = [];
+
+			//Remove disabled mods from this list.
+			for(path in allModDirs){
+				if(!disabledModDirs.contains(path)){
+					loadedModDirs.push(path);
+				}
+			}
+
+			//trace("Checking Mod Directories: " + loadedModDirs);
+
+			//Do version handling
+			//For some reason, the version rule didnt't actually seem to be preventing mods from loading(?) so I'll manually check to cull the mods from the list.
+			malformedMods = new Map<String, ModError>();
+			uidToFolder = new Map<String, String>();
+			modMetadata = new Map<String, Dynamic>();
+
+			for(mod in loadedModDirs){
+				if(!sys.FileSystem.exists(MODS_FOLDER + "/" + mod + "/meta.json")){
+					malformedMods.set(mod, MISSING_META_JSON);
+					trace("COULD NOT LOAD MOD \"" + mod + "\": MISSING_META_JSON");
+					continue;
+				}
+
+				var json = Json.parse(sys.io.File.getContent(MODS_FOLDER + "/" + mod + "/meta.json"));
+				if(json.api_version == null || json.mod_version == null){
+					malformedMods.set(mod, MISSING_VERSION_FIELDS);
+					trace("COULD NOT LOAD MOD \"" + mod + "\": MISSING_VERSION_FIELDS");
+					continue;
+				}
+
+				var modAPIVersion:Array<Int> = getSeparatedVersionNumber(json.api_version);
+				if(json.uid == null && modAPIVersion[1] >= 4){
+					malformedMods.set(mod, MISSING_UID);
+					trace("COULD NOT LOAD MOD \"" + mod + "\": MISSING_UID");
+					continue;
+				}
+
+				if(modAPIVersion[0] < API_VERSION[0]){
+					malformedMods.set(mod, API_VERSION_TOO_OLD);
+					trace("COULD NOT LOAD MOD \"" + mod + "\": API_VERSION_TOO_OLD");
+					continue;
+				}
+				else if(modAPIVersion[0] > API_VERSION[0]){
+					malformedMods.set(mod, API_VERSION_TOO_NEW);
+					trace("COULD NOT LOAD MOD \"" + mod + "\": API_VERSION_TOO_NEW");
+					continue;
+				}
+
+				if(modAPIVersion[1] > API_VERSION[1]){
+					malformedMods.set(mod, API_VERSION_TOO_NEW);
+					trace("COULD NOT LOAD MOD \"" + mod + "\": API_VERSION_TOO_NEW");
+					continue;
+				}
+
+				if(json.uid != null){
+					uidToFolder.set(json.uid, mod);
+				}
+				modMetadata.set(mod, json);
+			}
+
+			loadedModDirs = loadedModDirs.filter(function(mod){ return !malformedMods.exists(mod); });
 		}
 		else{
-			disabled = "";
-			sys.io.File.saveContent("mods/disabled", "");
-			trace("\"disable\" not found, creating");
+			allModDirs = [];
+			disabledModDirs = [];
+			malformedMods = new Map<String, ModError>();
+			loadedModDirs = [];
+			loadedModMetadata = [];
 		}
-
-		disabledModDirs = disabled.split("\n");
-		for(dir in disabledModDirs){ dir = dir.trim(); }
-		while(disabledModDirs.contains("")){
-			disabledModDirs.remove("");
-		}
-
-		//trace("Disabled Mod List: " + disabledModDirs);
-		
-		//Get all directories in the mods folder.
-		allModDirs = sys.FileSystem.readDirectory("mods/");
-		if(allModDirs == null){ allModDirs = []; }
-
-		//trace("Mod Directories: " + allModDirs);
-
-		//Remove all non-folder entries.
-		allModDirs = allModDirs.filter(function(path){ return sys.FileSystem.isDirectory("mods/" + path); });
-
-		//trace("Culled Mod Directories: " + allModDirs);
-
-		var order:String;
-		if(sys.FileSystem.exists("mods/order")){
-			order = sys.io.File.getContent("mods/order");
-		}
-		else{
-			order = "";
-			sys.io.File.saveContent("mods/order", "");
-			trace("\"order\" not found, creating");
-		}
-
-		var modOrder = order.split("\n");
-		var modOrderFilter:Array<String> = [];
-		var dupelicateList:Array<String> = [];
-		for(dir in modOrder){
-			dir = dir.trim();
-			if(!allModDirs.contains(dir) || dupelicateList.contains(dir)){
-				modOrderFilter.push(dir);
-				continue;
-			}
-			dupelicateList.push(dir);
-		}
-
-		modOrder = modOrder.filter(function(dir){
-			var r = true;
-			if(modOrderFilter.contains(dir)){
-				r = false;
-				modOrderFilter.remove(dir);
-			}
-			return r;
-		});
-
-		for(dir in allModDirs){
-			if(!modOrder.contains(dir)){
-				modOrder.push(dir);
-			}
-		}
-
-		allModDirs = modOrder;
-		while(allModDirs.contains("")){
-			allModDirs.remove("");
-		}
-
-		var write:String = "";
-		for(dir in allModDirs){ write += dir+"\n"; }
-		sys.io.File.saveContent("mods/order", write);
-
-		loadedModDirs = [];
-
-		//Remove disabled mods from this list.
-		for(path in allModDirs){
-			if(!disabledModDirs.contains(path)){
-				loadedModDirs.push(path);
-			}
-		}
-
-		//trace("Checking Mod Directories: " + loadedModDirs);
-
-		//Do version handling
-		//For some reason, the version rule didnt't actually seem to be preventing mods from loading(?) so I'll manually check to cull the mods from the list.
-		malformedMods = new Map<String, ModError>();
-		uidToFolder = new Map<String, String>();
-		modMetadata = new Map<String, Dynamic>();
-
-		for(mod in loadedModDirs){
-			if(!sys.FileSystem.exists("mods/" + mod + "/meta.json")){
-				malformedMods.set(mod, MISSING_META_JSON);
-				trace("COULD NOT LOAD MOD \"" + mod + "\": MISSING_META_JSON");
-				continue;
-			}
-
-			var json = Json.parse(sys.io.File.getContent("mods/" + mod + "/meta.json"));
-			if(json.api_version == null || json.mod_version == null){
-				malformedMods.set(mod, MISSING_VERSION_FIELDS);
-				trace("COULD NOT LOAD MOD \"" + mod + "\": MISSING_VERSION_FIELDS");
-				continue;
-			}
-
-			var modAPIVersion:Array<Int> = getSeparatedVersionNumber(json.api_version);
-			if(json.uid == null && modAPIVersion[1] >= 4){
-				malformedMods.set(mod, MISSING_UID);
-				trace("COULD NOT LOAD MOD \"" + mod + "\": MISSING_UID");
-				continue;
-			}
-
-			if(modAPIVersion[0] < API_VERSION[0]){
-				malformedMods.set(mod, API_VERSION_TOO_OLD);
-				trace("COULD NOT LOAD MOD \"" + mod + "\": API_VERSION_TOO_OLD");
-				continue;
-			}
-			else if(modAPIVersion[0] > API_VERSION[0]){
-				malformedMods.set(mod, API_VERSION_TOO_NEW);
-				trace("COULD NOT LOAD MOD \"" + mod + "\": API_VERSION_TOO_NEW");
-				continue;
-			}
-
-			if(modAPIVersion[1] > API_VERSION[1]){
-				malformedMods.set(mod, API_VERSION_TOO_NEW);
-				trace("COULD NOT LOAD MOD \"" + mod + "\": API_VERSION_TOO_NEW");
-				continue;
-			}
-
-			if(json.uid != null){
-				uidToFolder.set(json.uid, mod);
-			}
-			modMetadata.set(mod, json);
-		}
-
-		loadedModDirs = loadedModDirs.filter(function(mod){ return !malformedMods.exists(mod); });
-
-		//trace("Final Mod Directories: " + loadedModDirs);
 	}
 
 	static function reloadScripts():Void{
@@ -223,7 +238,7 @@ class PolymodHandler
 		events.Events.initEvents();
 	}
 
-	static function scriptableClassCheck():Void{
+	/*static function scriptableClassCheck():Void{
 		trace("<== CLASSES ==>");
 		trace("ScriptableCharacter: " + characters.ScriptableCharacter.listScriptClasses());
 		trace("ScriptableEvents: " + events.ScriptableEvents.listScriptClasses());
@@ -241,11 +256,24 @@ class PolymodHandler
 		trace("ScriptableSprite: " + objects.ScriptableSprite.listScriptClasses());
 		trace("ScriptableAtlasSprite: " + objects.ScriptableAtlasSprite.listScriptClasses());
 		trace("ScriptableSpriteGroup: " + objects.ScriptableSpriteGroup.listScriptClasses());
-	}
+	}*/
 
 	static function onPolymodError(error:PolymodError):Void{
 		// Perform an action based on the error code.
-		switch (error.code){
+		switch (error.code){ //Future for polymod stuff.
+			case MOD_MISSING_ICON:
+				
+			default:
+				// Log the message based on its severity.
+				switch (error.severity){
+					case INFO | DEBUG:
+						//does nothing lol
+					case WARNING | ERROR:
+						trace(error.message, null);
+				}
+		}
+
+		/*switch (error.code){
 			case MISSING_ICON:
 				
 			default:
@@ -253,12 +281,10 @@ class PolymodHandler
 				switch (error.severity){
 					case NOTICE:
 						//does nothing lol
-					case WARNING:
-						trace(error.message, null);
-					case ERROR:
+					case WARNING | ERROR:
 						trace(error.message, null);
 				}
-		}
+		}*/
 	}
 
 	static function buildImports():Void{
@@ -278,6 +304,7 @@ class PolymodHandler
 		Polymod.addDefaultImport(PauseSubState);
 		Polymod.addDefaultImport(PlayState);
 		Polymod.addDefaultImport(Scoring);
+		Polymod.addDefaultImport(Song);
 		Polymod.addDefaultImport(Utils);
 		Polymod.addDefaultImport(VideoHandler);
 
@@ -314,6 +341,7 @@ class PolymodHandler
 		Polymod.addDefaultImport(objects.ScriptableSprite.ScriptedSprite);
 		Polymod.addDefaultImport(objects.ScriptableAtlasSprite.ScriptedAtlasSprite);
 		Polymod.addDefaultImport(objects.ScriptableSpriteGroup.ScriptedSpriteGroup);
+		Polymod.addDefaultImport(objects.ScriptableOpenFLSprite.ScriptedOpenFLSprite);
 
 		Polymod.addDefaultImport(scripts.ScriptedState);
 		
@@ -340,6 +368,7 @@ class PolymodHandler
 		Polymod.addImportAlias("flixel.math.FlxPoint", flixel.math.FlxPoint.FlxBasePoint);
 
 		Polymod.addImportAlias("flixel.text.FlxText", extensions.flixel.FlxTextExt);
+		Polymod.addImportAlias("flixel.FlxCamera", extensions.flixel.FlxCameraExt);
 
 		Polymod.addImportAlias("debug.ChartingState", editors.ChartingState);
 		Polymod.addImportAlias("debug.AnimationDebug", editors.AnimationEditor);
@@ -362,7 +391,7 @@ class PolymodHandler
 
 		// `Unserializer`
 		// Unserializer.DEFAULT_RESOLVER.resolveClass() can access blacklisted packages
-		Polymod.blacklistImport("Unserializer");
+		Polymod.blacklistImport("haxe.Unserializer");
 
 		// `lime.system.CFFI`
 		// Can load and execute compiled binaries.
@@ -382,6 +411,13 @@ class PolymodHandler
 		Polymod.blacklistImport("openfl.utils.Assets");
 		Polymod.blacklistImport("openfl.Lib");
 		Polymod.blacklistImport("openfl.system.ApplicationDomain");
+		Polymod.blacklistImport("openfl.net.SharedObject");
+
+		Polymod.blacklistImport("lime.utils.AssetLibrary");
+
+		Polymod.blacklistImport("lime.system.System");
+
+		Polymod.blacklistImport("openfl.desktop.NativeProcess");
 
 		// `openfl.desktop.NativeProcess`
 		// Can load native processes on the host operating system.
@@ -389,16 +425,55 @@ class PolymodHandler
 
 		//Restricted stuff from FPS Plus
 		Polymod.blacklistImport("restricted.RestrictedUtils");
+
+		// `flixel.util.FlxSave`
+		// resolveFlixelClasses() can access blacklisted packages
+		Polymod.blacklistStaticFields(flixel.util.FlxSave, ["resolveFlixelClasses"]);
+
+		// Disallow direct manipulation of save data.
+		Polymod.blacklistStaticFields(flixel.FlxG, ["save"]);
+
+		// `haxe.Unserializer`
+		// Just to be double-sure, lets blacklist some fields of the Unserializer to make it harder to use if you DO get one.
+		Polymod.blacklistStaticFields(haxe.Unserializer, ["run"]);
+		Polymod.blacklistInstanceFields(haxe.Unserializer, ["unserialize"]);
+
+		Polymod.blacklistInstanceFields(openfl.net.Socket, ["readObject"]);
+		Polymod.blacklistInstanceFields(openfl.utils.ByteArray.ByteArrayData, ["readObject"]);
+
+		// `polymod.*`
+		// Contains functions which may allow for un-blacklisting other modules.
+		for(cls in ClassMacro.listClassesInPackage("polymod")){
+			if (cls == null) continue;
+			var className:String = Type.getClassName(cls);
+			Polymod.blacklistImport(className);
+		}
+
+		// `hscript.*
+		// Contains functions which may allow for interpreting unsanitized strings.
+		for(cls in ClassMacro.listClassesInPackage("hscript")){
+			if (cls == null) continue;
+			var className:String = Type.getClassName(cls);
+			Polymod.blacklistImport(className);
+		}
+
+		// `sys.*`
+		// Access to system utilities such as the file system.
+		for(cls in ClassMacro.listClassesInPackage("sys")){
+			if (cls == null) continue;
+			var className:String = Type.getClassName(cls);
+			Polymod.blacklistImport(className);
+		}
 	}
 
 	static function buildIgnoreList():Array<String>{
 		var result = Polymod.getDefaultIgnoreList();
 
-		result.push('.vscode');
-		result.push('.git');
-		result.push('.gitignore');
-		result.push('.gitattributes');
-		result.push('README.md');
+		result.push(".vscode");
+		result.push(".git");
+		result.push(".gitignore");
+		result.push(".gitattributes");
+		result.push("README.md");
 
 		return result;
 	}
@@ -432,7 +507,7 @@ class PolymodHandler
 	//Checks through the loaded mods to see what mod a file is from. Returns `null` if it's not a mod file.
 	public static function getAssetModFolder(path:String):String{
 		for(mod in loadedModDirs){
-			if(sys.FileSystem.exists('mods/$mod/' + path.split("assets/")[1])){
+			if(sys.FileSystem.exists(MODS_FOLDER + '/$mod/' + path.split("assets/")[1])){
 				return mod;
 			}
 		}

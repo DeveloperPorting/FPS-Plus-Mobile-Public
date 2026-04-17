@@ -105,7 +105,6 @@ class ConfigMenu #if mobile extends MusicBeatState #else extends FlxUIStateExt #
 	var glowValue:Bool;
 	var randomTapValue:Int;
 	final randomTapTypes:Array<String> = ["never", "not singing", "always"];
-	final allowedFramerates:Array<Int> = [60, 120, 144, 240, 360, 480, 999];
 	var framerateValue:Int;
 	var dimValue:Int;
 	var noteSplashValue:Int;
@@ -708,7 +707,7 @@ class ConfigMenu #if mobile extends MusicBeatState #else extends FlxUIStateExt #
 		Config.downscroll = downValue;
 		Config.noteGlow = glowValue;
 		Config.ghostTapType = randomTapValue;
-		Config.framerate = allowedFramerates[framerateValue];
+		Config.framerate = Config.ALLOWED_FRAMERATE_VALUES[framerateValue];
 		Config.bgDim = dimValue;
 		Config.noteSplashType = noteSplashValue;
 		Config.centeredNotes = centeredValue;
@@ -801,12 +800,12 @@ class ConfigMenu #if mobile extends MusicBeatState #else extends FlxUIStateExt #
 		fullscreenValue = Config.fullscreen;
 		#if UPDATE_CHECKING checkForUpdatesValue = Config.checkForUpdates; #end
 
-		framerateValue = allowedFramerates.indexOf(Config.framerate);
+		framerateValue = Config.ALLOWED_FRAMERATE_VALUES.indexOf(Config.framerate);
 		if(framerateValue == -1){
-			framerateValue = allowedFramerates.length - 1;
+			framerateValue = Config.ALLOWED_FRAMERATE_VALUES.length - 1;
 		}
 
-		var fpsCap = new ConfigOption("FRAMERATE", #if (desktop || mobile) (allowedFramerates[framerateValue] == 999 ? "uncapped" : ""+allowedFramerates[framerateValue]) #else "disabled" #end, #if (desktop || mobile) "Uncaps the framerate during gameplay.\n(Some menus will limit framerate but gameplay will always be at the specified framerate.)" #else "Disabled on Web builds." #end);
+		var fpsCap = new ConfigOption("FRAMERATE", #if (desktop || mobile) (Config.ALLOWED_FRAMERATE_VALUES[framerateValue] == 999 ? "uncapped" : ""+Config.ALLOWED_FRAMERATE_VALUES[framerateValue]) #else "disabled" #end, #if desktop "Uncaps the framerate during gameplay.\n(Some menus will limit framerate but gameplay will always be at the specified framerate.)" #else "Disabled on Web builds." #end);
 		fpsCap.optionUpdate = function(){
 			#if (desktop || mobile)
 			if (pressRight) {
@@ -819,15 +818,15 @@ class ConfigMenu #if mobile extends MusicBeatState #else extends FlxUIStateExt #
 			}
 
 			if(framerateValue < 0){
-				framerateValue = allowedFramerates.length - 1;
+				framerateValue = Config.ALLOWED_FRAMERATE_VALUES.length - 1;
 			}
-			if(framerateValue >= allowedFramerates.length){
+			if(framerateValue >= Config.ALLOWED_FRAMERATE_VALUES.length){
 				framerateValue = 0;
 			}
 
-			Config.setFramerate(fpsCapInSettings, allowedFramerates[framerateValue]);
+			Config.setFramerate(fpsCapInSettings, Config.ALLOWED_FRAMERATE_VALUES[framerateValue]);
 
-			fpsCap.setting = (allowedFramerates[framerateValue] == 999 ? "uncapped" : ""+allowedFramerates[framerateValue]);
+			fpsCap.setting = (Config.ALLOWED_FRAMERATE_VALUES[framerateValue] == 999 ? "uncapped" : ""+Config.ALLOWED_FRAMERATE_VALUES[framerateValue]);
 			#end
 		};
 
@@ -1071,7 +1070,7 @@ class ConfigMenu #if mobile extends MusicBeatState #else extends FlxUIStateExt #
 			if (pressRight || pressLeft || pressAccept) {
 				FlxG.sound.play(Paths.sound('scrollMenu'));
 				showFPSValue = !showFPSValue;
-				Main.fpsDisplay.visible = showFPSValue;
+				Main.fpsDisplay.alpha = showFPSValue ? 1 : 0;
 			}
 			showFPS.setting = genericOnOff[showFPSValue?0:1];
 		}
@@ -1348,7 +1347,7 @@ class ConfigMenu #if mobile extends MusicBeatState #else extends FlxUIStateExt #
 			if (pressRight || pressLeft){
 				FlxG.sound.play(Paths.sound('scrollMenu'));
 				fullscreenValue = !fullscreenValue;
-				FlxG.fullscreen = fullscreenValue;
+				openfl.Lib.application.window.fullscreen = fullscreenValue;
 			}
 
 			fullscreenSettings.setting = genericOnOff[fullscreenValue?0:1];

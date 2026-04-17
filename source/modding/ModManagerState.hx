@@ -242,10 +242,10 @@ class ModManagerState #if mobile extends MusicBeatState #else extends FlxUIState
 		openFolderButton.pressFunction = function(){
 			FlxG.sound.play(Paths.sound("scrollMenu"));
 			#if mobile
-			  extension.androidtools.Tools.showAlertDialog("FPS Plus Mobile Function Incomplete", "This feature is not yet available on mobile!", {name: "OK", func: null}, null);
+			extension.androidtools.Tools.showAlertDialog("FPS Plus Mobile Function Incomplete", "This feature is not yet available on mobile!", {name: "OK", func: null}, null);
 			#else
-			  //Currently this is Windows only, if anyone wants to add opening mod folder support for other OSes be my guest.
-			  Sys.command("explorer.exe /n, /e, \"" + Sys.getCwd().substring(0, Sys.getCwd().length-1) + "\\mods\"");
+			//Currently this is Windows only, if anyone wants to add opening mod folder support for other OSes be my guest.
+			Sys.command("explorer.exe /n, /e, \"" + Sys.getCwd().substring(0, Sys.getCwd().length-1) + "\\" + PolymodHandler.MODS_FOLDER + "\"");
 			#end
 		};
 
@@ -501,7 +501,12 @@ class ModManagerState #if mobile extends MusicBeatState #else extends FlxUIState
 	}
 
 	function showbigInfoNoMods():Void{
-		bigInfoName.text = "No Mods Installed";
+		if(!Main.launchArguments.no_mods){
+			bigInfoName.text = "No Mods Installed";
+		}
+		else{
+			bigInfoName.text = "Mod Support Disabled";
+		}
 		bigInfoName.setPosition(infoStart.x + 100, infoStart.y + 50);
 		bigInfoName.y -= bigInfoName.height/2;
 		bigInfoName.text += "\n\n";
@@ -510,7 +515,12 @@ class ModManagerState #if mobile extends MusicBeatState #else extends FlxUIState
 		bigInfoIcon.setGraphicSize(80, 80);
 		bigInfoIcon.updateHitbox();
 
-		bigInfoDescription.text = "There are currently no mods installed in the mods folder. To install a mod download an FPS Plus compatable mod and drag it into the mods folder in your FPS Plus install then hit the refresh button in the mod manager or re-launch the game.\n\n";
+		if(!Main.launchArguments.no_mods){
+			bigInfoDescription.text = "There are currently no mods installed in the mods folder. To install a mod download an FPS Plus compatable mod and drag it into the mods folder in your FPS Plus install then hit the refresh button in the mod manager or re-launch the game.\n\n";
+		}
+		else{
+			bigInfoDescription.text = "Mods are not currently enabled. Either you launched the game with \"-no_mods\" or this build of FPS Plus was compiled without mod support. You shouldn't even be here.";
+		}
 
 		bigInfoVersion.text = "";
 	}
@@ -536,8 +546,13 @@ class ModManagerState #if mobile extends MusicBeatState #else extends FlxUIState
 	}
 
 	function getModIcon(mod:String):BitmapData{
+<<<<<<< HEAD
 		if(FileSystem.exists("mods/" + mod + "/icon.png")){
 			return BitmapData.fromFile(#if mobile MobileUtil.getDirectory() + #end "mods/" + mod + "/icon.png");
+=======
+		if(FileSystem.exists(PolymodHandler.MODS_FOLDER + "/" + mod + "/icon.png")){
+			return BitmapData.fromFile(PolymodHandler.MODS_FOLDER + "/" + mod + "/icon.png");
+>>>>>>> upstream/master
 		}
 		return BitmapData.fromFile(Paths.image("menu/modMenu/defaultModIcon", true));
 	}
@@ -546,7 +561,7 @@ class ModManagerState #if mobile extends MusicBeatState #else extends FlxUIState
 		modList = [];
 		hasMods = true;
 
-		if(PolymodHandler.allModDirs.length <= 0){
+		if(PolymodHandler.allModDirs.length <= 0 || Main.launchArguments.no_mods){
 			hasMods = false;
 			curSelectedMod = 0;
 			listStartIndex = 0;
@@ -594,7 +609,7 @@ class ModManagerState #if mobile extends MusicBeatState #else extends FlxUIState
 						if(json.uid != null){ info.uid = json.uid; }
 						else{ info.uid = "None"; }
 					case MISSING_UID:
-						var json = Json.parse(File.getContent("mods/" + dir + "/meta.json"));
+						var json = Json.parse(File.getContent(PolymodHandler.MODS_FOLDER + "/" + dir + "/meta.json"));
 						if(json.title != null){ info.name = json.title; }
 						else{ info.name = dir; }
 						info.description = "This mod is missing a \"uid\" field in the meta.json file. This is required for all mods on API version 1.4.0 and onwards.";
@@ -603,7 +618,7 @@ class ModManagerState #if mobile extends MusicBeatState #else extends FlxUIState
 						info.modVersion = json.mod_version;
 						info.uid = "None";
 					case API_VERSION_TOO_OLD:
-						var json = Json.parse(File.getContent("mods/" + dir + "/meta.json"));
+						var json = Json.parse(File.getContent(PolymodHandler.MODS_FOLDER + "/" + dir + "/meta.json"));
 						if(json.title != null){ info.name = json.title; }
 						else{ info.name = dir; }
 						info.description = "This mod was made for an older version of FPS Plus that uses a version of the modding API that is no longer supported.";
@@ -612,7 +627,7 @@ class ModManagerState #if mobile extends MusicBeatState #else extends FlxUIState
 						info.modVersion = json.mod_version;
 						info.uid = json.uid;
 					case API_VERSION_TOO_NEW:
-						var json = Json.parse(File.getContent("mods/" + dir + "/meta.json"));
+						var json = Json.parse(File.getContent(PolymodHandler.MODS_FOLDER + "/" + dir + "/meta.json"));
 						if(json.title != null){ info.name = json.title; }
 						else{ info.name = dir; }
 						info.description = "This mod was made for an API version higher than what this version of FPS Plus supports. You may need to update your version of FPS Plus or the API version is set incorrectly for the mod.";
@@ -627,7 +642,7 @@ class ModManagerState #if mobile extends MusicBeatState #else extends FlxUIState
 				info.malformed = true;
 			}
 			else{
-				var json = Json.parse(File.getContent("mods/" + dir + "/meta.json"));
+				var json = Json.parse(File.getContent(PolymodHandler.MODS_FOLDER + "/" + dir + "/meta.json"));
 				var modAPIVersion:Array<Int> = [Std.parseInt(json.api_version.split(".")[0]), Std.parseInt(json.api_version.split(".")[1]), Std.parseInt(json.api_version.split(".")[2])];
 				if(json.title != null){ info.name = json.title; }
 				else if(json.uid != null){ info.name = json.uid; }
@@ -700,12 +715,12 @@ class ModManagerState #if mobile extends MusicBeatState #else extends FlxUIState
 	}
 	
 	function buildModConfig(dir:String):Array<ConfigOption>{
-		if(!FileSystem.exists("mods/" + dir + "/config.json")){
+		if(!FileSystem.exists(PolymodHandler.MODS_FOLDER + "/" + dir + "/config.json")){
 			return null;
 		}
 
-		var meta = Json.parse(File.getContent("mods/" + dir + "/meta.json"));
-		var json = Json.parse(File.getContent("mods/" + dir + "/config.json"));
+		var meta = Json.parse(File.getContent(PolymodHandler.MODS_FOLDER + "/" + dir + "/meta.json"));
+		var json = Json.parse(File.getContent(PolymodHandler.MODS_FOLDER + "/" + dir + "/config.json"));
 
 		var r:Array<ConfigOption> = [];
 
@@ -906,13 +921,13 @@ class ModManagerState #if mobile extends MusicBeatState #else extends FlxUIState
 		for(mod in PolymodHandler.disabledModDirs){
 			write += mod+"\n";
 		}
-		sys.io.File.saveContent("mods/disabled", write);
+		sys.io.File.saveContent(PolymodHandler.MODS_FOLDER + "/disabled", write);
 
 		write = "";
 		for(mod in PolymodHandler.allModDirs){
 			write += mod+"\n";
 		}
-		sys.io.File.saveContent("mods/order", write);
+		sys.io.File.saveContent(PolymodHandler.MODS_FOLDER + "/order", write);
 
 		trace(PolymodHandler.disabledModDirs);
 		trace(PolymodHandler.allModDirs);

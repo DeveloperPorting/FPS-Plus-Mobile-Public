@@ -17,7 +17,7 @@ import MainMenuState.MainMenuButton;
 import flixel.group.FlxSpriteGroup.FlxTypedSpriteGroup;
 import flixel.addons.display.FlxBackdrop;
 import flixel.util.FlxTimer;
-import flixel.FlxCamera;
+import extensions.flixel.FlxCameraExt;
 import flixel.math.FlxPoint;
 import config.*;
 import characterSelect.CharacterSelectState;
@@ -131,8 +131,8 @@ class FreeplayState extends MusicBeatState
 
 	static var controllerMode:Bool = false;
 
-	private var camMenu:FlxCamera;
-	private var camFreeplay:FlxCamera;
+	private var camMenu:FlxCameraExt;
+	private var camFreeplay:FlxCameraExt;
 
 	var fadeShader:BlueFadeShader = new BlueFadeShader(1);
 	
@@ -173,10 +173,10 @@ class FreeplayState extends MusicBeatState
 			FlxG.sound.play(Paths.sound('confirmMenu'));
 		}
 
-		camMenu = new FlxCamera();
+		camMenu = new FlxCameraExt();
 		camMenu.filters = [];
 
-		camFreeplay = new FlxCamera();
+		camFreeplay = new FlxCameraExt();
 		camFreeplay.bgColor.alpha = 0;
 		camFreeplay.filters = [new ShaderFilter(fadeShader.shader)];
 
@@ -507,7 +507,7 @@ class FreeplayState extends MusicBeatState
 		
 		camFollow.x = Utils.fpsAdjustedLerp(camFollow.x, camTarget.x, MainMenuState.lerpSpeed, 144);
 		camFollow.y = Utils.fpsAdjustedLerp(camFollow.y, camTarget.y, MainMenuState.lerpSpeed, 144);
-		MainMenuState.menuItemPosition = Utils.fpsAdjustedLerp(MainMenuState.menuItemPosition, MainMenuState.MENU_ITEM_TOP_OFFSET - (menuItemDistanceFinal * MainMenuState.scrolledAmount), 0.14);
+		MainMenuState.menuItemPosition = Utils.fpsAdjustedLerp(MainMenuState.menuItemPosition, MainMenuState.menuItemTopOffsetFinal - (menuItemDistanceFinal * MainMenuState.scrolledAmount), 0.14);
 
 		for(item in menuItems){
 			item.y = MainMenuState.menuItemPosition + item.listPositionOffset;
@@ -604,7 +604,7 @@ class FreeplayState extends MusicBeatState
 		arrowRight.animation.play("loop");
 		arrowRight.flipX = true;
 
-		difficulty = new FlxSprite(197, 115).loadGraphic(getImagePathWithSkin("menu/freeplay/diff/" + diffNumberToDiffName(curDifficulty)));
+		difficulty = new FlxSprite(197, 115).loadGraphic(getImagePathWithSkin("menu/freeplay/diff/standard/" + diffNumberToDiffName(curDifficulty)));
 		difficulty.offset.set(difficulty.width/2, difficulty.height/2);
 
 		difficultyIndicator = new DifficultyIndicator(168, 155);
@@ -810,7 +810,7 @@ class FreeplayState extends MusicBeatState
 			menuItems[i].offset.y = menuItems[i].frameHeight/2;
 		}
 
-		versionText = new FlxTextExt(5, FlxG.height - 21, 0, "FPS Plus: v" + MainMenuState.VERSION + " | Mod API: v" + PolymodHandler.API_VERSION_STRING, 16);
+		versionText = new FlxTextExt(5, FlxG.height - 21, 0, "FPS Plus: v" + MainMenuState.VERSION + (MainMenuState.VERSION_TAG.length > 0 ? " (" + MainMenuState.VERSION_TAG + ")" : "") + " | Mod API: v" + PolymodHandler.API_VERSION_STRING, 16);
 		versionText.scrollFactor.set();
 		versionText.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		versionText.cameras = [camMenu];
@@ -832,8 +832,6 @@ class FreeplayState extends MusicBeatState
 		#end
 
 		if(MainMenuState.SHOW_BUILD_INFO){
-			versionText.text = "FPS Plus: v" + MainMenuState.VERSION + " " + MainMenuState.NONFINAL_TAG + " | Mod API: v" + PolymodHandler.API_VERSION_STRING;
-
 			var buildInfoText = new FlxTextExt(1280 - 5, FlxG.height - 37, 0, "Build Date: " + MainMenuState.buildDate + "\n" + GitCommit.getGitBranch() +  " (" + GitCommit.getGitCommitHash() + ")", 16);
 			buildInfoText.scrollFactor.set();
 			buildInfoText.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, RIGHT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
@@ -854,7 +852,7 @@ class FreeplayState extends MusicBeatState
 			MainMenuState.scrolledAmount = 0;
 			if(MainMenuState.curSelected < MainMenuState.scrolledAmount){ MainMenuState.scrolledAmount = MainMenuState.curSelected; }
 			else if(MainMenuState.curSelected > MainMenuState.scrolledAmount + 3){ MainMenuState.scrolledAmount = MainMenuState.curSelected - 3; }
-			MainMenuState.menuItemPosition = MainMenuState.MENU_ITEM_TOP_OFFSET - (menuItemDistanceFinal * MainMenuState.scrolledAmount);
+			MainMenuState.menuItemPosition = MainMenuState.menuItemTopOffsetFinal - (menuItemDistanceFinal * MainMenuState.scrolledAmount);
 		}
 	}
 
@@ -886,7 +884,7 @@ class FreeplayState extends MusicBeatState
 		MainMenuState.scrolledAmount = 0;
 		if(MainMenuState.curSelected < MainMenuState.scrolledAmount){ MainMenuState.scrolledAmount = MainMenuState.curSelected; }
 		else if(MainMenuState.curSelected > MainMenuState.scrolledAmount + 3){ MainMenuState.scrolledAmount = MainMenuState.curSelected - 3; }
-		MainMenuState.menuItemPosition = MainMenuState.MENU_ITEM_TOP_OFFSET - (menuItemDistanceFinal * MainMenuState.scrolledAmount);
+		MainMenuState.menuItemPosition = MainMenuState.menuItemTopOffsetFinal - (menuItemDistanceFinal * MainMenuState.scrolledAmount);
 	}
 	
 	function startFreeplaySong():Void{
@@ -896,12 +894,12 @@ class FreeplayState extends MusicBeatState
 		countSteps = true;
 	}
 
-	function addSong(_song:String, _icon:String, ?categories:Array<String>):Void{
+	function addSong(definiton:FreeplaySongDefiniton):Void{
 
-		var meta = Utils.defaultSongMetadata(_song.replace("-", " "));
+		var meta = Utils.defaultSongMetadata(definiton.song.replace("-", " "));
 
-		if(Utils.exists("assets/data/songs/" + _song.toLowerCase() + "/meta.json")){
-			var jsonMeta = Json.parse(Utils.getText("assets/data/songs/" + _song.toLowerCase() + "/meta.json"));
+		if(Utils.exists("assets/data/songs/" + definiton.song.toLowerCase() + "/meta.json")){
+			var jsonMeta = Json.parse(Utils.getText("assets/data/songs/" + definiton.song.toLowerCase() + "/meta.json"));
 			if(jsonMeta.name != null)				{ meta.name = jsonMeta.name; }
 			if(jsonMeta.artist != null)				{ meta.artist = jsonMeta.artist; }
 			if(jsonMeta.album != null)				{ meta.album = jsonMeta.album; }
@@ -923,9 +921,9 @@ class FreeplayState extends MusicBeatState
 			if(jsonMeta.mixName != null)			{ meta.mixName = jsonMeta.mixName; }
 		}
 
-		if(categories == null){ categories = ["All"]; }
-		var capsule:Capsule = new Capsule(_song, meta.name, _icon, meta.album, calcAvailableDifficulties(_song), meta.difficulties, meta.difficultySet, meta.compatibleInsts, [dj.freeplaySkin, dj.capsuleSelectColor, dj.capsuleDeselectColor, dj.capsuleSelectOutlineColor, dj.capsuleDeselectOutlineColor]);
-		for(cat in categories){
+		if(definiton.categories == null){ definiton.categories = ["All"]; }
+		var capsule:Capsule = new Capsule(definiton.song, meta.name, definiton.icon, meta.album, calcAvailableDifficulties(definiton.song), meta.difficulties, meta.difficultySet, meta.compatibleInsts, [dj.freeplaySkin, dj.capsuleSelectColor, dj.capsuleDeselectColor, dj.capsuleSelectOutlineColor, dj.capsuleDeselectOutlineColor], definiton.leftLink, definiton.rightLink);
+		for(cat in definiton.categories){
 			createCategory(cat);
 			categoryMap[cat].push(capsule);
 		}
@@ -977,6 +975,20 @@ class FreeplayState extends MusicBeatState
 
 	function changeDifficulty(change:Int, ?doTween:Bool = true):Void{
 		curDifficulty += change;
+
+		if(curDifficulty < 0 && categoryMap[categoryNames[curCategory]][curSelected].leftLink != null){
+			searchForLinkedSong(categoryMap[categoryNames[curCategory]][curSelected].leftLink, -1);
+			curDifficulty = 3;
+			changeDifficulty(-1);
+			return;
+		}
+		else if(curDifficulty > 2 && categoryMap[categoryNames[curCategory]][curSelected].rightLink != null){
+			searchForLinkedSong(categoryMap[categoryNames[curCategory]][curSelected].rightLink, 1);
+			curDifficulty = -1;
+			changeDifficulty(1);
+			return;
+		}
+
 		if(curDifficulty < 0){
 			curDifficulty = 2;
 		}
@@ -1004,6 +1016,28 @@ class FreeplayState extends MusicBeatState
 		}
 
 		updateScore();
+	}
+
+	function searchForLinkedSong(linkedSong:String, direction:Int):Void{
+		for(i in 0...categoryNames.length){
+			var searchingCategory:Int = Std.int(Math.abs((i + (curCategory * direction))%categoryNames.length));
+			for(j in 0...categoryMap[categoryNames[searchingCategory]].length){
+				if(categoryMap[categoryNames[searchingCategory]][j].song == linkedSong){
+					var redoTween:Bool = false;
+					if(curCategory != searchingCategory){
+						curCategory = searchingCategory;
+						changeCategory(0);
+						redoTween = true;
+					}
+					curSelected = j;
+					changeSelected(0);
+					if(redoTween){ tweenCapsulesOnScreen(transitionTime/2, 0, staggerTime); }
+					return;
+				}
+			}
+		}
+		
+		trace("Linked song \"" + linkedSong + "\" not found in freeplay list.");
 	}
 
 	function changeVariation(change:Int):Void{
@@ -1271,7 +1305,7 @@ class FreeplayState extends MusicBeatState
 	}
 
 	function updateDifficulties():Void{
-		difficultyIndicator.setDifficulties(categoryMap[categoryNames[curCategory]][curSelected].availableDifficulties);
+		difficultyIndicator.setDifficulties(categoryMap[categoryNames[curCategory]][curSelected].availableDifficulties, categoryMap[categoryNames[curCategory]][curSelected].leftLink != null, categoryMap[categoryNames[curCategory]][curSelected].rightLink != null);
 		difficultyIndicator.x = 198 - (10*difficultyIndicator.count);
 	
 		if(!categoryMap[categoryNames[curCategory]][curSelected].availableDifficulties.contains(curDifficulty)){
@@ -1651,7 +1685,7 @@ class FreeplayState extends MusicBeatState
 	function createSongList():Void{
 
 		var freeplayCategories:Array<String> = [];
-		var freeplaySongs:Array<Array<Dynamic>> = [];
+		var freeplaySongs:Array<FreeplaySongDefiniton> = [];
 
 		//Load freeplay song list from json.
 		if(Utils.exists(Paths.json("songList-" + dj.listSuffix, "data/freeplay"))){
@@ -1667,7 +1701,7 @@ class FreeplayState extends MusicBeatState
 
 			for(i in 0...json.songs.length){
 				if(json.songs[i].insert == null){
-					freeplaySongs.push([json.songs[i].song, json.songs[i].icon, json.songs[i].categories]);
+					freeplaySongs.push({song: json.songs[i].song, icon: json.songs[i].icon, categories: json.songs[i].categories, leftLink: json.songs[i].leftLink, rightLink: json.songs[i].rightLink});
 					for(j in 0...json.songs[i].categories.length){
 						if(!freeplayCategories.contains(json.songs[j].categories[j])){
 							freeplayCategories.push(json.songs[j].categories[j]);
@@ -1677,12 +1711,12 @@ class FreeplayState extends MusicBeatState
 				else{
 					var index:Int = freeplaySongs.length;
 					for(j in 0...freeplaySongs.length){
-						if(freeplaySongs[j][0] == json.songs[i].insert.value){
+						if(freeplaySongs[j].song == json.songs[i].insert.value){
 							index = j + (json.songs[i].insert.type == "after" ? 1 : 0);
 							break;
 						}
 					}
-					freeplaySongs.insert(index, [json.songs[i].song, json.songs[i].icon, json.songs[i].categories]);
+					freeplaySongs.insert(index, {song: json.songs[i].song, icon: json.songs[i].icon, categories: json.songs[i].categories, leftLink: json.songs[i].leftLink, rightLink: json.songs[i].rightLink});
 					for(j in 0...json.songs[i].categories.length){
 						if(!freeplayCategories.contains(json.songs[j].categories[j])){
 							freeplayCategories.push(json.songs[j].categories[j]);
@@ -1723,7 +1757,7 @@ class FreeplayState extends MusicBeatState
 						categoryArray[i] = categoryArray[i].trim();
 					}
 					
-					freeplaySongs.push([name, icon, categoryArray]);
+					freeplaySongs.push({song: name, icon: icon, categories: categoryArray, leftLink: null, rightLink: null});
 					for(cat in categoryArray){
 						if(!freeplayCategories.contains(cat)){
 							freeplayCategories.push(cat);
@@ -1739,7 +1773,7 @@ class FreeplayState extends MusicBeatState
 		}
 
 		for(song in freeplaySongs){
-			addSong(song[0], song[1], song[2]);
+			addSong(song);
 		}
 
 		for(catName => category in categoryMap){
@@ -1755,7 +1789,7 @@ class FreeplayState extends MusicBeatState
 						break;
 					}
 				}
-				var randomCapsule = new Capsule("", "Random", "none", "none", availableDifficulties, [0, 0, 0], ((catName == "ERECT") ? "erect" : "standard"), [], [dj.freeplaySkin, dj.capsuleSelectColor, dj.capsuleDeselectColor, dj.capsuleSelectOutlineColor, dj.capsuleDeselectOutlineColor]);
+				var randomCapsule = new Capsule("", "Random", "none", "none", availableDifficulties, [0, 0, 0], ((catName == "ERECT") ? "erect" : "standard"), [], [dj.freeplaySkin, dj.capsuleSelectColor, dj.capsuleDeselectColor, dj.capsuleSelectOutlineColor, dj.capsuleDeselectOutlineColor], null, null);
 				randomCapsule.randomCapsule = true;
 				category.unshift(randomCapsule);
 			}
@@ -1794,4 +1828,12 @@ enum IntroAnimType {
 	fromSongExit;
 	fromSongWin;
 	fromSongLose;
+}
+
+typedef FreeplaySongDefiniton = {
+	var song:String;
+	var icon:String;
+	var categories:Array<String>;
+	var leftLink:String;
+	var rightLink:String;
 }

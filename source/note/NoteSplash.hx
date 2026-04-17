@@ -34,30 +34,6 @@ class NoteSplash extends FlxSprite{
 			skinInfo = new NoteSplashSkinBase(nonPersistentSkin);
 		}
 
-		//if(!ScriptableNoteSplashSkin.listScriptClasses().contains(splashSkinClassName + "SplashSkin")){ splashSkinClassName = "Default"; }
-		//var splashSkin:NoteSplashSkinBase = ScriptableNoteSplashSkin.init(splashSkinClassName + "SplashSkin");
-		
-		/*var noteColor:String = "purple";
-		switch(note){
-			case 1:
-				noteColor = "blue";
-			case 2:
-				noteColor = "green";
-			case 3:
-				noteColor = "red";
-		}*/
-
-		/*var splashAnimNumber:Int;
-
-		switch(splashPath){
-			default:
-				splashAnimNumber = FlxG.random.int(1, 2);
-		}*/
-
-		/*if(forceSplashNumber != null){
-			splashAnimNumber = forceSplashNumber;
-		}*/
-
 		var splashAnimNumber:Int = FlxG.random.int(0, skinInfo.info.anims[direction].length - 1);
 		if(forceSplashNumber != null){
 			splashAnimNumber = forceSplashNumber;
@@ -72,6 +48,7 @@ class NoteSplash extends FlxSprite{
 		animation.play("splash");
 
 		alpha = skinInfo.info.alpha;
+		blend = skinInfo.info.blend;
 
 		setGraphicSize(Std.int(width * skinInfo.info.scale));
 		updateHitbox();

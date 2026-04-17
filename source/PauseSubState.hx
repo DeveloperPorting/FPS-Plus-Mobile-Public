@@ -5,7 +5,7 @@ import flixel.tweens.FlxEase;
 import extensions.flixel.FlxTextExt;
 import haxe.Json;
 import flixel.text.FlxText;
-import flixel.FlxCamera;
+import extensions.flixel.FlxCameraExt;
 import editors.ChartingState;
 import flixel.tweens.FlxTween;
 import config.*;
@@ -28,9 +28,7 @@ class PauseSubState extends MusicBeatSubState
 
 	public var pauseMusic:FlxSound;
 
-	var allowControllerPress:Bool = false;
-
-	public var camPause:FlxCamera;
+	public var camPause:FlxCameraExt;
 
 	public var songName:FlxTextExt;
 	public var songArtist:FlxTextExt;
@@ -43,7 +41,7 @@ class PauseSubState extends MusicBeatSubState
 
 		PlayState.instance.tweenManager.active = false;
 
-		camPause = new FlxCamera();
+		camPause = new FlxCameraExt();
 		camPause.bgColor.alpha = 0;
 		camPause.filters = [];
 		FlxG.cameras.add(camPause, false);
@@ -151,7 +149,7 @@ class PauseSubState extends MusicBeatSubState
 				unpause();
 			}
 	
-			if (!allowControllerPress ? Binds.justPressedKeyboardOnly("menuAccept") || virtualPad.buttonA.justPressed : Binds.justPressed("menuAccept") || virtualPad.buttonA.justPressed){
+			if (Binds.justPressed("menuAccept") || virtualPad.buttonA.justPressed){
 	
 				PlayState.instance.tweenManager.active = true;
 	
@@ -167,6 +165,7 @@ class PauseSubState extends MusicBeatSubState
 						
 					case "Restart Song":
 						PlayState.instance.tweenManager.clear();
+						ImageCache.refreshLocal();
 						PlayState.instance.switchState(new PlayState());
 						PlayState.sectionStart = false;
 						PlayState.replayStartCutscene = false;
@@ -178,6 +177,7 @@ class PauseSubState extends MusicBeatSubState
 	
 					case "Restart Section":
 						PlayState.instance.tweenManager.clear();
+						ImageCache.refreshLocal();
 						PlayState.instance.switchState(new PlayState());
 						PlayState.replayStartCutscene = false;
 						if(PlayState.instance.instSong != null){
@@ -224,11 +224,6 @@ class PauseSubState extends MusicBeatSubState
 		}
 
 		for(script in PlayState.instance.scripts){ script.pauseUpdate(elapsed); }
-
-		//This is to work around a flixel issue that makes the controller input state reset on state/sub-state change. idk why it happens
-		if(!allowControllerPress && Binds.justReleasedControllerOnly("pause")){
-			allowControllerPress = true;
-		}
 	}
 
 	function unpause(){

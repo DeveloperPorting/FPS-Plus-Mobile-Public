@@ -52,6 +52,7 @@ class MainMenuState extends MusicBeatState
 	
 	var menuItems:Array<MainMenuButton> = [];
 	public static var menuItemPosition:Float = MENU_ITEM_TOP_OFFSET;
+	public static var menuItemTopOffsetFinal:Float = MENU_ITEM_TOP_OFFSET;
 
 	var magenta:FlxSprite;
 	var camFollow:FlxObject;
@@ -73,7 +74,7 @@ class MainMenuState extends MusicBeatState
 	final warningDelay:Float = 15;
 
 	inline public static final VERSION:String = "9.0.0";
-	inline public static final NONFINAL_TAG:String = "(Non-Release Build)";
+	inline public static final VERSION_TAG:String = #if final "" #else "Non-Release Build" #end;
 	inline public static final SHOW_BUILD_INFO:Bool = #if final false #else true #end;
 	
 	public static var buildDate:String = "";
@@ -126,6 +127,10 @@ class MainMenuState extends MusicBeatState
 
 		menuItemDistanceFinal = (menuItemJsonData.length < 5) ? MENU_ITEM_DISTANCE : MENU_ITEM_DISTANCE_EXPANDED;
 
+		if(menuItemJsonData.length < 4){
+			menuItemTopOffsetFinal = MENU_ITEM_TOP_OFFSET + (((4-menuItemJsonData.length)*menuItemDistanceFinal)/2);
+		}
+
 		for(i in 0...menuItemJsonData.length){
 			var menuItem:MainMenuButton = new MainMenuButton(menuItemJsonData[i]);
 			menuItem.listPositionOffset = i * menuItemDistanceFinal;
@@ -157,7 +162,7 @@ class MainMenuState extends MusicBeatState
 
 		FlxG.camera.follow(camFollow);
 
-		versionText = new FlxTextExt(5, FlxG.height - 21, 0, "FPS Plus: v" + VERSION + " | Mod API: v" + PolymodHandler.API_VERSION_STRING, 16);
+		versionText = new FlxTextExt(5, FlxG.height - 21, 0, "FPS Plus: v" + VERSION + (VERSION_TAG.length > 0 ? " (" + VERSION_TAG + ")" : "") + " | Mod API: v" + PolymodHandler.API_VERSION_STRING, 16);
 		versionText.scrollFactor.set();
 		versionText.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 
@@ -175,8 +180,6 @@ class MainMenuState extends MusicBeatState
 		#end
 
 		if(SHOW_BUILD_INFO){
-			versionText.text = "FPS Plus: v" + VERSION + " " + NONFINAL_TAG + " | Mod API: v" + PolymodHandler.API_VERSION_STRING;
-
 			buildDate = CompileTime.buildDateString();
 
 			buildInfoText = new FlxTextExt(1280 - 5, FlxG.height - 37, 0, "Build Date: " + buildDate + "\n" + GitCommit.getGitBranch() +  " (" + GitCommit.getGitCommitHash() + ")", 16);
@@ -267,12 +270,12 @@ class MainMenuState extends MusicBeatState
 		if(!instantCamFollow){
 			camFollow.x = Utils.fpsAdjustedLerp(camFollow.x, camTarget.x, lerpSpeed, 144);
 			camFollow.y = Utils.fpsAdjustedLerp(camFollow.y, camTarget.y, lerpSpeed, 144);
-			menuItemPosition = Utils.fpsAdjustedLerp(menuItemPosition, MENU_ITEM_TOP_OFFSET - (menuItemDistanceFinal * scrolledAmount), 0.14);
+			menuItemPosition = Utils.fpsAdjustedLerp(menuItemPosition, menuItemTopOffsetFinal - (menuItemDistanceFinal * scrolledAmount), 0.14);
 		}
 		else{
 			camFollow.x = camTarget.x;
 			camFollow.y = camTarget.y;
-			menuItemPosition = MENU_ITEM_TOP_OFFSET - (menuItemDistanceFinal * scrolledAmount);
+			menuItemPosition = menuItemTopOffsetFinal - (menuItemDistanceFinal * scrolledAmount);
 			instantCamFollow = false;
 		}
 
@@ -284,6 +287,8 @@ class MainMenuState extends MusicBeatState
 	}
 
 	override function beatHit():Void{
+		super.beatHit();
+
 		#if UPDATE_CHECKING
 		if(showUpdateButton >= 1){
 			updateText.color = [0xFFFFFFFF, 0xFF98DFFC][curBeat % 2];
@@ -455,7 +460,12 @@ class MainMenuState extends MusicBeatState
 			item = item.split(".json")[0];
 			var data = Json.parse(Utils.getText(Paths.json(item, "data/mainMenu/items")));
 			data.jsonName = item;
-			menuItemJsonData.push(data);
+			if(!Main.launchArguments.no_mods){
+				menuItemJsonData.push(data);
+			}
+			else{
+				if(data.action.type != "modManager"){ menuItemJsonData.push(data); }
+			}
 		}
 		menuItemJsonData.sort(function(a, b):Int{
 			return ((a.sort != null) ? a.sort : 0) - ((b.sort != null) ? b.sort : 0);
