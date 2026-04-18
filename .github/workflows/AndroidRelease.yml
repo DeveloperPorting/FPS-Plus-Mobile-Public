@@ -6,7 +6,7 @@ jobs:
   build:
     name: Android Release Build
     permissions: write-all
-    runs-on: ubuntu-22.04
+    runs-on: macos-26
     steps:
       - name: Checkout
         uses: actions/checkout@main
