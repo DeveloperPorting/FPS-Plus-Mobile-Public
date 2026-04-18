@@ -546,13 +546,8 @@ class ModManagerState #if mobile extends MusicBeatState #else extends FlxUIState
 	}
 
 	function getModIcon(mod:String):BitmapData{
-<<<<<<< HEAD
-		if(FileSystem.exists("mods/" + mod + "/icon.png")){
-			return BitmapData.fromFile(#if mobile MobileUtil.getDirectory() + #end "mods/" + mod + "/icon.png");
-=======
 		if(FileSystem.exists(PolymodHandler.MODS_FOLDER + "/" + mod + "/icon.png")){
-			return BitmapData.fromFile(PolymodHandler.MODS_FOLDER + "/" + mod + "/icon.png");
->>>>>>> upstream/master
+			return BitmapData.fromFile(#if mobile MobileUtil.getDirectory() + #end PolymodHandler.MODS_FOLDER + "/" + mod + "/icon.png");
 		}
 		return BitmapData.fromFile(Paths.image("menu/modMenu/defaultModIcon", true));
 	}
