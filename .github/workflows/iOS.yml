@@ -6,7 +6,7 @@ jobs:
   build:
     name: iOS Build
     permissions: write-all
-    runs-on: macos-15
+    runs-on: macos-26
     steps:
       - name: Checkout
         uses: actions/checkout@main
@@ -14,19 +14,16 @@ jobs:
       - name: Setup Haxe
         uses: krdlab/setup-haxe@master
         with:
-          haxe-version: 4.3.6
+          haxe-version: 4.3.7
 
       - name: Install Libraries
         run: |
          haxelib install hmm --quiet
-         haxelib run hmm setup
-         haxelib run hmm install
-         haxelib --global install hxvlc
-         haxelib remove lime
-         haxelib git lime https://github.com/th2l-devs/lime
+         haxelib run hmm install --quiet
+         haxelib run lime rebuild hxcpp
 
       - name: Compile
-        run: haxelib run lime build ios -eval -nosign
+        run: haxelib run lime build ios -nosign
 
       - name: Making ipa file
         run: |
